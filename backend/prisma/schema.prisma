@@ -1,0 +1,149 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Station {
+  id         String        @id
+  name       String
+  region     String
+  location   Unsupported("geometry(Point, 4326)")
+  exits      StationExit[]
+  isochrones Isochrone[]
+  reports    Report[]
+}
+
+model StationExit {
+  id         Int      @id @default(autoincrement())
+  station_id String
+  station    Station  @relation(fields: [station_id], references: [id])
+  label      String
+  location   Unsupported("geometry(Point, 4326)")
+}
+
+model Isochrone {
+  id           Int      @id @default(autoincrement())
+  station_id   String
+  station      Station  @relation(fields: [station_id], references: [id])
+  minutes      Int
+  polygon      Unsupported("geometry(Polygon, 4326)")
+  method       String   @default("valhalla")
+  generated_at DateTime @default(now())
+
+  @@unique([station_id, minutes])
+}
+
+enum PoiCategory {
+  kopi_minuman
+  quick_meal
+  warung_makan
+  bakery
+  casual_dining
+  hiburan
+}
+
+enum PriceTier {
+  ekonomis
+  menengah
+  premium
+}
+
+enum PoiSource {
+  mapid_missions
+  openstreetmap
+  mock
+}
+
+model MapidMission {
+  id             String   @id
+  mission_type   String
+  location       Unsupported("geometry(Point, 4326)")
+  raw_properties Json
+  poi_id         Int?
+  poi            Poi?     @relation(fields: [poi_id], references: [id])
+  ingested_at    DateTime @default(now())
+}
+
+model MapidActivity {
+  id                String    @id
+  title             String?
+  description       String?
+  location          Unsupported("geometry(Point, 4326)")
+  media_urls        String[]
+  user_name         String?
+  user_full_name    String?
+  community_name    String?
+  total_comment     Int?
+  likes_count       Int?
+  source_created_at DateTime?
+  raw_properties    Json
+  poi_id            Int?
+  poi               Poi?      @relation(fields: [poi_id], references: [id])
+  ingested_at       DateTime  @default(now())
+}
+
+model Poi {
+  id                Int             @id @default(autoincrement())
+  name              String
+  category          PoiCategory
+  price_tier        PriceTier
+  location          Unsupported("geometry(Point, 4326)")
+  source            PoiSource       @default(mock)
+  verified_field    Boolean         @default(false)
+  menu_utama        String?
+  harga_rata_rata   Int?
+  jam_buka          String?
+  jam_tutup         String?
+  kondisi_tempat    String?
+  raw_category_text String?
+  missions          MapidMission[]
+  activities        MapidActivity[]
+  reports           Report[]
+}
+
+model Moderator {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  password_hash String
+  display_name  String
+  created_at    DateTime @default(now())
+  reports       Report[] @relation("ModeratedBy")
+}
+
+enum ReportType {
+  trotoar_rusak
+  akses_tertutup
+  banjir
+  penyeberangan_tidak_aman
+  tempat_tutup
+  umkm_baru
+  info_lainnya
+}
+
+enum ReportStatus {
+  pending
+  verified
+  rejected
+  applied
+}
+
+model Report {
+  id             String       @id @default(uuid())
+  station_id     String
+  station        Station      @relation(fields: [station_id], references: [id])
+  poi_id         Int?
+  poi            Poi?         @relation(fields: [poi_id], references: [id])
+  report_type    ReportType
+  description    String
+  photo_url      String?
+  status         ReportStatus @default(pending)
+  moderator_id   String?
+  moderator      Moderator?   @relation("ModeratedBy", fields: [moderator_id], references: [id])
+  moderator_note String?
+  created_at     DateTime     @default(now())
+  resolved_at    DateTime?
+}

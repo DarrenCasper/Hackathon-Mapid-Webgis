@@ -1,0 +1,24 @@
+{
+  "name": "transitfit-ai-backend",
+  "version": "0.1.0",
+  "description": "TransitFit AI backend — WebGIS API for real walking-distance food options around Jakarta Timur KRL stations",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.20.0",
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "prisma": "^5.20.0"
+  }
+}

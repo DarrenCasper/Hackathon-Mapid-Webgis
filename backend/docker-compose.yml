@@ -1,0 +1,33 @@
+# Only the Valhalla routing container lives here. PostgreSQL is NOT
+# defined in this file — it's an external, already-running Coolify-managed
+# resource (see DATABASE_URL in .env). Do not add a postgres service here.
+#
+# Run with: docker compose up
+# See README.md "Valhalla setup" for the OSM extract you need to download
+# before this will start successfully.
+services:
+  valhalla:
+    image: ghcr.io/gis-ops/docker-valhalla/valhalla:latest
+    container_name: transitfit-valhalla
+    ports:
+      - "8002:8002"
+    volumes:
+      # Everything Valhalla needs (the .osm.pbf extract, and the tiles it
+      # builds from it on first boot) lives in this one bind-mounted
+      # folder, so tile-building survives `docker compose down` and you
+      # don't have to rebuild tiles every time you restart the container.
+      - ./valhalla/custom_files:/custom_files
+    environment:
+      # Name of the .osm.pbf file you placed in ./valhalla/custom_files
+      # (see README). Valhalla builds routing tiles from it automatically
+      # on first startup — that first boot takes a few minutes.
+      - tile_urls=/custom_files/jakarta.osm.pbf
+      - use_tiles_ignore_pbf=True
+      - build_elevation=False
+      - build_admins=True
+      - build_time_zones=False
+      # Isochrone generation (scripts/generate-isochrones.js in Phase 3)
+      # only needs the pedestrian costing model, so we don't need the
+      # heavier transit/admin builds some Valhalla setups turn on.
+      - server_threads=2
+    restart: unless-stopped

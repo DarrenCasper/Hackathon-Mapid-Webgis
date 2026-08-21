@@ -1,0 +1,7 @@
+.env
+node_modules/
+
+# Valhalla's OSM extract (.pbf) and the routing tiles it builds from it —
+# large binary files, never commit these. You'll need to re-download the
+# extract on any fresh machine per README.md "Valhalla setup".
+valhalla/
