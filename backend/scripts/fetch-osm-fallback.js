@@ -67,29 +67,51 @@ function buildOverpassQuery(polyString) {
   return `[out:json][timeout:25];\n(\n${tagFilters}\n);\nout center;`;
 }
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// Overpass's public instance (overpass-api.de) enforces a small
+// concurrent-request quota per IP (confirmed via /api/status: rate
+// limit of 2). Firing one request per station back-to-back with no
+// spacing hit this immediately in testing — 2 requests succeeded, the
+// rest got HTTP 429 with a "rate_limited" body. This isn't a query bug;
+// it's real infra we don't control, so we retry with backoff rather
+// than fail the whole run over a transient limit.
+const MAX_RETRIES = 3;
+const RETRY_DELAY_MS = 8000;
+
 async function fetchOverpassElements(polygonGeoJSON) {
   const query = buildOverpassQuery(polygonToOverpassPolyString(polygonGeoJSON));
 
-  const res = await fetch(OVERPASS_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      // Overpass's server rejects requests with no/generic User-Agent as
-      // likely bots (returns a bare Apache 406, not an Overpass error) —
-      // confirmed by testing; a real UA is required, not optional.
-      "User-Agent": "TransitFitAI/0.1 (Jakarta Timur KRL hackathon project)",
-    },
-    body: `data=${encodeURIComponent(query)}`,
-  });
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    const res = await fetch(OVERPASS_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        // Overpass's server rejects requests with no/generic User-Agent as
+        // likely bots (returns a bare Apache 406, not an Overpass error) —
+        // confirmed by testing; a real UA is required, not optional.
+        "User-Agent": "TransitFitAI/0.1 (Jakarta Timur KRL hackathon project)",
+      },
+      body: `data=${encodeURIComponent(query)}`,
+    });
 
-  const text = await res.text();
-  if (!res.ok) {
-    // Per brief: show the raw response, don't silently work around it.
-    throw new Error(`Overpass returned ${res.status}:\n${text}`);
+    const text = await res.text();
+
+    if (res.status === 429 && attempt < MAX_RETRIES) {
+      console.warn(
+        `  ⚠ Overpass rate-limited (attempt ${attempt}/${MAX_RETRIES}), waiting ${RETRY_DELAY_MS / 1000}s before retry...`
+      );
+      await sleep(RETRY_DELAY_MS);
+      continue;
+    }
+
+    if (!res.ok) {
+      // Per brief: show the raw response, don't silently work around it.
+      throw new Error(`Overpass returned ${res.status}:\n${text}`);
+    }
+
+    return JSON.parse(text).elements;
   }
-
-  const body = JSON.parse(text);
-  return body.elements;
 }
 
 function categoryForTags(tags) {
@@ -108,7 +130,29 @@ function coordsForElement(element) {
   return null;
 }
 
+// Guards against re-running this script for a station that's still
+// under threshold after a partial previous run (e.g. it got some OSM
+// POIs saved but not enough to clear MIN_POI_COVERAGE, so it gets
+// queried again) — without this, the same OSM element would be
+// re-inserted as a duplicate Poi every re-run.
+async function osmPoiAlreadyExists(name, lng, lat) {
+  const rows = await prisma.$queryRaw`
+    SELECT id FROM "Poi"
+    WHERE name = ${name}
+      AND source = 'openstreetmap'::"PoiSource"
+      AND ST_DWithin(
+        location::geography,
+        ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326)::geography,
+        10
+      )
+    LIMIT 1
+  `;
+  return rows.length > 0;
+}
+
 async function saveOsmPoi(name, lng, lat, category) {
+  if (await osmPoiAlreadyExists(name, lng, lat)) return false;
+
   await prisma.$executeRaw`
     INSERT INTO "Poi" (name, category, location, source, verified_field)
     VALUES (
@@ -119,6 +163,7 @@ async function saveOsmPoi(name, lng, lat, category) {
       false
     )
   `;
+  return true;
 }
 
 async function main() {
@@ -142,6 +187,7 @@ async function main() {
       let saved = 0;
       let skippedNoName = 0;
       let skippedUnmapped = 0;
+      let skippedDuplicate = 0;
 
       for (const element of elements) {
         const tags = element.tags || {};
@@ -160,17 +206,23 @@ async function main() {
         const coords = coordsForElement(element);
         if (!coords) continue;
 
-        await saveOsmPoi(name, coords.lng, coords.lat, category);
-        saved++;
+        const wasSaved = await saveOsmPoi(name, coords.lng, coords.lat, category);
+        if (wasSaved) saved++;
+        else skippedDuplicate++;
       }
 
       totalSaved += saved;
       console.log(
-        `  ✓ saved ${saved} OSM POI(s) (skipped ${skippedNoName} unnamed, ${skippedUnmapped} unmapped tags)`
+        `  ✓ saved ${saved} OSM POI(s) (skipped ${skippedNoName} unnamed, ${skippedUnmapped} unmapped tags, ${skippedDuplicate} already saved)`
       );
     } catch (err) {
       console.error(`  ✗ ${station.station_id}:`, err.message);
     }
+
+    // Space out requests to the shared public Overpass instance rather
+    // than firing the next station's query immediately — see the rate
+    // limit note on fetchOverpassElements above.
+    await sleep(3000);
   }
 
   console.log(`Done. ${totalSaved} OSM-sourced POI(s) saved.`);

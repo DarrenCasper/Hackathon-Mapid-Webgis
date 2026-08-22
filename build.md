@@ -124,56 +124,189 @@ live in the DB. Next session should run `scripts/seed-stations.js` first
 (doesn't exist yet — first thing to write in Phase 3) using the
 Tailscale `DATABASE_URL` documented above.
 
-## Phase 3 — Ingestion scripts ⚠ partially done (2026-08-22)
+## Phase 3 — Ingestion scripts ✅ done (2026-08-22)
 
-All 7 scripts from the brief are written. **Only the first
-(`seed-stations.js`) has actually run successfully end-to-end** — every
-script after it in the pipeline depends on Valhalla-generated isochrones,
-and Valhalla isn't running on this machine yet (Docker Desktop isn't
-started, and no Jakarta `.osm.pbf` extract has been downloaded — see
-README "Valhalla setup"). This is not a code problem, it's an
-environment setup step still pending on your end.
+All 7 scripts from the brief are written AND have now run successfully
+end-to-end, in this order: `seed-stations.js` → `generate-isochrones.js`
+→ `fetch-mapid-missions.js` → `resolve-pois.js` → `classify-categories.js`
+→ `fetch-osm-fallback.js` → `fetch-mapid-activities.js`.
+
+**Final data state:** 7 stations, 14 isochrones (10/15 min × 7), 65 Poi
+rows (12 from real MAPID missions, 53 from OSM fallback), all 12
+mission-derived POIs classified into `PoiCategory`, 87 MapidActivity
+rows. Per-station Poi coverage: buaran 6, cakung 1 (genuine data
+sparsity — nothing more exists there, left alone rather than forced),
+jatinegara 14, klender 11, klender_baru 4, matraman 26, pondok_jati 23.
+Matraman/Jatinegara/Pondok Jati are all within ~1km of each other, so
+their 15-min isochrones overlap significantly — the same real-world POI
+legitimately appears in more than one station's coverage count, which is
+correct behavior (if you're near the boundary between two stations'
+walking sheds, food there should be discoverable from both), not a bug.
+
+**Valhalla setup completed this session** — Docker Desktop was off and
+no OSM extract existed at the start; both resolved (see the
+`generate-isochrones.js` entry below for details: ~1hr first-boot tile
+build on an 896MB Java-island extract).
+
+**Two runtime issues hit during actual execution, both fixed in the
+scripts themselves (not just worked around manually):**
+
+1. **`resolve-pois.js`/`fetch-mapid-missions.js` count mismatch (12 vs 13)
+   — investigated, confirmed benign.** `fetch-mapid-missions.js` logged
+   13 saved rows but only 12 `MapidMission` rows exist. Cause: Matraman
+   and Jatinegara's 15-min isochrones overlap, so one real mission got
+   fetched via both stations' queries — `ON CONFLICT (id) DO UPDATE`
+   correctly deduped it to one row. The mismatch was in the log's
+   per-call counter, not the data. Not fixed (nothing to fix — verified
+   via direct row counts before moving on, not just re-reading the log).
+
+2. **`fetch-osm-fallback.js` hit Overpass's public rate limit (HTTP
+   429) after 2 requests** — confirmed via `/api/status` that the limit
+   is genuinely 2 concurrent/rapid requests per IP, not a fluke. Fixed
+   properly rather than just re-running and hoping: added retry-with-
+   backoff (3 attempts, 8s wait) for 429s, a 3s spacing delay between
+   each station's request, and — since a retry meant re-running the
+   whole script — added a dedup check (`ST_DWithin` + name match, same
+   pattern as `resolve-pois.js`) before every OSM insert, since the
+   script's lack of idempotency (flagged as a known limitation before
+   this session's run) would otherwise have double-inserted the POIs
+   `buaran`/`cakung` already got from the first partial run. One station
+   (`klender_baru`) also hit an unrelated `504` timeout ("server too
+   busy") on the same run — transient, cleared on a second re-run with
+   no code change needed.
+
+**Files created** (all under `backend/scripts/`), final status:
+1. `seed-stations.js` — ✅ ran, verified.
+2. `generate-isochrones.js` — ✅ ran, verified (areas/vertex counts
+   sanity-checked, all realistic). Java extract used since no
+   Jakarta-only sub-extract existed on Geofabrik; `docker-compose.yml`'s
+   `tile_urls` updated to match the actual downloaded filename
+   (`java-260821.osm.pbf`) instead of the placeholder `jakarta.osm.pbf`
+   it originally referenced. First boot took ~1hr (2.97M ways, 28.6M
+   nodes, 6M graph edges, 283→650 tiles); restarts reuse the bind-mounted
+   tiles and start in seconds.
+3. `fetch-mapid-missions.js` — ✅ ran, 13 API-level results → 12 unique
+   DB rows (see dedup note above). All `menugo` — no `propertigo`/
+   `struckgo` data exists in this region, real absence not a bug.
+4. `resolve-pois.js` — ✅ ran, 12 Poi created from 12 missions, 0
+   skipped, 0 unclustered.
+5. `classify-categories.js` — ✅ ran, 12/12 classified via
+   `claude-haiku-4-5`, all sensible (Roti'O→bakery, CFC→quick_meal,
+   Kopi Dian→kopi_minuman). 1 flagged low-confidence: "Sunkist Vending
+   Machine" (sells only bottled water) → `quick_meal` — genuinely
+   ambiguous, correctly flagged rather than confidently guessed.
+6. `fetch-osm-fallback.js` — ✅ ran (after the rate-limit/idempotency
+   fixes above), added 53 POIs across 6 stations that were under the
+   5-POI threshold. `cakung` stayed at 1 — confirmed real sparsity by
+   letting Overpass run clean with no rate-limit/timeout errors on the
+   final pass, not a fetch failure being mistaken for "no data."
+7. `fetch-mapid-activities.js` — ✅ ran, 87 activity rows across all 7
+   stations. Highest single-station count was 22 (jatinegara) — nowhere
+   near the suspected 60-item cap, confirming the earlier decision to
+   query per-station rather than one big region was the right call; no
+   truncation warnings fired.
+
+**Original still-open item, unaffected by this session's work:** the
+`minutes` inconsistency ([5,10,15] in the planned API vs. [10,15]
+actually generated) still needs a decision — will ask at the start of
+Phase 4.
+
+**Valhalla moved from local Docker to the `casper` server (2026-08-22),
+after Phase 3 finished:** local Docker Desktop was only ever meant as a
+dev-time convenience; running the ~1hr tile build a second time on the
+server would've been wasteful, so the already-built tiles were
+transferred instead of rebuilt from scratch.
+
+- Generated an SSH keypair (`~/.ssh/casper_transitfit` on the dev
+  machine) since none existed for this server yet. You authorized it by
+  appending the public key to `~/.ssh/authorized_keys` on `casper`
+  directly.
+- Hit a `permission denied` connecting to the Docker socket as
+  `darrencasper` — fixed by you running
+  `sudo usermod -aG docker darrencasper` on the server (one-time, needs
+  your own sudo password, which is why I couldn't do this step myself).
+- Transferred `backend/valhalla/custom_files/` (2.8GB: the `.pbf`, the
+  built `valhalla_tiles/` folder, `valhalla_tiles.tar`, and
+  `admin_data`) via `scp` over the direct (non-relayed) Tailscale
+  connection to `~/transitfit-ai/` on the server, alongside a copy of
+  `docker-compose.yml`. Deliberately transferred both the raw tiles
+  folder and the `.tar` rather than picking just one — wasn't fully
+  certain which one(s) the container's startup script actually needs to
+  skip a rebuild, and guessing wrong would have cost another hour to
+  find out.
+- **Confirmed the transfer strategy worked exactly as intended:**
+  `docker compose up -d` on the server logged `"Jumping directly to the
+  tile loading!"` and was healthy (`GET /status` responding, 650 tiles
+  loaded) within about a minute of the image pull finishing — no
+  rebuild. Total time including the 2.8GB transfer was a few minutes,
+  vs. the ~1hr the local build took.
+- `backend/.env`'s `VALHALLA_URL` updated from `http://localhost:8002`
+  to `http://100.101.248.124:8002` (the server's Tailscale IP) — this
+  works because port 8002 is reachable over the direct Tailscale
+  connection with no extra firewall rule needed (confirmed by testing
+  from the dev machine). Local Docker Valhalla container stopped and
+  removed (`docker compose down`) — it's no longer needed for day-to-day
+  work now that a persistent copy runs on the server.
+- **Forward note for Phase 6:** once the backend API itself is deployed
+  to Coolify on this same server, `VALHALLA_URL` should very likely stay
+  as this same Tailscale IP rather than switching to a Docker-internal
+  hostname — Tailscale routing is independent of whatever Docker network
+  Coolify puts the API container on, so it should keep working
+  unchanged. Worth confirming when we actually get to Phase 6 rather
+  than assuming.
 
 **Files created** (all under `backend/scripts/`):
 1. `seed-stations.js` — ✅ **ran successfully.** All 7 stations inserted,
    coordinates verified round-trip exactly via `ST_AsGeoJSON` against the
    original `stations.geojson`. Idempotent (`ON CONFLICT DO UPDATE`).
-2. `generate-isochrones.js` — written, syntax-checked, **not run** (needs
-   Valhalla). Handles the case where Valhalla returns a `MultiPolygon`
-   instead of `Polygon` (our schema column is Polygon-only) by keeping
-   the largest ring and logging the raw geometry — see code comment for
-   why. Generates 10 and 15 minute isochrones only, per brief (**note:**
-   Phase 4's planned API validates `minutes` against `[5,10,15]` but no
-   script ever generates a 5-minute isochrone — flagging this brief
-   inconsistency now, not fixing it silently; needs a decision when we
-   get to Phase 4 routes).
-3. `fetch-mapid-missions.js` — written, syntax-checked, **not run
-   end-to-end** (needs isochrones to exist first). **The MAPID API call
-   itself was smoke-tested directly and confirmed working** — real data
-   came back matching the documented `menugo` response shape exactly
-   (see raw response in this session's transcript). Fetches against each
-   station's 15-minute isochrone, paginates via `hasMore`, stores
-   missions verbatim (`raw_properties` untouched).
-4. `resolve-pois.js` — written, syntax-checked, not run (needs mission
-   data). Clusters by exact `nama_tempat` + `ST_DWithin` 30m (cast to
-   `::geography` for meter-based distance — plain geometry `ST_DWithin`
-   would compare in degrees, which would be wrong). Idempotent: re-runs
-   re-match existing Poi by name+distance instead of duplicating.
-   `propertigo` missions have no `nama_tempat` field at all and will
-   always log as "couldn't cluster" — expected, not a bug.
-5. `classify-categories.js` — written, syntax-checked, not run (no
-   `ANTHROPIC_API_KEY` in `.env` yet, and needs resolved Poi rows first).
-   See "AI provider decision" below.
-6. `fetch-osm-fallback.js` — written. **The Overpass query itself was
-   smoke-tested live and works** — see "Overpass gotcha" below. Threshold
+2. `generate-isochrones.js` — ✅ **ran successfully (2026-08-22), after
+   Valhalla was actually set up this session** (see "Valhalla setup" note
+   below). All 14 isochrones (7 stations × 10/15 min) generated with no
+   errors and no `MultiPolygon` cases hit. Sanity-checked via
+   `ST_Area`/`ST_NPoints`: areas range 0.4–2.7 km², every station's
+   15-min polygon is larger than its 10-min one, vertex counts (17–42)
+   look like real street-following shapes, not degenerate geometry.
+   Handles the case where Valhalla returns a `MultiPolygon` instead of
+   `Polygon` (our schema column is Polygon-only) by keeping the largest
+   ring and logging the raw geometry, though this didn't come up in
+   practice. Generates 10 and 15 minute isochrones only, per brief
+   (**still open:** Phase 4's planned API validates `minutes` against
+   `[5,10,15]` but no script generates a 5-minute isochrone — flagged,
+   not fixed; needs a decision at the start of Phase 4).
+
+   **Valhalla setup, done this session:** Docker Desktop was off and no
+   OSM extract existed at the start of this session — both are done now.
+   Downloaded extract is `java-260821.osm.pbf` (~896MB, whole Java
+   island — no Jakarta-only sub-extract was available on Geofabrik),
+   placed at `backend/valhalla/custom_files/`. `docker-compose.yml`
+   originally pointed at a placeholder filename (`jakarta.osm.pbf`) that
+   didn't match — updated `tile_urls` to the real filename. First-boot
+   tile build took **~1 hour** (parsing 2.97M ways / 28.6M nodes / 6M
+   graph edges, then building 283 tiles, then a graph-enhancement pass)
+   — this is a one-time cost; `docker compose up` on subsequent restarts
+   reuses the built tiles from the bind-mounted folder and starts in
+   seconds. Confirmed healthy via `GET /status` — `"isochrone"` is listed
+   in `available_actions`.
+3. `fetch-mapid-missions.js` — ✅ ran (see top of this Phase 3 section).
+   Fetches against each station's 15-minute isochrone, paginates via
+   `hasMore`, stores missions verbatim (`raw_properties` untouched).
+4. `resolve-pois.js` — ✅ ran. Clusters by exact `nama_tempat` +
+   `ST_DWithin` 30m (cast to `::geography` for meter-based distance —
+   plain geometry `ST_DWithin` would compare in degrees, which would be
+   wrong). Idempotent: re-runs re-match existing Poi by name+distance
+   instead of duplicating. `propertigo` missions have no `nama_tempat`
+   field at all and would always log as "couldn't cluster" — never
+   triggered since no `propertigo` data existed in this region.
+5. `classify-categories.js` — ✅ ran. See "AI provider decision" below.
+6. `fetch-osm-fallback.js` — ✅ ran, after fixing the rate-limit +
+   idempotency issues found during the actual run (see above). Threshold
    for triggering fallback: fewer than 5 POIs in a station's 15-min
-   isochrone (reasoning in the file's header comment). **Known
-   limitation, not fixed:** this script isn't idempotent — re-running it
-   against a station that still has stale, low OSM coverage would insert
-   duplicate OSM POIs. Fine for a single run per station; don't re-run
-   repeatedly without clearing prior OSM-sourced rows first.
-7. `fetch-mapid-activities.js` — written. **Pagination behavior was
-   investigated live** — see "Activities pagination finding" below.
+   isochrone (reasoning in the file's header comment). The idempotency
+   gap flagged earlier this session is now fixed, not just noted — see
+   the dedup fix above.
+7. `fetch-mapid-activities.js` — ✅ ran. **Pagination behavior was
+   investigated live before writing this** — see "Activities pagination
+   finding" below. No station hit the suspected cap in the real run.
 
 **Schema change made mid-phase (confirmed with you first):**
 `Poi.category` and `Poi.price_tier` changed from `NOT NULL` to nullable.
@@ -231,19 +364,6 @@ does hit exactly 60 when this actually runs, that warning needs your
 attention — it means that station's data may be incomplete and a
 date-range-split re-query would be needed.**
 
-**What's needed before the rest of Phase 3 can actually run (all on your
-end, not code):**
-1. Start Docker Desktop
-2. Download a Jakarta `.osm.pbf` extract from Geofabrik (README "Valhalla
-   setup" has the link and exact file placement)
-3. `docker compose up` to bring up Valhalla (first boot builds routing
-   tiles, takes a few minutes)
-4. Add a real `ANTHROPIC_API_KEY` to `.env` (only needed before running
-   `classify-categories.js`, not the earlier scripts)
-5. Then run the scripts in this order: `generate-isochrones.js` →
-   `fetch-mapid-missions.js` → `resolve-pois.js` → `classify-categories.js`
-   → `fetch-osm-fallback.js` → `fetch-mapid-activities.js`
-
 **What Phase 4 needs before it can start:** the isochrone `minutes`
 inconsistency noted above (item 2) needs a decision — does the
 `GET /api/stations/:id/isochrone?minutes=` route only ever accept
@@ -251,8 +371,84 @@ inconsistency noted above (item 2) needs a decision — does the
 stay and a 5-minute isochrone gets added to `generate-isochrones.js`? Will
 ask at the start of Phase 4 rather than deciding silently.
 
-## Phase 4 — API routes
-Not started.
+## Phase 4 — API routes ✅ done (2026-08-22)
+
+**Two real gaps found in the brief before writing any code — asked
+first rather than guessing:**
+
+1. **`minutes` validation** — confirmed the [10,15]-only choice flagged
+   at the end of Phase 3. Routes now validate `minutes` against exactly
+   `[10, 15]`, 400 for anything else (including `5`).
+2. **Context endpoint shape** — the brief said "the exact shape from the
+   'context endpoint' JSON example in this brief," but no such example
+   was actually present in what was given. Designed the shape fresh
+   (documented in a comment at the top of the route in `routes/gis.js`)
+   using the three field names the brief *did* specify
+   (`poi_count_by_category`, `price_distribution`, plus `poi_count` and
+   station info) — this is NOT matching a pre-existing spec, flag if you
+   want it different.
+3. **`busy_hours_summary`** — no `busy_hours` column exists anywhere in
+   the schema and no mock data was ever seeded for it in Phase 3 (the
+   brief's "must be clearly-labeled MOCK data" intent was never actually
+   built). Decision: **omitted from the context response entirely**
+   rather than fabricate numbers with nothing behind them. Add it back
+   once there's a real plan for mock busy-hour data — that'd need a
+   schema change (new column) and a seeding script, out of scope for
+   today.
+
+**Files created:**
+- `middleware/asyncHandler.js` — wraps async route handlers so a
+  rejected promise reaches the centralized error handler via `next(err)`
+  instead of hanging the request (Express 4 doesn't catch async
+  rejections on its own).
+- `lib/stations.js` — shared raw-SQL helpers (`getStationOrNull`,
+  `getIsochronePolygon`, `getPoisInIsochrone`, `serializePoi`) used by
+  multiple routes — factored out specifically because `/pois` and
+  `/context` both need "POIs inside this station's isochrone" and
+  duplicating that `ST_Contains` query risked them drifting apart.
+- `routes/gis.js` — all 7 routes from the brief: `GET /api/health`
+  (checks DB connectivity via `SELECT 1`, not just that Express is up),
+  `GET /api/regions`, `GET /api/regions/:region/stations`,
+  `GET /api/stations/:id` (+ exits — always `[]` right now, no script
+  ever populates `StationExit`, which is expected, not a bug),
+  `GET /api/stations/:id/isochrone`, `GET /api/stations/:id/pois`
+  (`ST_Contains` in SQL, never fetch-all-then-filter), and
+  `GET /api/stations/:id/context` (aggregation done in plain JS per
+  brief, not a SQL `GROUP BY` — dataset per station is far too small for
+  that to matter).
+- `server.js` — mounted `routes/gis.js` at `/api`, updated the error
+  handler's comment to reflect it's live now (still generic 500,
+  never leaks raw Prisma/Postgres details — this was already correct
+  from Phase 1, just re-confirmed against real error paths this phase).
+
+**Verified working — actually booted the server and hit every route
+with curl against real data, not just code review:**
+- `/api/health` → confirms DB connected
+- `/api/regions` → `["jakarta_timur"]`
+- `/api/regions/jakarta_timur/stations` → 7 stations; nonexistent region
+  → `[]` (200, not 404 — a filtered list endpoint, correctly distinct
+  from the single-resource 404 behavior below)
+- `/api/stations/jatinegara` → correct station + `exits: []`
+- `/api/stations/nonexistent` → clean 404 JSON, no raw Prisma error
+- `/api/stations/:id/isochrone` → correct default (`10`), correct
+  polygon GeoJSON, `minutes=5` → 400, `minutes=abc` → 400
+- `/api/stations/:id/pois` → 14 POIs for Jatinegara at 15min, correct
+  shape, `location` parsed to real GeoJSON not a string
+- `/api/stations/:id/context` → verified `poi_count_by_category` values
+  sum to `poi_count` exactly (Jatinegara: 4+3+2+3+2+0+0=14 ✓);
+  `price_distribution` correctly shows 100% `unclassified` (consistent
+  with the Phase 3 decision that nothing sets `price_tier` yet); tested
+  against both a well-covered station (Jatinegara, 14 POIs) and a sparse
+  one (Cakung, 1 POI) to confirm zero-count categories render as `0`,
+  not missing keys
+- 404s confirmed propagating correctly through `/pois` and `/context`
+  too, not just `/stations/:id` and `/isochrone`
+- Unmatched route (`/api/nonexistent-route`) → generic `{"error": "Not
+  found"}` fallback, confirmed still working
+
+**What Phase 5 needs before it can start:** nothing blocking. Public
+routes are live and tested; Phase 5 adds auth (JWT middleware,
+moderator login) and the reports/admin routes on top.
 
 ## Phase 4B — MAPID basemap integration + Playwright verification
 Added to plan 2026-08-21 (not started). Not part of the original brief —
