@@ -89,8 +89,13 @@ model MapidActivity {
 model Poi {
   id                Int             @id @default(autoincrement())
   name              String
-  category          PoiCategory
-  price_tier        PriceTier
+  // Nullable, unlike the original brief's schema: resolve-pois.js creates
+  // Poi rows before classify-categories.js has run, so there's no
+  // category yet at creation time; price_tier has no populating script
+  // at all yet. NULL means "not yet classified" — Phase 4 routes need to
+  // handle that explicitly, not assume every Poi has both set.
+  category          PoiCategory?
+  price_tier        PriceTier?
   location          Unsupported("geometry(Point, 4326)")
   source            PoiSource       @default(mock)
   verified_field    Boolean         @default(false)

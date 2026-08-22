@@ -124,8 +124,132 @@ live in the DB. Next session should run `scripts/seed-stations.js` first
 (doesn't exist yet — first thing to write in Phase 3) using the
 Tailscale `DATABASE_URL` documented above.
 
-## Phase 3 — Ingestion scripts
-Not started.
+## Phase 3 — Ingestion scripts ⚠ partially done (2026-08-22)
+
+All 7 scripts from the brief are written. **Only the first
+(`seed-stations.js`) has actually run successfully end-to-end** — every
+script after it in the pipeline depends on Valhalla-generated isochrones,
+and Valhalla isn't running on this machine yet (Docker Desktop isn't
+started, and no Jakarta `.osm.pbf` extract has been downloaded — see
+README "Valhalla setup"). This is not a code problem, it's an
+environment setup step still pending on your end.
+
+**Files created** (all under `backend/scripts/`):
+1. `seed-stations.js` — ✅ **ran successfully.** All 7 stations inserted,
+   coordinates verified round-trip exactly via `ST_AsGeoJSON` against the
+   original `stations.geojson`. Idempotent (`ON CONFLICT DO UPDATE`).
+2. `generate-isochrones.js` — written, syntax-checked, **not run** (needs
+   Valhalla). Handles the case where Valhalla returns a `MultiPolygon`
+   instead of `Polygon` (our schema column is Polygon-only) by keeping
+   the largest ring and logging the raw geometry — see code comment for
+   why. Generates 10 and 15 minute isochrones only, per brief (**note:**
+   Phase 4's planned API validates `minutes` against `[5,10,15]` but no
+   script ever generates a 5-minute isochrone — flagging this brief
+   inconsistency now, not fixing it silently; needs a decision when we
+   get to Phase 4 routes).
+3. `fetch-mapid-missions.js` — written, syntax-checked, **not run
+   end-to-end** (needs isochrones to exist first). **The MAPID API call
+   itself was smoke-tested directly and confirmed working** — real data
+   came back matching the documented `menugo` response shape exactly
+   (see raw response in this session's transcript). Fetches against each
+   station's 15-minute isochrone, paginates via `hasMore`, stores
+   missions verbatim (`raw_properties` untouched).
+4. `resolve-pois.js` — written, syntax-checked, not run (needs mission
+   data). Clusters by exact `nama_tempat` + `ST_DWithin` 30m (cast to
+   `::geography` for meter-based distance — plain geometry `ST_DWithin`
+   would compare in degrees, which would be wrong). Idempotent: re-runs
+   re-match existing Poi by name+distance instead of duplicating.
+   `propertigo` missions have no `nama_tempat` field at all and will
+   always log as "couldn't cluster" — expected, not a bug.
+5. `classify-categories.js` — written, syntax-checked, not run (no
+   `ANTHROPIC_API_KEY` in `.env` yet, and needs resolved Poi rows first).
+   See "AI provider decision" below.
+6. `fetch-osm-fallback.js` — written. **The Overpass query itself was
+   smoke-tested live and works** — see "Overpass gotcha" below. Threshold
+   for triggering fallback: fewer than 5 POIs in a station's 15-min
+   isochrone (reasoning in the file's header comment). **Known
+   limitation, not fixed:** this script isn't idempotent — re-running it
+   against a station that still has stale, low OSM coverage would insert
+   duplicate OSM POIs. Fine for a single run per station; don't re-run
+   repeatedly without clearing prior OSM-sourced rows first.
+7. `fetch-mapid-activities.js` — written. **Pagination behavior was
+   investigated live** — see "Activities pagination finding" below.
+
+**Schema change made mid-phase (confirmed with you first):**
+`Poi.category` and `Poi.price_tier` changed from `NOT NULL` to nullable.
+Neither could actually be populated at the point `resolve-pois.js` needs
+to create a `Poi` row — `category` is only known after
+`classify-categories.js` runs (a separate, later script), and no script
+in the whole brief ever sets `price_tier` at all. Applied as a new
+migration: `prisma/migrations/20260822010000_poi_category_price_tier_nullable/`
+(hand-written + `migrate deploy`, same shadow-DB-has-no-PostGIS reason as
+the GIST index migration). **NULL now means "not yet classified,"** not
+"deliberately empty" — Phase 4 routes need to handle that explicitly
+when we get there.
+
+**AI provider decision:** asked you which provider `classify-categories.js`
+should call — you chose **Anthropic Claude API**. Added `@anthropic-ai/sdk`
+to `package.json` and `ANTHROPIC_API_KEY` to `.env.example` (not yet in
+your real `.env` — you'll need to add a real key before this script can
+run). Uses Claude's tool-use forcing (`tool_choice`) with an enum-constrained
+schema so the model literally cannot return an invalid category — no
+post-hoc string validation needed. Also returns a `confidence` field;
+`low` confidence classifications are logged for manual review, per brief,
+never silently accepted. Model is `claude-haiku-4-5` — asked separately
+about budget (you have $5 to spend); Haiku is 3x cheaper than Sonnet 5 on
+both input/output and is plenty capable for a short, fully-structured
+6-value enum classification, so it's the better fit here rather than
+paying for reasoning depth this task doesn't use. Set as a constant at
+the top of the file if quality ever needs a bump.
+
+**Overpass gotcha found and fixed:** Overpass's server rejects requests
+with no/generic `User-Agent` header — returns a bare Apache `406 Not
+Acceptable`, not an Overpass-level error, which makes it easy to
+misdiagnose as a query syntax problem. It isn't — confirmed by testing
+the identical query with and without a real `User-Agent` string. Fixed
+by always sending one; documented in the script's code comment so this
+doesn't get "fixed" a second time by someone rewriting the query.
+
+**Activities pagination finding — the one genuinely unresolved risk in
+this phase:** brief asked me to test whether `data.activities.length`
+matches `meta.total` for a broad query, and treat matching as
+"unpaginated." I tested three progressively larger polygons (small box
+around our 7 stations, all of Jakarta, all of Java) and **all three
+returned exactly 60**, with `meta.total` also reporting 60 every time. A
+tiny ~200m polygon correctly returned `0/0`, confirming the endpoint does
+filter spatially rather than ignoring the polygon — but getting the same
+exact count regardless of polygon size strongly suggests `meta.total` is
+just `activities.length` computed *after* a silent 60-item cap, not an
+independent database count. **Could not fully confirm this** without a
+dataset known to exceed 60 in a small area, which I don't have. Asked
+you how to proceed — you chose: query per-station instead of one big
+region (a single station's isochrone is far smaller than "all of Java,"
+so far less likely to ever hit 60 real activities), and log a loud
+warning if any station's result lands on exactly 60, flagging that
+station as possibly-truncated. Implemented that way. **If any station
+does hit exactly 60 when this actually runs, that warning needs your
+attention — it means that station's data may be incomplete and a
+date-range-split re-query would be needed.**
+
+**What's needed before the rest of Phase 3 can actually run (all on your
+end, not code):**
+1. Start Docker Desktop
+2. Download a Jakarta `.osm.pbf` extract from Geofabrik (README "Valhalla
+   setup" has the link and exact file placement)
+3. `docker compose up` to bring up Valhalla (first boot builds routing
+   tiles, takes a few minutes)
+4. Add a real `ANTHROPIC_API_KEY` to `.env` (only needed before running
+   `classify-categories.js`, not the earlier scripts)
+5. Then run the scripts in this order: `generate-isochrones.js` →
+   `fetch-mapid-missions.js` → `resolve-pois.js` → `classify-categories.js`
+   → `fetch-osm-fallback.js` → `fetch-mapid-activities.js`
+
+**What Phase 4 needs before it can start:** the isochrone `minutes`
+inconsistency noted above (item 2) needs a decision — does the
+`GET /api/stations/:id/isochrone?minutes=` route only ever accept
+`[10,15]` (matching what's actually generated), or does `[5,10,15]`
+stay and a 5-minute isochrone gets added to `generate-isochrones.js`? Will
+ask at the start of Phase 4 rather than deciding silently.
 
 ## Phase 4 — API routes
 Not started.

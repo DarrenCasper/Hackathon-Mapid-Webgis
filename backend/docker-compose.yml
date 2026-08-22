@@ -21,7 +21,11 @@ services:
       # Name of the .osm.pbf file you placed in ./valhalla/custom_files
       # (see README). Valhalla builds routing tiles from it automatically
       # on first startup — that first boot takes a few minutes.
-      - tile_urls=/custom_files/jakarta.osm.pbf
+      # Currently the whole Java island extract (java-260821.osm.pbf,
+      # ~896MB) rather than a Jakarta-only extract — Geofabrik didn't have
+      # a smaller sub-extract available. Bigger file, longer first-boot
+      # tile build, but guaranteed to cover Jakarta Timur.
+      - tile_urls=/custom_files/java-260821.osm.pbf
       - use_tiles_ignore_pbf=True
       - build_elevation=False
       - build_admins=True
