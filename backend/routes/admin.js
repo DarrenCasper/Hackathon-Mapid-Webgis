@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 const prisma = require("../lib/db");
 const asyncHandler = require("../middleware/asyncHandler");
 const requireAuth = require("../middleware/auth");
+const { generateAndSaveInsight } = require("../lib/generateStationInsight");
 
 const router = express.Router();
 
@@ -102,6 +103,35 @@ router.post(
       }
       throw err;
     }
+  })
+);
+
+// POST /api/admin/stations/:id/regenerate-insight
+// Moderator-only, live-calls Claude for exactly this one station and
+// updates the cached Station.ai_insight — the deliberate escape hatch
+// for "this station's data changed, refresh its insight now" without
+// needing shell/SSH access to run scripts/generate-station-insights.js.
+// Gated behind requireAuth specifically because it's the one place in
+// this app where a request triggers a paid API call — never exposed
+// publicly (see the public GET /api/stations/:id/insights route in
+// routes/gis.js, which only ever reads the cached value).
+router.post(
+  "/stations/:id/regenerate-insight",
+  asyncHandler(async (req, res) => {
+    let insight;
+    try {
+      insight = await generateAndSaveInsight(req.params.id);
+    } catch (err) {
+      if (err.message.startsWith("Station not found")) {
+        return res.status(404).json({ error: err.message });
+      }
+      if (err.message.startsWith("No 15-minute isochrone found")) {
+        return res.status(409).json({ error: err.message });
+      }
+      throw err;
+    }
+
+    res.json({ station_id: req.params.id, insight, generated_at: new Date() });
   })
 );
 

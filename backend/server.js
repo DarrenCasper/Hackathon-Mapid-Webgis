@@ -43,3 +43,9 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`TransitFit AI API listening on port ${PORT}`);
 });
+
+// Runs inside this same process — see lib/scheduleInsightRefresh.js for
+// why (works identically on any host, no separate cron/Coolify feature
+// needed) and why it's change-aware rather than a blind daily
+// regeneration of all 90 stations (cost).
+require("./lib/scheduleInsightRefresh").scheduleInsightRefresh();

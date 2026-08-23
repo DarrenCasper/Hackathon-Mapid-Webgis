@@ -10,6 +10,7 @@ const {
   getIsochronePolygon,
   getPoisInIsochrone,
   serializePoi,
+  aggregatePoiStats,
 } = require("../lib/stations");
 
 const router = express.Router();
@@ -209,16 +210,6 @@ router.get(
 //   }
 // busy_hours_summary is deliberately omitted — there's no busy-hour data
 // anywhere in the schema or seeded data yet (see build.md Phase 4 notes).
-const POI_CATEGORIES = [
-  "kopi_minuman",
-  "quick_meal",
-  "warung_makan",
-  "bakery",
-  "casual_dining",
-  "hiburan",
-];
-const PRICE_TIERS = ["ekonomis", "menengah", "premium"];
-
 router.get(
   "/stations/:id/context",
   asyncHandler(async (req, res) => {
@@ -239,24 +230,11 @@ router.get(
 
     const pois = await getPoisInIsochrone(req.params.id, minutes);
 
-    // Aggregated here in plain JS, not a giant SQL GROUP BY, per brief —
-    // the dataset per station (tens of POIs) is far too small for this
-    // to matter performance-wise, and it reads far more clearly than the
+    // Aggregated in plain JS, not a giant SQL GROUP BY, per brief — the
+    // dataset per station (tens of POIs) is far too small for this to
+    // matter performance-wise, and it reads far more clearly than the
     // equivalent SQL would.
-    const poi_count_by_category = Object.fromEntries(
-      [...POI_CATEGORIES, "uncategorized"].map((c) => [c, 0])
-    );
-    const price_distribution = Object.fromEntries(
-      [...PRICE_TIERS, "unclassified"].map((t) => [t, 0])
-    );
-
-    for (const poi of pois) {
-      const categoryKey = poi.category ?? "uncategorized";
-      poi_count_by_category[categoryKey]++;
-
-      const priceKey = poi.price_tier ?? "unclassified";
-      price_distribution[priceKey]++;
-    }
+    const { poi_count_by_category, price_distribution } = aggregatePoiStats(pois);
 
     res.json({
       station: { id: station.id, name: station.name, region: station.region },
@@ -264,6 +242,33 @@ router.get(
       poi_count: pois.length,
       poi_count_by_category,
       price_distribution,
+    });
+  })
+);
+
+// GET /api/stations/:id/insights — Phase 9's AI-generated "what to
+// expect" text. Deliberately just reads the cached column — never calls
+// Claude here. A public route that generated live on every hit would
+// have no natural rate limit; see build.md Phase 9 for the full
+// reasoning. If ai_insight is still null (not generated yet), that's a
+// normal state, not an error — 200 with null fields, not a 404 (404 is
+// reserved for "this station doesn't exist" below).
+router.get(
+  "/stations/:id/insights",
+  asyncHandler(async (req, res) => {
+    const rows = await prisma.$queryRaw`
+      SELECT id, ai_insight, ai_insight_generated_at
+      FROM "Station"
+      WHERE id = ${req.params.id}
+    `;
+    if (rows.length === 0) {
+      return res.status(404).json({ error: `Station not found: ${req.params.id}` });
+    }
+    const row = rows[0];
+    res.json({
+      station_id: row.id,
+      insight: row.ai_insight,
+      generated_at: row.ai_insight_generated_at,
     });
   })
 );

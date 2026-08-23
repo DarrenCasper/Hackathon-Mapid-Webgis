@@ -28,6 +28,16 @@ model Station {
   prev_of          Station[] @relation("StationPrev")
   next_of          Station[] @relation("StationNext")
 
+  // Phase 9 — AI-generated "what to expect" recommendation text.
+  // Deliberately pre-generated and cached, NOT produced live per
+  // request: with 90 stations, generating once (or on an explicit
+  // admin-triggered regenerate) is a small, fixed, predictable cost.
+  // A public route that called Claude on every page view would have no
+  // natural rate limit and could run up API spend from ordinary
+  // traffic, let alone abuse.
+  ai_insight             String?
+  ai_insight_generated_at DateTime?
+
   exits      StationExit[]
   isochrones Isochrone[]
   reports    Report[]
@@ -128,6 +138,21 @@ model Poi {
   jam_tutup         String?
   kondisi_tempat    String?
   raw_category_text String?
+
+  // Phase 9 change-detection: lets the daily insight-refresh job ask
+  // "has this station's data actually changed since its insight was
+  // last generated" instead of blindly regenerating all 90 stations
+  // every day. NOT using Prisma's @updatedAt here — that annotation
+  // only fires on writes made through Prisma Client, and nearly every
+  // write to this table across this project goes through $executeRaw
+  // (resolve-pois.js, fetch-osm-fallback.js, fetch-jakarta-opendata.js,
+  // classify-categories.js) because of the geometry column. A DB-level
+  // trigger (see migration 20260823120000_poi_timestamps) sets
+  // updated_at on every UPDATE regardless of which script performs it,
+  // so nothing needs to remember to set this by hand.
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+
   missions          MapidMission[]
   activities        MapidActivity[]
   reports           Report[]

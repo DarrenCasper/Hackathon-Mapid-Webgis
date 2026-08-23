@@ -76,10 +76,69 @@ function serializePoi(row) {
   };
 }
 
+const POI_CATEGORIES = [
+  "kopi_minuman",
+  "quick_meal",
+  "warung_makan",
+  "bakery",
+  "casual_dining",
+  "hiburan",
+];
+const PRICE_TIERS = ["ekonomis", "menengah", "premium"];
+
+// Extracted from routes/gis.js's /context route (originally written
+// inline there) when lib/generateStationInsight.js (Phase 9) needed the
+// exact same aggregation — two call sites computing "POI count by
+// category" independently would risk them drifting apart, same reason
+// the geometry query helpers above are shared functions rather than
+// copy-pasted SQL.
+function aggregatePoiStats(pois) {
+  const poi_count_by_category = Object.fromEntries(
+    [...POI_CATEGORIES, "uncategorized"].map((c) => [c, 0])
+  );
+  const price_distribution = Object.fromEntries(
+    [...PRICE_TIERS, "unclassified"].map((t) => [t, 0])
+  );
+
+  for (const poi of pois) {
+    poi_count_by_category[poi.category ?? "uncategorized"]++;
+    price_distribution[poi.price_tier ?? "unclassified"]++;
+  }
+
+  return { poi_count_by_category, price_distribution };
+}
+
+// Phase 9 change-detection: a station needs its AI insight regenerated
+// if it's never been generated, OR if any POI inside its 15-min
+// isochrone has been created/updated more recently than the insight
+// was. Poi.updated_at is kept current by a DB trigger (see migration
+// 20260823120000_poi_timestamps) regardless of which script wrote it,
+// so this stays correct without every ingestion script needing to know
+// about insight generation.
+async function getStationsNeedingInsightRefresh() {
+  const rows = await prisma.$queryRaw`
+    SELECT s.id
+    FROM "Station" s
+    WHERE s.ai_insight IS NULL
+       OR s.ai_insight_generated_at < (
+         SELECT COALESCE(MAX(p.updated_at), '1970-01-01'::timestamp)
+         FROM "Poi" p
+         JOIN "Isochrone" i ON i.station_id = s.id AND i.minutes = 15
+         WHERE ST_Contains(i.polygon, p.location)
+       )
+    ORDER BY s.id
+  `;
+  return rows.map((r) => r.id);
+}
+
 module.exports = {
   VALID_ISOCHRONE_MINUTES,
+  POI_CATEGORIES,
+  PRICE_TIERS,
   getStationOrNull,
   getIsochronePolygon,
   getPoisInIsochrone,
   serializePoi,
+  aggregatePoiStats,
+  getStationsNeedingInsightRefresh,
 };
