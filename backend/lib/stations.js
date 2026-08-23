@@ -13,7 +13,7 @@ const VALID_ISOCHRONE_MINUTES = [10, 15];
 
 async function getStationOrNull(stationId) {
   const rows = await prisma.$queryRaw`
-    SELECT id, name, region, ST_AsGeoJSON(location) AS location_geojson
+    SELECT id, name, region, prev_station_id, next_station_id, ST_AsGeoJSON(location) AS location_geojson
     FROM "Station"
     WHERE id = ${stationId}
   `;
@@ -23,6 +23,8 @@ async function getStationOrNull(stationId) {
     id: row.id,
     name: row.name,
     region: row.region,
+    prev_station_id: row.prev_station_id,
+    next_station_id: row.next_station_id,
     location: JSON.parse(row.location_geojson),
   };
 }

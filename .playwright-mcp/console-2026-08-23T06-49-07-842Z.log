@@ -1,0 +1,36 @@
+[      64ms] [LOG] Fetching stations… @ http://localhost:8082/map-check.local.html:74
+[     102ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:8082/favicon.ico:0
+[     172ms] [LOG] Got 7 stations. @ http://localhost:8082/map-check.local.html:74
+[     691ms] [WARNING] Image "wetland_bg_11" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event. @ https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js:41
+[     691ms] [WARNING] Image "pedestrian_polygon" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event. @ https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js:41
+[    2135ms] [LOG]   buaran: isochrone rendered @ http://localhost:8082/map-check.local.html:74
+[    2233ms] [LOG]   buaran: 8 POIs plotted @ http://localhost:8082/map-check.local.html:74
+[    2255ms] [LOG]   cakung: isochrone rendered @ http://localhost:8082/map-check.local.html:74
+[    2320ms] [LOG]   cakung: 0 POIs plotted @ http://localhost:8082/map-check.local.html:74
+[    2341ms] [LOG]   jatinegara: isochrone rendered @ http://localhost:8082/map-check.local.html:74
+[    2383ms] [LOG]   jatinegara: 11 POIs plotted @ http://localhost:8082/map-check.local.html:74
+[    2404ms] [LOG]   klender: isochrone rendered @ http://localhost:8082/map-check.local.html:74
+[    2436ms] [LOG]   klender: 10 POIs plotted @ http://localhost:8082/map-check.local.html:74
+[    2457ms] [LOG]   klender_baru: isochrone rendered @ http://localhost:8082/map-check.local.html:74
+[    2490ms] [LOG]   klender_baru: 6 POIs plotted @ http://localhost:8082/map-check.local.html:74
+[    2518ms] [LOG]   matraman: isochrone rendered @ http://localhost:8082/map-check.local.html:74
+[    2550ms] [LOG]   matraman: 16 POIs plotted @ http://localhost:8082/map-check.local.html:74
+[    2570ms] [LOG]   pondok_jati: isochrone rendered @ http://localhost:8082/map-check.local.html:74
+[    2604ms] [LOG]   pondok_jati: 20 POIs plotted @ http://localhost:8082/map-check.local.html:74
+[    2605ms] [LOG] 
+All data loaded. window.__verification is ready. @ http://localhost:8082/map-check.local.html:74
+[    5436ms] [WARNING] Expected value to be of type number, but found null instead. @ blob:http://localhost:8082/6313ecc3-4823-4ce4-9f63-688e8140861f:0
+[    5869ms] [WARNING] Image "clinic" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event. @ https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js:41
+[    8363ms] [WARNING] Image "arrow" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event. @ https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js:41
+[    8363ms] [WARNING] Image "school" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event. @ https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js:41
+[    8363ms] [WARNING] Image "kindergarten" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event. @ https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js:41
+[    8363ms] [WARNING] Image "university" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event. @ https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js:41
+[    8363ms] [WARNING] Image "college" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event. @ https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js:41
+[    8363ms] [WARNING] Image "garden" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event. @ https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js:41
+[    8363ms] [WARNING] Image "swimming_pool" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event. @ https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js:41
+[    8364ms] [WARNING] Image "sports_centre" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event. @ https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js:41
+[    8364ms] [WARNING] Image "stadium" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event. @ https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js:41
+[   23772ms] [WARNING] Image "dormitory" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event. @ https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js:41
+[   27101ms] [WARNING] Image "attraction" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event. @ https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js:41
+[   29353ms] [WARNING] Image "food_court" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event. @ https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js:41
+[   29353ms] [WARNING] Image "hindu" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event. @ https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js:41

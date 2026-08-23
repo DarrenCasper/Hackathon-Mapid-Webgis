@@ -1,0 +1,179 @@
+- generic [active] [ref=f7e1]:
+  - generic [ref=f7e3]:
+    - navigation [ref=f7e5]:
+      - generic [ref=f7e6]:
+        - link [ref=f7e7] [cursor=pointer]:
+          - /url: /home
+        - button "Toggle navigation" [ref=f7e9] [cursor=pointer]
+        - generic: Indonesia
+    - generic [ref=f7e12]:
+      - list [ref=f7e17]:
+        - listitem [ref=f7e18] [cursor=pointer]:
+          - link "Home" [ref=f7e19]:
+            - /url: /home
+          - text: /
+        - listitem [ref=f7e20] [cursor=pointer]:
+          - link "Dataset" [ref=f7e21]:
+            - /url: /search?q=&halaman=all&kategori=dataset&topik=all&organisasi=all&status=all&sort=desc&page_no=1&show_filter=true&lang=id
+      - generic [ref=f7e23]:
+        - generic [ref=f7e26]:
+          - generic [ref=f7e29]:
+            - textbox "Data apa yang kamu cari?" [ref=f7e30]: umkm
+            - generic [ref=f7e31] [cursor=pointer]: 
+            - img "Cari" [ref=f7e34] [cursor=pointer]
+          - generic [ref=f7e35]: 0 Dataset ditemukan
+          - combobox [ref=f7e37]:
+            - option "Tanggal Terbaru" [selected]
+            - option "A-Z"
+            - option "Terpopuler"
+        - list [ref=f7e42]:
+          - listitem [ref=f7e43]:
+            - heading [level=4] [ref=f7e44]:
+              - img "Icon Filter" [ref=f7e45]
+              - text: Halaman
+            - generic [ref=f7e46]:
+              - checkbox [ref=f7e47] [cursor=pointer]
+              - generic [ref=f7e48]: All
+            - generic [ref=f7e49]:
+              - checkbox [checked] [ref=f7e50] [cursor=pointer]
+              - generic [ref=f7e51]: Open Data
+            - generic [ref=f7e52]:
+              - checkbox [ref=f7e53] [cursor=pointer]
+              - generic [ref=f7e54]: Statistik Sektoral
+            - generic [ref=f7e55]:
+              - checkbox [ref=f7e56] [cursor=pointer]
+              - generic [ref=f7e57]: Visualisasi
+            - generic [ref=f7e58]:
+              - checkbox [ref=f7e59] [cursor=pointer]
+              - generic [ref=f7e60]: Jakarta Satu
+          - listitem [ref=f7e61]:
+            - heading [level=4] [ref=f7e62]:
+              - img "Icon Kategori" [ref=f7e63]
+              - text: Kategori
+            - generic [ref=f7e64]:
+              - checkbox [ref=f7e65] [cursor=pointer]
+              - generic [ref=f7e66]: All
+            - generic [ref=f7e67]:
+              - checkbox [checked] [ref=f7e68] [cursor=pointer]
+              - generic [ref=f7e69]: Dataset
+          - listitem [ref=f7e70]:
+            - heading [level=4] [ref=f7e71]:
+              - img "Icon Topik" [ref=f7e72]
+              - text: Topik
+            - text: Selengkapnya...
+          - listitem [ref=f7e73]:
+            - heading [level=4] [ref=f7e74]:
+              - img "Icon Organisasi" [ref=f7e75]
+              - text: Organisasi
+            - text: Selengkapnya...
+          - listitem [ref=f7e76]:
+            - heading "Status" [level=4] [ref=f7e77]
+            - generic [ref=f7e78]:
+              - checkbox [ref=f7e79] [cursor=pointer]
+              - generic [ref=f7e80]: Publik
+            - generic [ref=f7e81]:
+              - checkbox [ref=f7e82] [cursor=pointer]
+              - generic [ref=f7e83]: Terbatas
+          - listitem [ref=f7e84]:
+            - button "Hapus Filter" [ref=f7e85] [cursor=pointer]
+        - status [ref=f7e89]:
+          - paragraph [ref=f7e95]:
+            - text: Harap Tunggu, Sedang Mengambil Data
+            - generic [ref=f7e96]: ...
+        - paragraph [ref=f7e102]: Menampilkan - dari 0 hasil
+    - generic [ref=f7e107]:
+      - generic [ref=f7e108]:
+        - paragraph [ref=f7e109]: "Kontak Kami :"
+        - paragraph [ref=f7e110]: Bidang Data dan Statistik Jl. Medan Merdeka Selatan Jakarta Pusat
+        - paragraph [ref=f7e111]: "Help Desk : 0813 4000 3614"
+        - paragraph [ref=f7e112]: "Email : data.statistik@jakarta.go.id"
+      - generic [ref=f7e113]:
+        - link [ref=f7e114] [cursor=pointer]:
+          - /url: https://jakarta.go.id/
+        - link [ref=f7e116] [cursor=pointer]:
+          - /url: https://ppid.jakarta.go.id/
+        - link [ref=f7e118] [cursor=pointer]:
+          - /url: https://www.beritajakarta.id/
+        - link [ref=f7e120] [cursor=pointer]:
+          - /url: https://smartcity.jakarta.go.id/id/
+          - img "Logo Jakarta Smart City" [ref=f7e121]
+        - link [ref=f7e122] [cursor=pointer]:
+          - /url: https://jalahoaks.jakarta.go.id/
+          - img "Logo Jalahoaks Jakarta" [ref=f7e123]
+        - link [ref=f7e124] [cursor=pointer]:
+          - /url: https://data.go.id
+          - img "Logo Satu Data Indonesia" [ref=f7e125]
+      - generic [ref=f7e126]:
+        - button "Masuk" [ref=f7e127] [cursor=pointer]
+        - paragraph [ref=f7e128]:
+          - img "Icon traffic kunjungan harian" [ref=f7e129]
+          - text: "Kunjungan Minggu Ini: 0"
+          - img "Icon insight total kunjungan" [ref=f7e130]
+          - text: "Total Kunjungan: 0"
+      - paragraph [ref=f7e132]: Copyright © 2026 Dinas Komunikasi, Informatika dan Statistik Provinsi DKI Jakarta. All Right Reserved
+    - generic [ref=f7e134] [cursor=pointer]:
+      - link [ref=f7e135]:
+        - /url: /chatbot
+      - generic [ref=f7e137]: 
+    - button "Umpan Balik" [ref=f7e138] [cursor=pointer]
+  - generic:
+    - button "Menu Aksesibilitas" [ref=f7e140] [cursor=pointer]
+    - dialog [ref=f7e144]:
+      - banner [ref=f7e145]:
+        - generic [ref=f7e151]:
+          - heading "Menu Aksesibilitas" [level=2] [ref=f7e152]
+          - paragraph [ref=f7e153]: Sesuaikan tampilan agar lebih nyaman dibaca
+        - button "Tutup menu aksesibilitas" [ref=f7e154] [cursor=pointer]:
+          - generic [ref=f7e155]: 
+      - generic [ref=f7e156]:
+        - generic [ref=f7e157]:
+          - heading "Teks & Bacaan" [level=3] [ref=f7e158]
+          - generic [ref=f7e160]:
+            - button "Moda Suara Baca konten dengan suara" [ref=f7e161] [cursor=pointer]:
+              - generic [ref=f7e164]: Moda Suara
+              - generic [ref=f7e165]: Baca konten dengan suara
+            - 'button "Perbesar Teks Ukuran teks: level 0 dari 4" [ref=f7e166] [cursor=pointer]':
+              - generic [ref=f7e170]: Perbesar Teks
+              - 'generic "Ukuran teks: level 0 dari 4" [ref=f7e171]'
+            - button "Perkecil Teks" [ref=f7e176] [cursor=pointer]
+            - button "Pertegas Teks Font lebih mudah dibaca" [ref=f7e186] [cursor=pointer]:
+              - generic [ref=f7e190]: Pertegas Teks
+              - generic [ref=f7e191]: Font lebih mudah dibaca
+        - generic [ref=f7e192]:
+          - heading "Gaya Tulisan" [level=3] [ref=f7e193]
+          - generic [ref=f7e195]:
+            - button "Normal" [pressed] [ref=f7e196] [cursor=pointer]:
+              - generic [ref=f7e197]: 
+              - generic [ref=f7e199]: 
+            - button "Rata Kiri" [ref=f7e202] [cursor=pointer]:
+              - generic [ref=f7e203]: 
+            - button "Rata Tengah" [ref=f7e206] [cursor=pointer]:
+              - generic [ref=f7e207]: 
+            - button "Rata Kanan" [ref=f7e210] [cursor=pointer]:
+              - generic [ref=f7e211]: 
+            - button "Garis Miring" [ref=f7e214] [cursor=pointer]:
+              - generic [ref=f7e215]: 
+            - button "Garis Bawah" [ref=f7e218] [cursor=pointer]:
+              - generic [ref=f7e219]: 
+        - generic [ref=f7e222]:
+          - heading "Warna & Kontras" [level=3] [ref=f7e223]
+          - generic [ref=f7e225]:
+            - button "Skala Abu-abu" [ref=f7e226] [cursor=pointer]
+            - button "Kontras+" [ref=f7e232] [cursor=pointer]
+            - button "Klise" [ref=f7e238] [cursor=pointer]
+            - button "Penerangan" [ref=f7e243] [cursor=pointer]
+            - button "Mode Malam" [ref=f7e249] [cursor=pointer]
+        - generic [ref=f7e254]:
+          - heading "Navigasi" [level=3] [ref=f7e255]
+          - button "Garis Bawahi Tautan Tandai semua tautan dengan garis bawah" [ref=f7e258] [cursor=pointer]:
+            - generic [ref=f7e262]: Garis Bawahi Tautan
+            - generic [ref=f7e263]: Tandai semua tautan dengan garis bawah
+      - contentinfo [ref=f7e264]:
+        - paragraph [ref=f7e265]:
+          - generic [ref=f7e266]: Ctrl
+          - text: +
+          - generic [ref=f7e267]: U
+          - text: untuk buka/tutup
+        - button "Atur Ulang Semua" [ref=f7e268] [cursor=pointer]:
+          - generic [ref=f7e269]: 
+          - text: Atur Ulang Semua

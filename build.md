@@ -450,40 +450,419 @@ with curl against real data, not just code review:**
 routes are live and tested; Phase 5 adds auth (JWT middleware,
 moderator login) and the reports/admin routes on top.
 
-## Phase 4B — MAPID basemap integration + Playwright verification
-Added to plan 2026-08-21 (not started). Not part of the original brief —
-requested as a correctness check before building further UI-adjacent work.
+## Phase 4B — MAPID basemap integration + Playwright verification ✅ done (2026-08-23)
 
-**Purpose:** confirm the MAPID basemap itself (tiles/SDK, using
-`MAPID_API_KEY`) correctly renders our geodata — not a real frontend, no
-styling effort. Just: do the dots land in the right place.
+**Open question from Phase 3/4 resolved:** you provided a screenshot of
+MAPID's actual basemap docs — it's a MapLibre GL style, loaded via
+`https://v2.basemap.mapid.io/styles/street-v2.0/style.json?key=[API Key]`,
+same `MAPID_API_KEY` already in `.env` (no separate basemap credential).
 
-**Scope:**
-- A minimal standalone HTML test page (no framework) that loads the MAPID
-  basemap and plots, for all 7 stations:
-  - the station point itself
-  - its isochrone polygon (from `GET /api/stations/:id/isochrone`)
-  - the POIs inside that isochrone (from `GET /api/stations/:id/pois`)
-- Drive that page with the Playwright MCP: load it in a real browser,
-  read back rendered marker positions, and assert each station marker
-  matches its known `stations.geojson` coordinate (within a small
-  tolerance), the isochrone polygon actually renders, and POI dot count
-  on the page matches the API response count.
-- Explicitly out of scope: layout, styling, any production frontend
-  component — this is a correctness harness, not a deliverable UI.
+**Files created:**
+- `verify/map-check.template.html` — the actual correctness harness:
+  MapLibre GL (loaded via CDN, no build step — this is a throwaway test
+  page, not part of the app) with the MAPID street style, plotting all 7
+  stations, their 15-min isochrones, and the POIs inside them, all
+  fetched live from the local API. Committed safely — the MAPID key is a
+  `__MAPID_API_KEY__` placeholder, not a real value.
+- `scripts/generate-verify-page.js` — substitutes the real key (and the
+  local API base URL) from `.env` into the template, writing
+  `verify/map-check.local.html`. That output file is gitignored (added
+  `verify/map-check.local.html` to `.gitignore`) since it has the real
+  key inline in a URL — same pattern MAPID's own docs use, but still not
+  something to commit.
+- The page also populates `window.__verification` with every station's
+  API-returned coordinate, its actual rendered marker screen position,
+  and MapLibre's own projected screen position for that coordinate —
+  built specifically so Playwright could assert against it
+  programmatically, not just eyeball a screenshot.
 
-**Blocked on:** Phase 3 (need real station/isochrone/POI rows in the DB —
-this can run against a partial dataset, doesn't need every ingestion
-script done) and Phase 4 (needs the isochrone/pois GET routes live
-locally).
+**Testing infrastructure hit one real snag, fixed properly:** the
+Playwright MCP server sandboxes `file://` access, so the generated HTML
+couldn't be opened directly — needed an actual HTTP server. Spun up a
+minimal one-off static file server (plain Node `http`, no new
+dependency) on port 8080 to serve `verify/` locally for the test; not
+part of the app, cleaned up afterward.
 
-**Open question, not yet resolved:** the brief and the MAPID API
-reference block only cover the Missions/Activities competition
-endpoints — there's no confirmed spec yet for the MAPID *basemap*
-product itself (tile URL scheme, JS SDK vs. plain XYZ tiles compatible
-with Leaflet/MapLibre, whether `MAPID_API_KEY` is the right credential
-for tile requests or basemaps use a separate key). Will ask before
-writing the test page rather than guessing at an integration shape.
+**Verified — actually driven through a real browser via Playwright, not
+just code review:**
+- Loaded the real MAPID basemap successfully — screenshot shows an
+  actual street-level map of Jakarta Timur with real place labels
+  (Rawasari, Jatinegara, Otista, Malaka Jaya, etc.), confirming the style
+  URL + key combination genuinely works
+- All 7 station markers, all 7 isochrone polygons (visibly irregular,
+  street-following shapes — not circles, confirming real Valhalla data
+  is what's rendering), and every POI dot rendered
+- **Programmatic assertions, not just visual:** every one of the 7
+  stations' API-returned coordinates matched `stations.geojson` exactly
+  (0 mismatches); every marker's actual DOM screen position matched
+  MapLibre's own `map.project()` calculation for that same coordinate to
+  within ~0.5px (essentially floating-point noise) — this proves the
+  marker rendering pipeline itself introduces no coordinate drift, not
+  just that the API returns correct numbers
+- POI counts read back from the live page matched Phase 3's numbers
+  exactly: buaran 6, cakung 1, jatinegara 14, klender 11, klender_baru 4,
+  matraman 26, pondok_jati 23
+- All 7 isochrones confirmed rendered (no fetch/render failures)
+
+**Result: full confidence the data pipeline is coordinate-correct
+end-to-end** — from PostGIS storage, through the API's `ST_AsGeoJSON`
+serialization, to actual pixel placement on a real MAPID-rendered map.
+This was the original point of Phase 4B and it's now conclusively
+answered, not just assumed.
+
+## Follow-up: station coordinate correction (2026-08-23, same day)
+
+Using the Phase 4B verification page against the real MAPID basemap, you
+noticed the station dots didn't match their real-world locations. Root
+cause: the original `stations.geojson` seed coordinates (given at project
+start) were approximate, not surveyed. Fixed using OpenStreetMap's
+`railway=station` nodes — found all 7 stations tagged as official
+`KAI Commuter`/`PT Kereta Api Indonesia` stations (authoritative operator
+data, not community guesses), queried via Overpass. Checked
+data.jakarta.go.id conceptually as an alternative but didn't need it —
+OSM's data was already clean and complete for all 7.
+
+**Offsets found (haversine distance, old seed coord → OSM station node):**
+matraman 172m, pondok_jati 724m, jatinegara 259m, klender 37m, buaran
+171m, klender_baru 223m, cakung 122m. `pondok_jati`'s 724m error was
+larger than its entire 15-min walking isochrone radius — its whole POI
+list had effectively been associated with the wrong location.
+
+**`data/stations.geojson` updated** with the OSM-sourced coordinates.
+
+**Full pipeline re-run** (your explicit choice, "full re-run" over
+"just reseed"), in order: `seed-stations.js` → `generate-isochrones.js`
+→ [deleted 15 now-orphaned Poi rows, see below] → `fetch-mapid-missions.js`
+→ `resolve-pois.js` → `classify-categories.js` (0 cost — nothing new to
+classify) → `fetch-osm-fallback.js` → `fetch-mapid-activities.js`.
+Final: 55 Poi rows (down from 65 — 15 stale OSM rows removed, net new
+OSM coverage added back correctly), 83 MapidActivity rows. All 12
+original MAPID-mission-derived POIs were unaffected by the coordinate
+shift (real field survey data was already close to the true stations;
+only OSM-fallback data, fetched against the old wrong isochrone
+boundaries, needed correcting).
+
+**A real, previously-undetected bug found and fixed during this
+re-run:** `fetch-osm-fallback.js` trusted every element Overpass
+returned for a station's `poly` query as being inside that station's
+isochrone — but Overpass's `poly` filter is not guaranteed to exactly
+match PostGIS's `ST_Contains` geometry test near a polygon's boundary.
+Caught directly: "Pasar Bintara," one of the 15 rows just deleted for
+being outside the true isochrone, got **re-inserted** by the very next
+`fetch-osm-fallback.js` run against the corrected isochrone — Overpass
+included it, PostGIS's own `ST_Contains` said it wasn't actually inside.
+**Fixed properly**, not worked around: added an explicit `ST_Contains`
+re-verification against our own authoritative polygon before every OSM
+insert (`isInsideIsochrone()` in the script). Re-ran after the fix:
+correctly caught and skipped the same boundary-violating point instead
+of inserting it (`"1 outside true boundary"` in the log). Confirmed
+zero orphaned POIs remain via direct query afterward — not just trusted
+the fix worked.
+
+**Verified the correction against the real MAPID basemap** (not just
+the DB) — regenerated `verify/map-check.local.html`, drove it through
+Playwright again: all 7 stations' API coordinates now match the OSM
+values exactly, all 7 markers' rendered screen positions match
+MapLibre's own projection to sub-pixel accuracy, screenshot shows the
+isochrones now positioned consistently along the real KRL rail
+corridor.
+
+**Also added: a manual drag-to-correct fallback in the verify page**,
+for any future station that isn't in OSM or another authoritative
+source. Station markers are now draggable; a button exports the moved
+ones as GeoJSON features in `stations.geojson`'s exact format, ready to
+paste in directly. **Found and fixed a bug in this new code before it
+shipped:** the page's `log()` function did `statusEl.textContent = ...`
+against the *same* container the export button and output `<pre>` lived
+in — `.textContent` assignment deletes all child elements, not just
+text, so every log line was silently destroying the button/output
+elements. Fixed by giving the scrolling log its own child `<div id="log">`,
+separate from the button/output siblings. Verified via Playwright:
+button visibility, export button click producing correctly-shaped
+GeoJSON, and the log staying intact throughout — not just re-read the
+code and assumed it was right this time.
+
+**What Phase 5/6 need to know:** none of this affects those phases'
+own logic — this was purely a data-correction pass. Anyone re-running
+Phase 3 scripts from a fresh clone should know `stations.geojson` no
+longer matches the original brief's literal seed values verbatim; the
+corrected version is what's actually in the DB and is what's committed
+going forward.
+
+## Phase 7 — Full Jabodetabek station expansion
+Added to plan 2026-08-23 (research done, not yet executed). Not part of
+the original brief — requested after you shared the official KAI
+Commuter "Peta Rute Jabodetabek & Merak" route map and asked to expand
+coverage to everything shown on it, plus add prev/next-station adjacency
+as rough reference data.
+
+**Scope confirmed with you directly (not guessed):**
+- Expand to the **full Jabodetabek network** shown in the map — not just
+  Jakarta Timur. This turns the app from Jakarta-Timur-only into a
+  full-network app; flagging again here since it's a real product-scope
+  change, not just a data change.
+- `Station.region` becomes **dynamic per station** (real city/regency —
+  e.g. `jakarta_timur`, `jakarta_pusat`, `bekasi`, `tangerang`, `bogor`),
+  not hardcoded. The column already existed in the schema; only
+  `seed-stations.js`'s hardcoded value needs to change.
+- Prev/next station adjacency stored as **new nullable self-referencing
+  columns** on `Station` (`prev_station_id`, `next_station_id`) — your
+  own framing was "just a data reference... later the real data can be
+  revealed," so this is intentionally rough/manual, not meant to be
+  perfectly authoritative KAI schedule data.
+
+**Station list — cross-referenced against OpenStreetMap, not
+transcribed from the map image alone.** Given this entire session's
+theme has been catching bad coordinate data, I didn't want to guess
+lat/lng from a static schematic diagram. Queried Overpass for
+`railway=station`/`railway=halt` tagged `network≈KAI` across the whole
+Jabodetabek bounding box (three queries — one broad, one widened west
+to catch the Rangkasbitung–Merak segment which fell outside the first
+box's edge, one name-targeted for stragglers) and matched every station
+against real, officially-tagged `PT Kereta Api Indonesia`/`KAI Commuter`
+data.
+
+**Result: 98 of 101 stations on the map confirmed with real OSM
+coordinates.** 3 stations (**Tonjongbaru, Merak, Gunung Putri**) return
+zero results in OSM under any tagging variant tried — they may not be
+mapped as point nodes yet (could be tagged as ways/areas, or genuinely
+unmapped). **Flagging rather than guessing coordinates for these 3** —
+options when this phase starts: skip them for now, geocode them another
+way, or manually pin them via the verify page's drag-to-correct feature
+(built in the coordinate-correction follow-up above) once the other 98
+are live and rendering, so their positions can be checked visually
+against the basemap rather than typed blind.
+
+**Cost/scope reality check, worth reading before starting:** this is
+roughly a 14x increase in station count (7 → 98). Every Phase 3 script
+runs per-station, so this means ~98 Valhalla isochrone calls (fast,
+tiles already built — not another rebuild), ~98×3 MAPID mission-type
+calls plus ~98 MAPID activity calls, and OSM fallback calls rate-limited
+to roughly 1 per 3+ seconds (confirmed this session) — that step alone
+could take 10-15+ minutes of wall time if many stations trigger it.
+Classification cost scales with how many freeform category strings
+actually come back from real MAPID data, not with station count
+directly — likely still cheap on Haiku, but worth checking in as it
+runs rather than assuming.
+
+**Execution started 2026-08-23 — foundation stage done, checked in
+before the expensive stages as planned:**
+
+- Schema: added `prev_station_id`/`next_station_id` (nullable,
+  self-referencing FKs, two independent named relations since a station
+  needs both a distinct prev AND next neighbor) via hand-written
+  migration `20260823080000_station_adjacency` + `migrate deploy` (same
+  shadow-DB-has-no-PostGIS pattern as every other migration here).
+- Re-verified all 98 map stations against OSM (fresh queries — didn't
+  trust memory for 98 coordinate pairs, given this whole session's theme).
+  Found 2 stations missing from my own first-pass transcription
+  (**Kramat**, **Jatake** — both genuinely on the map, just missed in a
+  dense image region) by diffing the confirmed OSM set against what I'd
+  actually written down, rather than assuming my transcription was
+  complete.
+- **Final set: 90 stations.** 98 confirmed in OSM, minus 8 deliberately
+  excluded (`Bandara Soekarno-Hatta`, `BNI City` — separate airport rail
+  line; `Jakarta Gudang`, `Batutulis`, `Bogor Paledang`, `Ciomas`,
+  `Cigombong`, `Maseng` — the Bogor–Sukabumi extension, south of Bogor,
+  not part of Jabodetabek or the Merak line). 3 map stations
+  (`Tonjongbaru`, `Merak`, `Gunung Putri`) still have no OSM point data
+  under any tagging variant tried — excluded for now rather than guessing
+  coordinates; can be added later via the verify page's drag-to-correct
+  tool once a coordinate source is found.
+- Built via a one-time construction script,
+  `scripts/_build-jabodetabek-stations.js` (underscore-prefixed —
+  deliberately not part of the standing pipeline, kept only as a record
+  of how the data was derived and to make re-generating it possible if
+  corrections are needed). Assigns region from well-known Jakarta/
+  Jabodetabek administrative geography (not authoritative kelurahan-level
+  lookup — reasonable general knowledge) and prev/next from the line
+  order transcribed off the map. **Verified, not just written:** checked
+  the original 7 Jakarta Timur stations' coordinates match exactly
+  against the earlier OSM-corrected values (zero drift), confirmed zero
+  duplicate `station_id`s despite `Manggarai`/`Tanah Abang` appearing in
+  multiple line segments, and spot-checked junction stations' prev/next
+  to confirm the known "single-neighbor-per-direction" simplification is
+  behaving as documented (e.g. Manggarai's `next` picks one of its three
+  real directions, not all of them — expected, not a bug).
+- `data/stations.geojson` is now this 90-station file (the original
+  7-only version is kept alongside as `data/stations-jaktim-7-original.geojson`
+  for reference, not deleted).
+- `scripts/seed-stations.js` updated: region now comes from each
+  feature instead of being hardcoded to `"jakarta_timur"`; prev/next
+  linked in a **second pass** after all 90 rows exist (self-referencing
+  FKs mean a station referencing a "next" that doesn't exist yet would
+  fail mid-loop otherwise).
+- **Ran and verified:** all 90 stations seeded with zero FK errors;
+  region distribution checked (spans all expected areas, from
+  `jakarta_pusat` (15) down to `bogor` (1)); 86/90 have a `prev`, 85/90
+  have a `next` (the gaps are real line termini — Tangerang, Bogor,
+  Cilegon, Angke — expected, not missing data).
+- **Isochrones generated for all 90 × [10,15] = 180, zero errors, zero
+  `MultiPolygon` cases.** Sanity-checked the 5 smallest 15-min areas
+  (0.85–1.2 km²) to rule out degenerate/near-zero polygons — all
+  realistic.
+
+**Full pipeline run, 2026-08-23, same session — final state:**
+
+1. `fetch-mapid-missions.js` — ✅ 96 mission rows across 90 stations
+   (propertigo and struckgo data appeared for the **first time in this
+   project** — the original 7-station area apparently had none of
+   either; the wider network does).
+2. `resolve-pois.js` — ✅ 49 new Poi created, 12 matched existing
+   (the original 7 stations' data), 26 skipped — **all 26 skips were
+   `propertigo` missions**, exactly the documented, expected behavior
+   (that mission type has no `nama_tempat` field at all).
+3. `classify-categories.js` — ✅ 49/49 classified via `claude-haiku-4-5`,
+   16 flagged low-confidence. **Real finding, not just noise:** several
+   low-confidence flags were genuinely non-food MAPID submissions
+   force-classified into a food category anyway — a tire shop
+   ("PLANET BAN"), e-commerce stores, a Transjakarta payment terminal —
+   correctly flagged as low-confidence since they don't fit any real
+   food category, but this raises an open question: **should
+   `resolve-pois.js`/`classify-categories.js` filter out obviously
+   non-food MAPID submissions entirely**, rather than force-classifying
+   them into the closest available `PoiCategory`? Not decided or
+   changed — flagging for the project owner rather than deciding
+   unilaterally.
+4. `fetch-osm-fallback.js` — ⚠️ **partial.** Ran across ~80 stations
+   needing fallback; succeeded for ~44 of them (576 POIs saved) before
+   `overpass-api.de` became completely unreachable (connection timeout,
+   not a 429/504 — confirmed general internet and even
+   `openstreetmap.org` itself were both fine, isolating the problem to
+   that one host specifically). Given how heavily this project has used
+   Overpass's shared public instance across this entire session (the
+   original 7-station fixes, the 98-station Jabodetabek OSM survey, and
+   now ~80 more fallback queries), this looks like their fair-use
+   protection temporarily blocking this IP rather than a transient blip
+   — chose not to keep hammering a shared public resource that's
+   already had heavy use today. **35 stations still need this step,
+   saved to `data/_osm-fallback-retry-list.txt`** (gitignored-worthy
+   scratch file, not meant to be committed): krenceng, lenteng_agung,
+   maja, mangga_besar, manggarai, metland_telagamurni, nambo, palmerah,
+   parungpanjang, pasar_minggu, pasar_minggu_baru, pesing, pondok_cina,
+   pondok_rajeg, pondok_ranji, poris, rajawali, rangkasbitung,
+   rawa_buaya, rawa_buntu, sawah_besar, serpong, sudimara, taman_kota,
+   tambun, tanah_abang, tanah_tinggi, tangerang, tanjung_barat,
+   tanjung_priuk, tebet, tenjo, tigaraksa, universitas_indonesia,
+   universitas_pancasila, walantaka. **Re-run `fetch-osm-fallback.js`
+   again later** (it's idempotent — already-covered stations will just
+   show 0-new/already-saved) once enough time has passed for any
+   rate-limit/block to clear; no code change needed, this is purely a
+   "wait and retry" situation.
+5. `fetch-mapid-activities.js` — ✅ 507 activity rows saved (unrelated
+   API, unaffected by the Overpass block). **Confirms the Phase 3
+   pagination-cap hypothesis for real, for the first time:** `karet` and
+   `sudirman` both returned **exactly 60** activities — the
+   loud-warning safeguard built back in Phase 3 fired exactly as
+   designed. These two stations' activity data may be genuinely
+   incomplete; a date-range-split re-query would be needed to get the
+   rest, not attempted yet.
+
+**Final database totals after this run:** 678 `Poi` rows, 407
+`MapidActivity` rows (deduped from 507 saved — overlapping isochrones
+across 90 stations, same dedup mechanism observed in the original
+7-station run), 87 `MapidMission` rows, across 90 stations.
+
+**What's left for Phase 7 to be fully complete:**
+1. Retry `fetch-osm-fallback.js` for the 35 stations in the retry list,
+   once Overpass access recovers.
+2. Decide on the non-food-MAPID-submission filtering question above.
+3. Optionally: find coordinates for `Tonjongbaru`/`Merak`/`Gunung Putri`
+   (not in OSM) and add them.
+4. Optionally: date-range-split re-query for `karet`/`sudirman`'s
+   activities to get past the 60-item cap.
+
+None of these block using the 90-station network as-is — it's usable
+data right now, just not 100% exhaustive yet.
+
+## Phase 8 — Additional free POI data sources beyond MAPID
+Added to plan 2026-08-23 (one source found and verified, not yet
+integrated). Requested alongside Phase 7 — "find a lot of POI from other
+stuff... free source... supermarkets or any other stuff."
+
+**Found and verified working: Jakarta's official open data portal
+(`satudata.jakarta.go.id`) has a real, working, no-auth-required public
+API** — confirmed by actually calling it, not just finding a page that
+mentions one. Example verified live: `Data Lokasi Pasar Perumda Pasar
+Jaya` (Jakarta's public/traditional market operator) — returns real
+market names, addresses, phone numbers, `kecamatan`/`kelurahan`
+(district/subdistrict), and actual coordinates (`koordinat_x`/
+`koordinat_y` — despite the field names, these are lat/lng, verified
+against known Jakarta locations) for markets across all of DKI Jakarta,
+not just one district. Endpoint pattern:
+`https://ws.jakarta.go.id/gateway/DataPortalSatuDataJakarta/1.0/satudata?kategori=dataset&tipe=detail&url=<dataset-slug>`
+— the portal has **5,274 datasets** total; only searched "pasar"
+(market) specifically so far. Worth searching further for UMKM
+registries, supermarket/retail listings, or other categories once this
+phase actually starts.
+
+**Second source, not yet tested live but high-confidence:** OpenStreetMap
+itself, beyond the current 5-tag food-only lookup table in
+`fetch-osm-fallback.js` (`amenity=cafe/fast_food/restaurant/marketplace`,
+`shop=bakery`). Free, already integrated, zero new setup. Expanding the
+tag table to `shop=supermarket`, `shop=convenience`, `shop=mall`,
+`shop=department_store`, and leisure/entertainment tags would directly
+fill the `hiburan` (entertainment) `PoiCategory` — which has had **zero
+real POIs in it this entire project**, since none of the current 5 tags
+map to it and MAPID's missions haven't returned any entertainment-typed
+places either.
+
+**Executed 2026-08-23, same session as Phase 7:**
+
+- Both design questions above resolved: added `PoiSource.jakarta_opendata`
+  as a new enum value (hand-written migration
+  `20260823090000_jakarta_opendata_source`, `ALTER TYPE ... ADD VALUE`,
+  applied via `migrate deploy` per this project's established pattern)
+  rather than misrepresenting government data as `openstreetmap` or
+  `mock`. Built as a separate script, `fetch-jakarta-opendata.js`, and
+  made it **unconditional** (not gated behind a coverage threshold like
+  `fetch-osm-fallback.js`) — markets are a distinct category worth
+  adding regardless of existing food-POI count.
+- Pulled the full Perumda Pasar Jaya market dataset: **292 rows, all of
+  DKI Jakarta.** Only markets falling inside one of our 90 stations'
+  15-min isochrones get inserted (179 of 292 were outside — expected,
+  the dataset covers all 5 Jakarta cities, most of which isn't near our
+  station network).
+- **Found and fixed a real data-quality bug, not in my code but in the
+  source dataset itself:** the government data contains near-duplicate
+  rows differing only in name casing (e.g. "Pasar Mangga Besar" vs
+  "PASAR MANGGA BESAR" — same place, same coordinates). My first
+  dedup check was case-sensitive and let 47 of the first 105 rows
+  through as if they were distinct places. Caught by checking the
+  actual saved data for duplicates rather than trusting a clean-looking
+  run count. **Fixed properly:** dedup now does `LOWER(name) =
+  LOWER(...)`; deleted the 47 already-inserted duplicates; re-ran to
+  confirm zero new duplicates and a stable idempotent result. **Final:
+  58 unique markets** — the ~2:1 ratio (113 relevant raw rows → 58
+  unique) held up consistently once the fix was verified against the
+  complete dataset, not just the earlier partial sample.
+- **Second gap addressed: `hiburan` (entertainment) has had zero real
+  POIs for this entire project** — none of `fetch-osm-fallback.js`'s 5
+  tags map to it, and no MAPID mission has ever returned an
+  entertainment-typed place. Built `fetch-osm-entertainment.js` — a
+  separate, unconditional (not threshold-gated, same reasoning as
+  markets) script querying OSM for cinemas, nightclubs, theatres,
+  bowling alleys, amusement arcades, and escape rooms across all 90
+  stations. Applies the same `ST_Contains` boundary-verification fix
+  found in `fetch-osm-fallback.js` earlier this session from the start,
+  rather than needing to rediscover that bug a second time.
+- **A real category-mismatch found before writing any supermarket
+  code, not silently forced through:** none of the 6 `PoiCategory`
+  values (`kopi_minuman`, `quick_meal`, `warung_makan`, `bakery`,
+  `casual_dining`, `hiburan`) actually fit "supermarket" — it isn't a
+  place to eat. Rather than mis-map it into the closest food category
+  (which would misrepresent the data, same principle as the
+  `PoiSource` decision above), **did not build supermarket ingestion**
+  and is flagging this for a decision: either add a new, non-food
+  `PoiCategory` value (a real scope question — the schema's category
+  set was originally fixed to food-business types only), or treat
+  supermarkets as out of scope for an app framed around "real
+  walking-distance food options."
+- **`fetch-osm-entertainment.js` is written and syntax-checked but NOT
+  YET RUN** — `overpass-api.de` was still unreachable when this was
+  ready to execute (same block affecting the 35-station
+  `fetch-osm-fallback.js` retry list from Phase 7). Run this once
+  Overpass access recovers, alongside that retry.
 
 ## Phase 5 — Reports and moderation ✅ done (2026-08-23)
 
@@ -660,3 +1039,39 @@ actions only you can do — nothing left for me to prepare):**
 Playwright verification) remains blocked on the same open question from
 before — no confirmed spec for the MAPID basemap product itself. Ask
 about this whenever it becomes relevant.
+
+**Bug found and fixed 2026-08-23, after Phase 7's expansion:** the
+project owner reported the verify page not rendering all stations after
+running `generate-verify-page.js`. Root cause: `main()` fetched
+`/api/regions/jakarta_timur/stations` — hardcoded from when that was
+the only region that existed (7 stations, all `jakarta_timur`). After
+Phase 7 expanded to 90 stations across many regions, that endpoint
+silently kept returning only the 8 actually labeled `jakarta_timur`,
+with no error to signal the other 82 were missing.
+
+Fixed two gaps at once, not just the visible symptom:
+1. **Added `GET /api/stations`** (all stations, all regions) to
+   `routes/gis.js` — there was no "give me everything" endpoint at all
+   before this; every route was either single-station or
+   region-scoped, an artifact of the single-region era. Also added
+   `prev_station_id`/`next_station_id` to this route's response, and to
+   `GET /api/regions/:region/stations` and `GET /api/stations/:id`
+   (`lib/stations.js`'s `getStationOrNull`) — the Phase 7 adjacency
+   columns existed in the DB but were never actually surfaced through
+   any API response until now, a second gap that would have kept the
+   adjacency data unreachable indefinitely.
+2. **Fixed the verify page's fetch URL** to use the new endpoint, and
+   **fixed its initial map view** — `center`/`zoom` were still tuned
+   for the old 7-station Jakarta Timur area; even with all 90 stations
+   correctly in the data, ~80 of them would have rendered off-screen
+   until manually panned out, which could easily be mistaken for "not
+   rendering" a second time. Recentered/re-zoomed for the full
+   Jabodetabek extent.
+
+**Verified via Playwright, not just code review:** rebuilt the page,
+confirmed `GET /api/stations` returns exactly 90 via direct API call,
+then loaded the actual page in a real browser and confirmed
+`document.querySelectorAll('.station-marker').length === 90` and
+`window.__verification.ready === true`. Screenshot shows the full
+network — Tangerang through Cikarang, Jakarta through Bogor — all
+visible in the initial view.

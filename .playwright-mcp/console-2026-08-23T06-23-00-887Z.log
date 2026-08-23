@@ -1,0 +1,21 @@
+[     282ms] [LOG] Fetching stations… @ http://localhost:8080/map-check.local.html:55
+[     294ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:8080/favicon.ico:0
+[     449ms] [LOG] Got 7 stations. @ http://localhost:8080/map-check.local.html:55
+[     994ms] [WARNING] Image "wetland_bg_11" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event. @ https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js:41
+[     994ms] [WARNING] Image "pedestrian_polygon" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event. @ https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js:41
+[    2194ms] [LOG]   buaran: isochrone rendered @ http://localhost:8080/map-check.local.html:55
+[    2279ms] [LOG]   buaran: 6 POIs plotted @ http://localhost:8080/map-check.local.html:55
+[    2299ms] [LOG]   cakung: isochrone rendered @ http://localhost:8080/map-check.local.html:55
+[    2328ms] [LOG]   cakung: 1 POIs plotted @ http://localhost:8080/map-check.local.html:55
+[    2348ms] [LOG]   jatinegara: isochrone rendered @ http://localhost:8080/map-check.local.html:55
+[    2379ms] [LOG]   jatinegara: 14 POIs plotted @ http://localhost:8080/map-check.local.html:55
+[    2397ms] [LOG]   klender: isochrone rendered @ http://localhost:8080/map-check.local.html:55
+[    2428ms] [LOG]   klender: 11 POIs plotted @ http://localhost:8080/map-check.local.html:55
+[    2448ms] [LOG]   klender_baru: isochrone rendered @ http://localhost:8080/map-check.local.html:55
+[    2479ms] [LOG]   klender_baru: 4 POIs plotted @ http://localhost:8080/map-check.local.html:55
+[    2497ms] [LOG]   matraman: isochrone rendered @ http://localhost:8080/map-check.local.html:55
+[    2528ms] [LOG]   matraman: 26 POIs plotted @ http://localhost:8080/map-check.local.html:55
+[    2548ms] [LOG]   pondok_jati: isochrone rendered @ http://localhost:8080/map-check.local.html:55
+[    2579ms] [LOG]   pondok_jati: 23 POIs plotted @ http://localhost:8080/map-check.local.html:55
+[    2580ms] [LOG] 
+All data loaded. window.__verification is ready. @ http://localhost:8080/map-check.local.html:55

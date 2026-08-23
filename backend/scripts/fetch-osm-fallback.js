@@ -150,6 +150,24 @@ async function osmPoiAlreadyExists(name, lng, lat) {
   return rows.length > 0;
 }
 
+// Overpass's `poly` filter is NOT guaranteed to match PostGIS's exact
+// ST_Contains geometry — confirmed by hitting this directly: a point
+// Overpass included for a station's poly query was NOT actually inside
+// that same polygon per ST_Contains (near-boundary precision/algorithm
+// difference between the two systems). Never trust Overpass's filtering
+// as the final word — always re-verify against our own authoritative
+// polygon before writing to the DB, since Poi.location is what every
+// other route's ST_Contains query relies on being correct.
+async function isInsideIsochrone(polygonGeoJSON, lng, lat) {
+  const rows = await prisma.$queryRaw`
+    SELECT ST_Contains(
+      ST_SetSRID(ST_GeomFromGeoJSON(${polygonGeoJSON}), 4326),
+      ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326)
+    ) AS contains
+  `;
+  return rows[0].contains;
+}
+
 async function saveOsmPoi(name, lng, lat, category) {
   if (await osmPoiAlreadyExists(name, lng, lat)) return false;
 
@@ -188,6 +206,7 @@ async function main() {
       let skippedNoName = 0;
       let skippedUnmapped = 0;
       let skippedDuplicate = 0;
+      let skippedOutsideBoundary = 0;
 
       for (const element of elements) {
         const tags = element.tags || {};
@@ -206,6 +225,11 @@ async function main() {
         const coords = coordsForElement(element);
         if (!coords) continue;
 
+        if (!(await isInsideIsochrone(station.polygon_geojson, coords.lng, coords.lat))) {
+          skippedOutsideBoundary++;
+          continue;
+        }
+
         const wasSaved = await saveOsmPoi(name, coords.lng, coords.lat, category);
         if (wasSaved) saved++;
         else skippedDuplicate++;
@@ -213,7 +237,7 @@ async function main() {
 
       totalSaved += saved;
       console.log(
-        `  ✓ saved ${saved} OSM POI(s) (skipped ${skippedNoName} unnamed, ${skippedUnmapped} unmapped tags, ${skippedDuplicate} already saved)`
+        `  ✓ saved ${saved} OSM POI(s) (skipped ${skippedNoName} unnamed, ${skippedUnmapped} unmapped tags, ${skippedDuplicate} already saved, ${skippedOutsideBoundary} outside true boundary)`
       );
     } catch (err) {
       console.error(`  ✗ ${station.station_id}:`, err.message);

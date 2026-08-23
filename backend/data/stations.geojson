@@ -1,12 +1,1535 @@
 {
   "type": "FeatureCollection",
   "features": [
-    { "type": "Feature", "properties": { "station_id": "matraman", "name": "Stasiun Matraman" }, "geometry": { "type": "Point", "coordinates": [106.8584, -6.2118] } },
-    { "type": "Feature", "properties": { "station_id": "pondok_jati", "name": "Stasiun Pondok Jati" }, "geometry": { "type": "Point", "coordinates": [106.8558, -6.2089] } },
-    { "type": "Feature", "properties": { "station_id": "jatinegara", "name": "Stasiun Jatinegara" }, "geometry": { "type": "Point", "coordinates": [106.8680, -6.2151] } },
-    { "type": "Feature", "properties": { "station_id": "klender", "name": "Stasiun Klender" }, "geometry": { "type": "Point", "coordinates": [106.8996, -6.2136] } },
-    { "type": "Feature", "properties": { "station_id": "buaran", "name": "Stasiun Buaran" }, "geometry": { "type": "Point", "coordinates": [106.9247, -6.2155] } },
-    { "type": "Feature", "properties": { "station_id": "klender_baru", "name": "Stasiun Klender Baru" }, "geometry": { "type": "Point", "coordinates": [106.9422, -6.2178] } },
-    { "type": "Feature", "properties": { "station_id": "cakung", "name": "Stasiun Cakung" }, "geometry": { "type": "Point", "coordinates": [106.9535, -6.2195] } }
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "tangerang",
+        "name": "Stasiun Tangerang",
+        "region": "tangerang",
+        "prev_station_id": null,
+        "next_station_id": "tanah_tinggi"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.6320106,
+          -6.1769753
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "tanah_tinggi",
+        "name": "Stasiun Tanah Tinggi",
+        "region": "tangerang",
+        "prev_station_id": "tangerang",
+        "next_station_id": "batu_ceper"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.6467095,
+          -6.1751701
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "batu_ceper",
+        "name": "Stasiun Batu Ceper",
+        "region": "tangerang",
+        "prev_station_id": "tanah_tinggi",
+        "next_station_id": "poris"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.6652866,
+          -6.1720268
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "poris",
+        "name": "Stasiun Poris",
+        "region": "tangerang",
+        "prev_station_id": "batu_ceper",
+        "next_station_id": "kalideres"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.6807523,
+          -6.1697346
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "kalideres",
+        "name": "Stasiun Kalideres",
+        "region": "jakarta_barat",
+        "prev_station_id": "poris",
+        "next_station_id": "rawa_buaya"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.7037283,
+          -6.1659662
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "rawa_buaya",
+        "name": "Stasiun Rawa Buaya",
+        "region": "jakarta_barat",
+        "prev_station_id": "kalideres",
+        "next_station_id": "bojong_indah"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.7227543,
+          -6.1627437
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "bojong_indah",
+        "name": "Stasiun Bojong Indah",
+        "region": "jakarta_barat",
+        "prev_station_id": "rawa_buaya",
+        "next_station_id": "taman_kota"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.7361338,
+          -6.1602142
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "taman_kota",
+        "name": "Stasiun Taman Kota",
+        "region": "jakarta_barat",
+        "prev_station_id": "bojong_indah",
+        "next_station_id": "pesing"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.7565728,
+          -6.158627
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "pesing",
+        "name": "Stasiun Pesing",
+        "region": "jakarta_barat",
+        "prev_station_id": "taman_kota",
+        "next_station_id": "grogol"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.7719077,
+          -6.1612525
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "grogol",
+        "name": "Stasiun Grogol",
+        "region": "jakarta_barat",
+        "prev_station_id": "pesing",
+        "next_station_id": "duri"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.7896101,
+          -6.162035
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "duri",
+        "name": "Stasiun Duri",
+        "region": "jakarta_barat",
+        "prev_station_id": "grogol",
+        "next_station_id": "tanah_abang"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8012968,
+          -6.1552764
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "tanah_abang",
+        "name": "Stasiun Tanah Abang",
+        "region": "jakarta_pusat",
+        "prev_station_id": "duri",
+        "next_station_id": "karet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8108938,
+          -6.1857127
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "angke",
+        "name": "Stasiun Angke",
+        "region": "jakarta_barat",
+        "prev_station_id": null,
+        "next_station_id": "jakarta_kota"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8007792,
+          -6.1447372
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "jakarta_kota",
+        "name": "Stasiun Jakarta Kota",
+        "region": "jakarta_barat",
+        "prev_station_id": "angke",
+        "next_station_id": "jayakarta"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8146203,
+          -6.1375828
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "jayakarta",
+        "name": "Stasiun Jayakarta",
+        "region": "jakarta_pusat",
+        "prev_station_id": "jakarta_kota",
+        "next_station_id": "mangga_besar"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8231322,
+          -6.1412999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "mangga_besar",
+        "name": "Stasiun Mangga Besar",
+        "region": "jakarta_pusat",
+        "prev_station_id": "jayakarta",
+        "next_station_id": "sawah_besar"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8269826,
+          -6.1498037
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "sawah_besar",
+        "name": "Stasiun Sawah Besar",
+        "region": "jakarta_pusat",
+        "prev_station_id": "mangga_besar",
+        "next_station_id": "juanda"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8276549,
+          -6.1606672
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "juanda",
+        "name": "Stasiun Juanda",
+        "region": "jakarta_pusat",
+        "prev_station_id": "sawah_besar",
+        "next_station_id": "gambir"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8304609,
+          -6.1666746
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "gambir",
+        "name": "Stasiun Gambir",
+        "region": "jakarta_pusat",
+        "prev_station_id": "juanda",
+        "next_station_id": "gondangdia"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8306473,
+          -6.1766553
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "gondangdia",
+        "name": "Stasiun Gondangdia",
+        "region": "jakarta_pusat",
+        "prev_station_id": "gambir",
+        "next_station_id": "cikini"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8325657,
+          -6.1859109
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "cikini",
+        "name": "Stasiun Cikini",
+        "region": "jakarta_pusat",
+        "prev_station_id": "gondangdia",
+        "next_station_id": "manggarai"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8412799,
+          -6.1985052
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "manggarai",
+        "name": "Stasiun Manggarai",
+        "region": "jakarta_selatan",
+        "prev_station_id": "cikini",
+        "next_station_id": "tebet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.849935,
+          -6.2101704
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "karet",
+        "name": "Stasiun Karet",
+        "region": "jakarta_pusat",
+        "prev_station_id": "tanah_abang",
+        "next_station_id": "sudirman"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8167704,
+          -6.2009538
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "sudirman",
+        "name": "Stasiun Sudirman",
+        "region": "jakarta_pusat",
+        "prev_station_id": "karet",
+        "next_station_id": "manggarai"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8234493,
+          -6.2024081
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "kampung_bandan",
+        "name": "Stasiun Kampung Bandan",
+        "region": "jakarta_utara",
+        "prev_station_id": null,
+        "next_station_id": "rajawali"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8284875,
+          -6.1327023
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "rajawali",
+        "name": "Stasiun Rajawali",
+        "region": "jakarta_utara",
+        "prev_station_id": "kampung_bandan",
+        "next_station_id": "kemayoran"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8368325,
+          -6.1450996
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "kemayoran",
+        "name": "Stasiun Kemayoran",
+        "region": "jakarta_pusat",
+        "prev_station_id": "rajawali",
+        "next_station_id": "pasar_senen"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8414012,
+          -6.1617033
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "pasar_senen",
+        "name": "Stasiun Pasar Senen",
+        "region": "jakarta_pusat",
+        "prev_station_id": "kemayoran",
+        "next_station_id": "kramat"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8445744,
+          -6.1744233
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "kramat",
+        "name": "Stasiun Kramat",
+        "region": "jakarta_pusat",
+        "prev_station_id": "pasar_senen",
+        "next_station_id": "gang_sentiong"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8565119,
+          -6.1936203
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "gang_sentiong",
+        "name": "Stasiun Gang Sentiong",
+        "region": "jakarta_pusat",
+        "prev_station_id": "kramat",
+        "next_station_id": "ancol"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8508709,
+          -6.1861531
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "ancol",
+        "name": "Stasiun Ancol",
+        "region": "jakarta_utara",
+        "prev_station_id": "gang_sentiong",
+        "next_station_id": "tanjung_priuk"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8451374,
+          -6.128115
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "tanjung_priuk",
+        "name": "Stasiun Tanjung Priuk",
+        "region": "jakarta_utara",
+        "prev_station_id": "ancol",
+        "next_station_id": "jakarta_international_stadium"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8814984,
+          -6.1106914
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "jakarta_international_stadium",
+        "name": "Stasiun Jakarta International Stadium",
+        "region": "jakarta_utara",
+        "prev_station_id": "tanjung_priuk",
+        "next_station_id": null
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8613596,
+          -6.1228211
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "palmerah",
+        "name": "Stasiun Palmerah",
+        "region": "jakarta_pusat",
+        "prev_station_id": "tanah_abang",
+        "next_station_id": "kebayoran"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.7972321,
+          -6.2079197
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "kebayoran",
+        "name": "Stasiun Kebayoran",
+        "region": "jakarta_selatan",
+        "prev_station_id": "palmerah",
+        "next_station_id": "pondok_ranji"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.7825345,
+          -6.23723
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "pondok_ranji",
+        "name": "Stasiun Pondok Ranji",
+        "region": "tangerang_selatan",
+        "prev_station_id": "kebayoran",
+        "next_station_id": "jurangmangu"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.7446926,
+          -6.2766831
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "jurangmangu",
+        "name": "Stasiun Jurangmangu",
+        "region": "tangerang_selatan",
+        "prev_station_id": "pondok_ranji",
+        "next_station_id": "sudimara"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.7291463,
+          -6.288582
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "sudimara",
+        "name": "Stasiun Sudimara",
+        "region": "tangerang_selatan",
+        "prev_station_id": "jurangmangu",
+        "next_station_id": "rawa_buntu"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.7126471,
+          -6.2968441
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "rawa_buntu",
+        "name": "Stasiun Rawa Buntu",
+        "region": "tangerang_selatan",
+        "prev_station_id": "sudimara",
+        "next_station_id": "serpong"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.6761518,
+          -6.314884
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "serpong",
+        "name": "Stasiun Serpong",
+        "region": "tangerang_selatan",
+        "prev_station_id": "rawa_buntu",
+        "next_station_id": "cisauk"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.6655836,
+          -6.3201527
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "cisauk",
+        "name": "Stasiun Cisauk",
+        "region": "kabupaten_tangerang",
+        "prev_station_id": "serpong",
+        "next_station_id": "cicayur"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.6416257,
+          -6.3244445
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "cicayur",
+        "name": "Stasiun Cicayur",
+        "region": "kabupaten_tangerang",
+        "prev_station_id": "cisauk",
+        "next_station_id": "parungpanjang"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.6189713,
+          -6.329683
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "parungpanjang",
+        "name": "Stasiun Parungpanjang",
+        "region": "kabupaten_tangerang",
+        "prev_station_id": "cicayur",
+        "next_station_id": "cilejit"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.5698462,
+          -6.3443444
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "cilejit",
+        "name": "Stasiun Cilejit",
+        "region": "kabupaten_tangerang",
+        "prev_station_id": "parungpanjang",
+        "next_station_id": "daru"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.5096432,
+          -6.3542652
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "daru",
+        "name": "Stasiun Daru",
+        "region": "kabupaten_tangerang",
+        "prev_station_id": "cilejit",
+        "next_station_id": "tenjo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.4925632,
+          -6.3379704
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "tenjo",
+        "name": "Stasiun Tenjo",
+        "region": "kabupaten_tangerang",
+        "prev_station_id": "daru",
+        "next_station_id": "tigaraksa"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.4616586,
+          -6.3273185
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "tigaraksa",
+        "name": "Stasiun Tigaraksa",
+        "region": "kabupaten_tangerang",
+        "prev_station_id": "tenjo",
+        "next_station_id": "jatake"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.4340596,
+          -6.328836
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "jatake",
+        "name": "Stasiun Jatake",
+        "region": "kabupaten_tangerang",
+        "prev_station_id": "tigaraksa",
+        "next_station_id": "cikoya"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.6066128,
+          -6.3349941
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "cikoya",
+        "name": "Stasiun Cikoya",
+        "region": "kabupaten_tangerang",
+        "prev_station_id": "jatake",
+        "next_station_id": "maja"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.4116547,
+          -6.3357385
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "maja",
+        "name": "Stasiun Maja",
+        "region": "kabupaten_tangerang",
+        "prev_station_id": "cikoya",
+        "next_station_id": "citeras"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.3964794,
+          -6.332503
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "citeras",
+        "name": "Stasiun Citeras",
+        "region": "kabupaten_tangerang",
+        "prev_station_id": "maja",
+        "next_station_id": "rangkasbitung"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.3326694,
+          -6.3350582
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "rangkasbitung",
+        "name": "Stasiun Rangkasbitung",
+        "region": "banten_barat",
+        "prev_station_id": "citeras",
+        "next_station_id": "catang"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.2515252,
+          -6.3527788
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "catang",
+        "name": "Stasiun Catang",
+        "region": "banten_barat",
+        "prev_station_id": "rangkasbitung",
+        "next_station_id": "walantaka"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.2678941,
+          -6.2656845
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "walantaka",
+        "name": "Stasiun Walantaka",
+        "region": "banten_barat",
+        "prev_station_id": "catang",
+        "next_station_id": "karangantu"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.2187374,
+          -6.1554826
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "karangantu",
+        "name": "Stasiun Karangantu",
+        "region": "banten_barat",
+        "prev_station_id": "walantaka",
+        "next_station_id": "cilegon"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.1619836,
+          -6.0391664
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "cilegon",
+        "name": "Stasiun Cilegon",
+        "region": "banten_barat",
+        "prev_station_id": "karangantu",
+        "next_station_id": "krenceng"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.053105,
+          -6.0197309
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "krenceng",
+        "name": "Stasiun Krenceng",
+        "region": "banten_barat",
+        "prev_station_id": "cilegon",
+        "next_station_id": null
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.0231173,
+          -6.0098243
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "tebet",
+        "name": "Stasiun Tebet",
+        "region": "jakarta_selatan",
+        "prev_station_id": "manggarai",
+        "next_station_id": "cawang"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8584389,
+          -6.2263977
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "cawang",
+        "name": "Stasiun Cawang",
+        "region": "jakarta_timur",
+        "prev_station_id": "tebet",
+        "next_station_id": "duren_kalibata"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8586903,
+          -6.2425517
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "duren_kalibata",
+        "name": "Stasiun Duren Kalibata",
+        "region": "jakarta_selatan",
+        "prev_station_id": "cawang",
+        "next_station_id": "pasar_minggu_baru"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8551672,
+          -6.2552012
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "pasar_minggu_baru",
+        "name": "Stasiun Pasar Minggu Baru",
+        "region": "jakarta_selatan",
+        "prev_station_id": "duren_kalibata",
+        "next_station_id": "pasar_minggu"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8517957,
+          -6.262798
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "pasar_minggu",
+        "name": "Stasiun Pasar Minggu",
+        "region": "jakarta_selatan",
+        "prev_station_id": "pasar_minggu_baru",
+        "next_station_id": "tanjung_barat"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8448558,
+          -6.2833322
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "tanjung_barat",
+        "name": "Stasiun Tanjung Barat",
+        "region": "jakarta_selatan",
+        "prev_station_id": "pasar_minggu",
+        "next_station_id": "lenteng_agung"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8389492,
+          -6.3080407
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "lenteng_agung",
+        "name": "Stasiun Lenteng Agung",
+        "region": "jakarta_selatan",
+        "prev_station_id": "tanjung_barat",
+        "next_station_id": "universitas_pancasila"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8346791,
+          -6.3303079
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "universitas_pancasila",
+        "name": "Stasiun Universitas Pancasila",
+        "region": "depok",
+        "prev_station_id": "lenteng_agung",
+        "next_station_id": "universitas_indonesia"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.834263,
+          -6.3393452
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "universitas_indonesia",
+        "name": "Stasiun Universitas Indonesia",
+        "region": "depok",
+        "prev_station_id": "universitas_pancasila",
+        "next_station_id": "pondok_cina"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.831782,
+          -6.3604315
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "pondok_cina",
+        "name": "Stasiun Pondok Cina",
+        "region": "depok",
+        "prev_station_id": "universitas_indonesia",
+        "next_station_id": "depok_baru"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8320844,
+          -6.3690593
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "depok_baru",
+        "name": "Stasiun Depok Baru",
+        "region": "depok",
+        "prev_station_id": "pondok_cina",
+        "next_station_id": "depok"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8216412,
+          -6.3911293
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "depok",
+        "name": "Stasiun Depok",
+        "region": "depok",
+        "prev_station_id": "depok_baru",
+        "next_station_id": "citayam"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8170842,
+          -6.4048263
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "citayam",
+        "name": "Stasiun Citayam",
+        "region": "depok",
+        "prev_station_id": "depok",
+        "next_station_id": "bojonggede"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8023619,
+          -6.4488237
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "bojonggede",
+        "name": "Stasiun Bojonggede",
+        "region": "kabupaten_bogor",
+        "prev_station_id": "citayam",
+        "next_station_id": "cilebut"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.795025,
+          -6.4932345
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "cilebut",
+        "name": "Stasiun Cilebut",
+        "region": "kabupaten_bogor",
+        "prev_station_id": "bojonggede",
+        "next_station_id": "bogor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8006884,
+          -6.5307239
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "bogor",
+        "name": "Stasiun Bogor",
+        "region": "bogor",
+        "prev_station_id": "cilebut",
+        "next_station_id": null
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.7907695,
+          -6.5942887
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "pondok_rajeg",
+        "name": "Stasiun Pondok Rajeg",
+        "region": "kabupaten_bogor",
+        "prev_station_id": "citayam",
+        "next_station_id": "cibinong"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.824296,
+          -6.4607829
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "cibinong",
+        "name": "Stasiun Cibinong",
+        "region": "kabupaten_bogor",
+        "prev_station_id": "pondok_rajeg",
+        "next_station_id": "nambo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8525201,
+          -6.4642482
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "nambo",
+        "name": "Stasiun Nambo",
+        "region": "kabupaten_bogor",
+        "prev_station_id": "cibinong",
+        "next_station_id": null
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.906269,
+          -6.466282
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "matraman",
+        "name": "Stasiun Matraman",
+        "region": "jakarta_timur",
+        "prev_station_id": "manggarai",
+        "next_station_id": "jatinegara"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8597528,
+          -6.2125672
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "jatinegara",
+        "name": "Stasiun Jatinegara",
+        "region": "jakarta_timur",
+        "prev_station_id": "pondok_jati",
+        "next_station_id": "klender"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8703394,
+          -6.2149252
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "klender",
+        "name": "Stasiun Klender",
+        "region": "jakarta_timur",
+        "prev_station_id": "jatinegara",
+        "next_station_id": "buaran"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8994133,
+          -6.2133188
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "buaran",
+        "name": "Stasiun Buaran",
+        "region": "jakarta_timur",
+        "prev_station_id": "klender",
+        "next_station_id": "klender_baru"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.92316,
+          -6.2156064
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "klender_baru",
+        "name": "Stasiun Klender Baru",
+        "region": "jakarta_timur",
+        "prev_station_id": "buaran",
+        "next_station_id": "cakung"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.9401833,
+          -6.2176591
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "cakung",
+        "name": "Stasiun Cakung",
+        "region": "jakarta_timur",
+        "prev_station_id": "klender_baru",
+        "next_station_id": "kranji"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.9524791,
+          -6.219081
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "kranji",
+        "name": "Stasiun Kranji",
+        "region": "bekasi",
+        "prev_station_id": "cakung",
+        "next_station_id": "bekasi"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.9798267,
+          -6.2245133
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "bekasi",
+        "name": "Stasiun Bekasi",
+        "region": "bekasi",
+        "prev_station_id": "kranji",
+        "next_station_id": "bekasi_timur"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.9987436,
+          -6.2362143
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "bekasi_timur",
+        "name": "Stasiun Bekasi Timur",
+        "region": "bekasi",
+        "prev_station_id": "bekasi",
+        "next_station_id": "tambun"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.0181046,
+          -6.2467953
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "tambun",
+        "name": "Stasiun Tambun",
+        "region": "kabupaten_bekasi",
+        "prev_station_id": "bekasi_timur",
+        "next_station_id": "cibitung"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.0558044,
+          -6.2585496
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "cibitung",
+        "name": "Stasiun Cibitung",
+        "region": "kabupaten_bekasi",
+        "prev_station_id": "tambun",
+        "next_station_id": "metland_telagamurni"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.0837982,
+          -6.2618245
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "metland_telagamurni",
+        "name": "Stasiun Metland Telagamurni",
+        "region": "kabupaten_bekasi",
+        "prev_station_id": "cibitung",
+        "next_station_id": "cikarang"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.111227,
+          -6.2574741
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "cikarang",
+        "name": "Stasiun Cikarang",
+        "region": "kabupaten_bekasi",
+        "prev_station_id": "metland_telagamurni",
+        "next_station_id": null
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.1450733,
+          -6.2553138
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "pondok_jati",
+        "name": "Stasiun Pondok Jati",
+        "region": "jakarta_timur",
+        "prev_station_id": null,
+        "next_station_id": "jatinegara"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8623419,
+          -6.2091242
+        ]
+      }
+    }
   ]
 }

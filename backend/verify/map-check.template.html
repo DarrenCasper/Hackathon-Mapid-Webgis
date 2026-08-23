@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<!--
+  Phase 4B correctness harness — NOT a production frontend. Loads the
+  MAPID basemap (MapLibre GL) and plots real data from our own API:
+  station points, their 15-min isochrone polygons, and the POIs inside
+  them. Purpose is narrow: confirm the dots actually land where they
+  should, not build a UI.
+
+  __MAPID_API_KEY__ below is a placeholder — this template file is safe
+  to commit. scripts/generate-verify-page.js substitutes the real key
+  from .env and writes map-check.local.html, which is gitignored (see
+  backend/.gitignore) since it contains the real key inline in a URL,
+  same way MAPID's own usage example does.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>TransitFit AI — Data Verification Map</title>
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
+  <style>
+    body { margin: 0; font-family: monospace; }
+    #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+    #status {
+      position: absolute; top: 10px; left: 10px; z-index: 10;
+      background: white; padding: 10px; font-size: 12px;
+      max-width: 420px; max-height: 90vh; overflow-y: auto;
+      border: 1px solid #ccc; border-radius: 4px;
+      white-space: pre-wrap;
+    }
+    .station-marker {
+      width: 16px; height: 16px; border-radius: 50%;
+      background: #e63946; border: 2px solid white;
+      box-shadow: 0 0 3px rgba(0,0,0,0.5);
+      cursor: grab;
+    }
+    /* Orange = you've dragged this one — makes it obvious at a glance
+       which stations still need correcting vs. which are already fixed. */
+    .station-marker.moved {
+      background: #f4a300;
+    }
+    .poi-marker {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #2a9d8f; border: 1px solid white;
+    }
+    #export-btn {
+      margin-top: 8px; font-family: monospace; font-size: 12px;
+      padding: 4px 8px; cursor: pointer;
+    }
+    #export-output {
+      margin-top: 8px; width: 100%; font-family: monospace; font-size: 11px;
+      background: #f5f5f5; border: 1px solid #ccc; padding: 6px;
+      display: none; white-space: pre-wrap; word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div id="status">
+    <div id="log">Loading…</div>
+    <button id="export-btn" style="display:none">Export corrected coordinates</button>
+    <pre id="export-output"></pre>
+  </div>
+
+  <script>
+    // API_BASE assumes the Express server is running locally on the port
+    // in .env's PORT — see scripts/generate-verify-page.js for how this
+    // gets set to match.
+    const API_BASE = "__API_BASE__";
+    const MAPID_API_KEY = "__MAPID_API_KEY__";
+
+    // Deliberately a separate #log div, not the whole #status container —
+    // log()'s textContent writes would otherwise wipe out the button and
+    // <pre> as siblings-turned-non-existent every time it's called
+    // (textContent assignment removes ALL children, not just text nodes;
+    // hit this directly while testing the export button).
+    const logEl = document.getElementById("log");
+    function log(line) {
+      logEl.textContent += line + "\n";
+      console.log(line);
+    }
+
+    // Populated as data loads, then read back by Playwright via
+    // page.evaluate() for programmatic assertions — not just a visual
+    // check. Every station's marker position is stored alongside the
+    // exact coordinate the API returned, so a test can confirm the
+    // rendered marker used the correct source data.
+    window.__verification = {
+      stations: {},      // { [station_id]: { apiLngLat, markerScreenPos, projectedScreenPos } }
+      poiCounts: {},      // { [station_id]: count }
+      isochroneCounts: {}, // { [station_id]: boolean (rendered or not) }
+      ready: false,
+    };
+
+    // Manual correction workflow (fallback for whenever a station isn't
+    // in OSM/another authoritative source): drag a station marker, and
+    // its new position lands here. Kept separate from __verification —
+    // that object is a read-only record of what loaded, this one is
+    // user input.
+    window.__correctedCoords = {}; // { [station_id]: [lng, lat] }
+
+    const exportBtn = document.getElementById("export-btn");
+    const exportOutput = document.getElementById("export-output");
+
+    function updateExportUI() {
+      const ids = Object.keys(window.__correctedCoords);
+      if (ids.length === 0) {
+        exportBtn.style.display = "none";
+        return;
+      }
+      exportBtn.style.display = "block";
+      exportBtn.textContent = `Export ${ids.length} corrected coordinate(s)`;
+    }
+
+    exportBtn.addEventListener("click", () => {
+      // Same shape as data/stations.geojson's features array — paste
+      // straight over the matching entries in that file.
+      const features = Object.entries(window.__correctedCoords).map(([id, [lng, lat]]) => ({
+        type: "Feature",
+        properties: { station_id: id, name: window.__verification.stations[id]?.name ?? id },
+        geometry: { type: "Point", coordinates: [lng, lat] },
+      }));
+      exportOutput.textContent = JSON.stringify(features, null, 2);
+      exportOutput.style.display = "block";
+    });
+
+    async function main() {
+      logEl.textContent = "";
+      log("Fetching stations…");
+      // Was hardcoded to /regions/jakarta_timur/stations, back when
+      // that was the only region that existed (7 stations, Phase 4B).
+      // Silently returned only 8 of 90 stations after the Phase 7
+      // multi-region expansion — switched to GET /api/stations (added
+      // alongside this fix) so this page always renders the whole
+      // network regardless of how many regions exist.
+      const stations = await fetch(`${API_BASE}/stations`).then((r) => r.json());
+      log(`Got ${stations.length} stations.`);
+
+      const map = new maplibregl.Map({
+        container: "map",
+        style: `https://v2.basemap.mapid.io/styles/street-v2.0/style.json?key=${MAPID_API_KEY}`,
+        // Rough centroid + zoom for the full 90-station Jabodetabek
+        // network (Merak/Rangkasbitung in the west to Cikarang in the
+        // east, Bogor in the south) — the old zoom:12 around just
+        // Jakarta Timur left ~80 of the 90 stations off-screen until
+        // manually panned out, easy to mistake for "not rendering."
+        center: [106.65, -6.35],
+        zoom: 9,
+      });
+
+      map.on("load", async () => {
+        for (const station of stations) {
+          const [lng, lat] = station.location.coordinates;
+
+          // Station marker — a plain DOM element so Playwright can query
+          // it directly and read its real rendered screen position via
+          // getBoundingClientRect(), independent of MapLibre's own
+          // internal state. Draggable: this is the manual-correction
+          // fallback (see window.__correctedCoords above) for whenever a
+          // station isn't in an authoritative source like OSM.
+          const el = document.createElement("div");
+          el.className = "station-marker";
+          el.dataset.stationId = station.id;
+          const marker = new maplibregl.Marker({ element: el, draggable: true })
+            .setLngLat([lng, lat])
+            .setPopup(new maplibregl.Popup().setText(`${station.name} (${station.id})`))
+            .addTo(map);
+
+          marker.on("dragend", () => {
+            const { lng: newLng, lat: newLat } = marker.getLngLat();
+            window.__correctedCoords[station.id] = [newLng, newLat];
+            el.classList.add("moved");
+            log(`  ${station.id}: dragged to [${newLng.toFixed(7)}, ${newLat.toFixed(7)}]`);
+            updateExportUI();
+          });
+
+          window.__verification.stations[station.id] = {
+            name: station.name,
+            apiLngLat: [lng, lat],
+          };
+
+          // Isochrone (15-min) as a translucent fill layer.
+          try {
+            const iso = await fetch(`${API_BASE}/stations/${station.id}/isochrone?minutes=15`).then((r) => r.json());
+            map.addSource(`iso-${station.id}`, {
+              type: "geojson",
+              data: { type: "Feature", geometry: iso.polygon, properties: {} },
+            });
+            map.addLayer({
+              id: `iso-fill-${station.id}`,
+              type: "fill",
+              source: `iso-${station.id}`,
+              paint: { "fill-color": "#1d3557", "fill-opacity": 0.15 },
+            });
+            map.addLayer({
+              id: `iso-outline-${station.id}`,
+              type: "line",
+              source: `iso-${station.id}`,
+              paint: { "line-color": "#1d3557", "line-width": 1.5 },
+            });
+            window.__verification.isochroneCounts[station.id] = true;
+            log(`  ${station.id}: isochrone rendered`);
+          } catch (err) {
+            window.__verification.isochroneCounts[station.id] = false;
+            log(`  ${station.id}: ISOCHRONE FAILED — ${err.message}`);
+          }
+
+          // POIs inside that isochrone.
+          try {
+            const pois = await fetch(`${API_BASE}/stations/${station.id}/pois?minutes=15`).then((r) => r.json());
+            for (const poi of pois) {
+              const [plng, plat] = poi.location.coordinates;
+              const pel = document.createElement("div");
+              pel.className = "poi-marker";
+              pel.dataset.poiId = poi.id;
+              pel.dataset.stationId = station.id;
+              new maplibregl.Marker({ element: pel })
+                .setLngLat([plng, plat])
+                .setPopup(new maplibregl.Popup().setText(poi.name))
+                .addTo(map);
+            }
+            window.__verification.poiCounts[station.id] = pois.length;
+            log(`  ${station.id}: ${pois.length} POIs plotted`);
+          } catch (err) {
+            window.__verification.poiCounts[station.id] = -1;
+            log(`  ${station.id}: POI FETCH FAILED — ${err.message}`);
+          }
+        }
+
+        // Screen positions are captured last, after every marker exists
+        // and the map has settled — reading them earlier could catch a
+        // marker mid-layout.
+        for (const station of stations) {
+          const el = document.querySelector(`.station-marker[data-station-id="${station.id}"]`);
+          const rect = el.getBoundingClientRect();
+          const projected = map.project(window.__verification.stations[station.id].apiLngLat);
+          window.__verification.stations[station.id].markerScreenPos = {
+            x: rect.left + rect.width / 2,
+            y: rect.top + rect.height / 2,
+          };
+          window.__verification.stations[station.id].projectedScreenPos = { x: projected.x, y: projected.y };
+        }
+
+        window.__verification.ready = true;
+        log("\nAll data loaded. window.__verification is ready.");
+      });
+
+      map.on("error", (e) => {
+        log(`MAP ERROR: ${e.error?.message ?? JSON.stringify(e)}`);
+      });
+    }
+
+    main().catch((err) => log(`FATAL: ${err.message}`));
+  </script>
+</body>
+</html>

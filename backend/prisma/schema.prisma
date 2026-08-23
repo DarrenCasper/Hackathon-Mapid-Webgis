@@ -12,6 +12,22 @@ model Station {
   name       String
   region     String
   location   Unsupported("geometry(Point, 4326)")
+
+  // Rough line-adjacency reference, not authoritative KAI schedule data —
+  // "which station is next/before this one on the map," picked as a
+  // single primary neighbor per direction. At junction stations (e.g.
+  // Manggarai, where the Bogor line and Bekasi line branch), this can't
+  // represent every real direction — it's a simplification the project
+  // owner explicitly accepted in place of a full multi-directional
+  // adjacency table. Nullable: line termini have no next_station, and
+  // this is left null for any station where "next" isn't picked yet.
+  prev_station_id String?
+  next_station_id String?
+  prev_station     Station? @relation("StationPrev", fields: [prev_station_id], references: [id])
+  next_station     Station? @relation("StationNext", fields: [next_station_id], references: [id])
+  prev_of          Station[] @relation("StationPrev")
+  next_of          Station[] @relation("StationNext")
+
   exits      StationExit[]
   isochrones Isochrone[]
   reports    Report[]
@@ -55,6 +71,13 @@ enum PriceTier {
 enum PoiSource {
   mapid_missions
   openstreetmap
+  // Real government open data (e.g. satudata.jakarta.go.id) — distinct
+  // from 'openstreetmap' because it genuinely comes from a different
+  // place with different provenance/reliability characteristics
+  // (official municipal records vs. community mapping), and distinct
+  // from 'mock' because it's real, not placeholder data. Mislabeling
+  // this as either would misrepresent where it actually came from.
+  jakarta_opendata
   mock
 }
 

@@ -1,0 +1,858 @@
+- generic [ref=f16e1]:
+  - generic [ref=f16e3]:
+    - navigation [ref=f16e5]:
+      - generic [ref=f16e6]:
+        - link [ref=f16e7] [cursor=pointer]:
+          - /url: /home
+        - button "Toggle navigation" [ref=f16e9] [cursor=pointer]
+        - generic: Indonesia
+    - generic [ref=f16e12]:
+      - list [ref=f16e17]:
+        - listitem [ref=f16e18] [cursor=pointer]:
+          - link "Home" [ref=f16e19]:
+            - /url: /home
+          - text: /
+        - listitem [ref=f16e20] [cursor=pointer]:
+          - link "Dataset" [ref=f16e21]:
+            - /url: /search?q=&halaman=all&kategori=dataset&topik=all&organisasi=all&status=all&sort=desc&page_no=1&show_filter=true&lang=id
+          - text: /
+        - listitem [ref=f16e201] [cursor=pointer]:
+          - link "Data Lokasi Pasar Perusahaan Umum Daerah (Perumda) Pasar Jaya" [ref=f16e202]:
+            - /url: /open-data/detail?kategori=dataset&page_url=data-lokasi-pasar-perusahaan-umum-daerah-perumda-pasar-jaya&data_no=1
+      - generic [ref=f16e26]:
+        - generic [ref=f16e204]:
+          - generic [ref=f16e205]:
+            - heading "Badan Pembinaan Badan Usaha Milik Daerah" [level=5] [ref=f16e207]
+            - generic [ref=f16e208]:
+              - button "Lihat JSON" [ref=f16e210] [cursor=pointer]:
+                - generic [ref=f16e211]: 
+                - text: Lihat JSON
+              - button [ref=f16e213] [cursor=pointer]:
+                - generic [ref=f16e214]:
+                  - generic [ref=f16e215]: 
+                  - text: Unduh Sekarang
+              - generic [ref=f16e216]:
+                - heading "Bagikan:" [level=5] [ref=f16e217]
+                - generic [ref=f16e218]:
+                  - generic [ref=f16e219] [cursor=pointer]
+                  - generic [ref=f16e221] [cursor=pointer]
+                  - generic [ref=f16e223] [cursor=pointer]
+                  - generic [ref=f16e225] [cursor=pointer]
+                  - generic [ref=f16e227] [cursor=pointer]
+          - generic [ref=f16e229]:
+            - heading "Data Lokasi Pasar Perusahaan Umum Daerah (Perumda) Pasar Jaya" [level=5] [ref=f16e230]
+            - paragraph [ref=f16e231]: Daftar pasar yang dikelola oleh Perumda Pasar Jaya beserta alamatnya
+            - generic [ref=f16e232]:
+              - generic [ref=f16e233]:
+                - heading "Komponen:" [level=5] [ref=f16e234]
+                - list [ref=f16e235]:
+                  - listitem [ref=f16e236]: "periode_data : Penjelasan Periode Data 1 Tahun Sekali"
+                  - listitem [ref=f16e237]: "wilayah : Wilayah lokasi pasar"
+                  - listitem [ref=f16e238]: "kecamatan : Lokasi Pasar dalam satu Kecamatan"
+                  - listitem [ref=f16e239]: "kelurahan : Lokasi pasar dalam satu kelurahan"
+                  - listitem [ref=f16e240]: "nama_pasar : Nama pasar dalam satu lokasi"
+                  - listitem [ref=f16e241]: Selengkapnya ...
+              - generic [ref=f16e243]:
+                - generic [ref=f16e244]:
+                  - heading "Topik:" [level=5] [ref=f16e245]
+                  - button "Perdagangan" [ref=f16e246] [cursor=pointer]
+                  - button "Perekonomian" [ref=f16e247] [cursor=pointer]
+                - generic [ref=f16e248]:
+                  - heading "Tag:" [level=5] [ref=f16e249]
+                  - button "Perumda pasar jaya" [ref=f16e250] [cursor=pointer]
+                  - button "Alamat pasar" [ref=f16e251] [cursor=pointer]
+              - generic [ref=f16e252]:
+                - heading "Metadata:" [level=5] [ref=f16e253]
+                - list [ref=f16e254]:
+                  - listitem [ref=f16e255]: "Metadata Dibuat: 25 Maret 2025"
+                  - listitem [ref=f16e256]: "Metadata Diperbarui: 30 Juni 2026"
+                  - listitem [ref=f16e257]:
+                    - text: "Sumber Data :"
+                    - generic [ref=f16e258] [cursor=pointer]: Perumda Pasar Jaya
+                  - listitem [ref=f16e259]: "Jadwal Pemutakhiran: 1 Tahun Sekali"
+                  - listitem [ref=f16e260]: "Klasifikasi Data: -"
+                  - listitem [ref=f16e261]: "Isian Klasifikasi: -"
+                  - listitem [ref=f16e262]: "Ukuran: -"
+                  - listitem [ref=f16e263]: "Satuan: -"
+                  - listitem [ref=f16e264]: "Kontak: bpbumd@jakarta.go.id"
+                  - listitem [ref=f16e265]: "Sifat Data: Terbuka"
+          - generic [ref=f16e268]:
+            - generic [ref=f16e269]:
+              - generic [ref=f16e271]:
+                - button "Tabel" [ref=f16e272] [cursor=pointer]
+                - button "Grafik" [ref=f16e273] [cursor=pointer]
+                - button "Tabel Dinamis" [ref=f16e274] [cursor=pointer]
+              - button "Unduh Excel" [ref=f16e276] [cursor=pointer]:
+                - generic [ref=f16e277]: 
+            - generic [ref=f16e280]:
+              - table [ref=f16e282]:
+                - rowgroup [ref=f16e283]:
+                  - row [ref=f16e284]:
+                    - columnheader "PERIODE_DATA Filter" [ref=f16e285] [cursor=pointer]:
+                      - generic [ref=f16e287]:
+                        - generic [ref=f16e288]: PERIODE_DATA
+                        - generic [ref=f16e291]:
+                          - generic:
+                            - combobox "Filter"
+                          - generic [ref=f16e292]: Filter
+                    - columnheader "WILAYAH Filter" [ref=f16e303] [cursor=pointer]:
+                      - generic [ref=f16e305]:
+                        - generic [ref=f16e306]: WILAYAH
+                        - generic [ref=f16e309]:
+                          - generic:
+                            - combobox "Filter"
+                          - generic [ref=f16e310]: Filter
+                    - columnheader "KECAMATAN" [ref=f16e321] [cursor=pointer]:
+                      - generic [ref=f16e323]:
+                        - generic [ref=f16e324]: KECAMATAN
+                        - textbox "Cari kecamatan" [ref=f16e327]
+                    - columnheader "KELURAHAN" [ref=f16e334] [cursor=pointer]:
+                      - generic [ref=f16e336]:
+                        - generic [ref=f16e337]: KELURAHAN
+                        - textbox "Cari kelurahan" [ref=f16e340]
+                    - columnheader "NAMA_PASAR" [ref=f16e347] [cursor=pointer]:
+                      - generic [ref=f16e349]:
+                        - generic [ref=f16e350]: NAMA_PASAR
+                        - textbox "Cari nama_pasar" [ref=f16e353]
+                    - columnheader "ALAMAT" [ref=f16e360] [cursor=pointer]:
+                      - generic [ref=f16e362]:
+                        - generic [ref=f16e363]: ALAMAT
+                        - textbox "Cari alamat" [ref=f16e366]
+                    - columnheader "KODE_POS" [ref=f16e373] [cursor=pointer]:
+                      - generic [ref=f16e375]:
+                        - generic [ref=f16e376]: KODE_POS
+                        - textbox "Cari kode_pos" [ref=f16e379]
+                    - columnheader "TELEPON" [ref=f16e386] [cursor=pointer]:
+                      - generic [ref=f16e388]:
+                        - generic [ref=f16e389]: TELEPON
+                        - textbox "Cari telepon" [ref=f16e392]
+                    - columnheader "KOORDINAT_X" [ref=f16e399] [cursor=pointer]:
+                      - generic [ref=f16e401]:
+                        - generic [ref=f16e402]: KOORDINAT_X
+                        - textbox "Cari koordinat_x" [ref=f16e405]
+                    - columnheader "KOORDINAT_Y" [ref=f16e412] [cursor=pointer]:
+                      - generic [ref=f16e414]:
+                        - generic [ref=f16e415]: KOORDINAT_Y
+                        - textbox "Cari koordinat_y" [ref=f16e418]
+                - rowgroup [ref=f16e425]:
+                  - row [ref=f16e426]:
+                    - cell "2024" [ref=f16e427]
+                    - cell "Kota. Adm. Jakarta Pusat" [ref=f16e428]
+                    - cell "Tanah Abang" [ref=f16e429]
+                    - cell "Kampung Bali" [ref=f16e430]
+                    - cell "Pasar Besar Tanah Abang Blok (A-F-G)" [ref=f16e431]
+                    - cell "Jl. K.H. Fachrudin" [ref=f16e432]
+                    - cell "10250" [ref=f16e433]
+                    - cell "021- 3160407 / 021- 31934178" [ref=f16e434]
+                    - cell "-6.1874067" [ref=f16e435]
+                    - cell "106.8141357" [ref=f16e436]
+                  - row [ref=f16e437]:
+                    - cell "2024" [ref=f16e438]
+                    - cell "Kota. Adm. Jakarta Pusat" [ref=f16e439]
+                    - cell "Tanah Abang" [ref=f16e440]
+                    - cell "Kebon Kacang" [ref=f16e441]
+                    - cell "Pasar Besar Tanah Abang Blok B" [ref=f16e442]
+                    - cell "Jl. Kebon Jati" [ref=f16e443]
+                    - cell "10240" [ref=f16e444]
+                    - cell "N/A" [ref=f16e445]
+                    - cell "-6.1874067" [ref=f16e446]
+                    - cell "106.8141357" [ref=f16e447]
+                  - row [ref=f16e448]:
+                    - cell "2024" [ref=f16e449]
+                    - cell "Kota. Adm. Jakarta Pusat" [ref=f16e450]
+                    - cell "Senen" [ref=f16e451]
+                    - cell "Senen" [ref=f16e452]
+                    - cell "Pasar Senen Blok Ill" [ref=f16e453]
+                    - cell "Jl. Senen Raya / Stasiun Senen" [ref=f16e454]
+                    - cell "10410" [ref=f16e455]
+                    - cell "021- 4210411 / 021- 42881877" [ref=f16e456]
+                    - cell "-6.1762651" [ref=f16e457]
+                    - cell "106.8424" [ref=f16e458]
+                  - row [ref=f16e459]:
+                    - cell "2024" [ref=f16e460]
+                    - cell "Kota. Adm. Jakarta Pusat" [ref=f16e461]
+                    - cell "Senen" [ref=f16e462]
+                    - cell "Senen" [ref=f16e463]
+                    - cell "Pasar Senen Blok VI" [ref=f16e464]
+                    - cell "Jl. Senen Raya / Stasiun Senen" [ref=f16e465]
+                    - cell "10410" [ref=f16e466]
+                    - cell "021- 4210411 / 021- 42881877" [ref=f16e467]
+                    - cell "-6.17433" [ref=f16e468]
+                    - cell "106.842143" [ref=f16e469]
+                  - row [ref=f16e470]:
+                    - cell "2024" [ref=f16e471]
+                    - cell "Kota. Adm. Jakarta Pusat" [ref=f16e472]
+                    - cell "Tanah Abang" [ref=f16e473]
+                    - cell "Bendungan Hilir" [ref=f16e474]
+                    - cell "Pasar Bendungan Hilir" [ref=f16e475]
+                    - cell "Jl. Bendungan Hilir Raya" [ref=f16e476]
+                    - cell "10210" [ref=f16e477]
+                    - cell "021- 5733574" [ref=f16e478]
+                    - cell "-6.21543" [ref=f16e479]
+                    - cell "106.81535" [ref=f16e480]
+                  - row [ref=f16e481]:
+                    - cell "2024" [ref=f16e482]
+                    - cell "Kota. Adm. Jakarta Pusat" [ref=f16e483]
+                    - cell "Menteng" [ref=f16e484]
+                    - cell "Kebon Sirih" [ref=f16e485]
+                    - cell "Pasar Gondangdia" [ref=f16e486]
+                    - cell "Jl. Sri Kaya Raya" [ref=f16e487]
+                    - cell "10340" [ref=f16e488]
+                    - cell "021- 3927723" [ref=f16e489]
+                    - cell "-6.18646" [ref=f16e490]
+                    - cell "106.83245" [ref=f16e491]
+                  - row [ref=f16e492]:
+                    - cell "2024" [ref=f16e493]
+                    - cell "Kota. Adm. Jakarta Pusat" [ref=f16e494]
+                    - cell "Tanah Abang" [ref=f16e495]
+                    - cell "Kebon Melati" [ref=f16e496]
+                    - cell "Pasar Lontar Kebon Melati" [ref=f16e497]
+                    - cell "Jl. H. Sabeni Raya" [ref=f16e498]
+                    - cell "10230" [ref=f16e499]
+                    - cell "021-3103992" [ref=f16e500]
+                    - cell "-6.19322" [ref=f16e501]
+                    - cell "106.8123" [ref=f16e502]
+                  - row [ref=f16e503]:
+                    - cell "2024" [ref=f16e504]
+                    - cell "Kota. Adm. Jakarta Pusat" [ref=f16e505]
+                    - cell "Tanah Abang" [ref=f16e506]
+                    - cell "Kebon Melati" [ref=f16e507]
+                    - cell "Pasar Kebon Melati" [ref=f16e508]
+                    - cell "Jl. Sabeni Raya, RT.20/RW.12" [ref=f16e509]
+                    - cell "10230" [ref=f16e510]
+                    - cell "N/A" [ref=f16e511]
+                    - cell "-6.1932247" [ref=f16e512]
+                    - cell "106.8131667" [ref=f16e513]
+                  - row [ref=f16e514]:
+                    - cell "2024" [ref=f16e515]
+                    - cell "Kota. Adm. Jakarta Pusat" [ref=f16e516]
+                    - cell "Tanah Abang" [ref=f16e517]
+                    - cell "Kebon Kacang" [ref=f16e518]
+                    - cell "Pasar Gandaria" [ref=f16e519]
+                    - cell "Jl. Kebon Kacang I" [ref=f16e520]
+                    - cell "10240" [ref=f16e521]
+                    - cell "N/A" [ref=f16e522]
+                    - cell "-6.188176" [ref=f16e523]
+                    - cell "106.81845" [ref=f16e524]
+                  - row [ref=f16e525]:
+                    - cell "2024" [ref=f16e526]
+                    - cell "Kota. Adm. Jakarta Pusat" [ref=f16e527]
+                    - cell "Gambir" [ref=f16e528]
+                    - cell "Petojo Utara" [ref=f16e529]
+                    - cell "Pasar Petojo Ilir" [ref=f16e530]
+                    - cell "Jl. A.M. Sangaji, No.16-18, 003/04" [ref=f16e531]
+                    - cell "10130" [ref=f16e532]
+                    - cell "021- 6329375" [ref=f16e533]
+                    - cell "-6.16304" [ref=f16e534]
+                    - cell "106.81237" [ref=f16e535]
+              - navigation [ref=f16e536]:
+                - generic [ref=f16e537]:
+                  - generic [ref=f16e539]:
+                    - generic [ref=f16e540]: Menampilkan 1 sampai 10 dari 292 data
+                    - generic [ref=f16e541]:
+                      - generic [ref=f16e542]: Tampilkan
+                      - combobox [ref=f16e543]:
+                        - option "10" [selected]
+                        - option "50"
+                        - option "100"
+                        - option "All"
+                  - generic [ref=f16e544]:
+                    - button "First Page" [disabled]
+                    - button "Previous Page" [disabled]
+                    - generic [ref=f16e545]:
+                      - button "Page 1" [ref=f16e546] [cursor=pointer]: "1"
+                      - button "Page 2" [ref=f16e547] [cursor=pointer]: "2"
+                      - button "Page 3" [ref=f16e548] [cursor=pointer]: "3"
+                      - button "Page 4" [ref=f16e549] [cursor=pointer]: "4"
+                      - button "Page 5" [ref=f16e550] [cursor=pointer]: "5"
+                    - button "Next Page" [ref=f16e551] [cursor=pointer]
+                    - button "Last Page" [ref=f16e554] [cursor=pointer]
+            - text:   
+          - dialog [active] [ref=f16e557]:
+            - generic [ref=f16e558]:
+              - generic [ref=f16e559]:
+                - generic [ref=f16e560]:
+                  - heading "Data Lokasi Pasar Perusahaan Umum Daerah (Perumda) Pasar Jaya" [level=4] [ref=f16e561]
+                  - paragraph [ref=f16e562]:
+                    - generic [ref=f16e563]: 
+                    - text: Pratinjau Data JSON
+                - button "Tutup" [ref=f16e564] [cursor=pointer]
+              - generic [ref=f16e565]:
+                - generic [ref=f16e566]:
+                  - generic [ref=f16e567]:
+                    - generic [ref=f16e568]: 
+                    - text: API Endpoint
+                  - generic [ref=f16e569]:
+                    - textbox "URL API dataset" [ref=f16e570]: https://ws.jakarta.go.id/gateway/DataPortalSatuDataJakarta/1.0/satudata?kategori=dataset&tipe=detail&url=data-lokasi-pasar-perusahaan-umum-daerah-perumda-pasar-jaya
+                    - button "Salin" [ref=f16e571] [cursor=pointer]:
+                      - generic [ref=f16e572]: 
+                    - link "Buka" [ref=f16e574] [cursor=pointer]:
+                      - /url: https://ws.jakarta.go.id/gateway/DataPortalSatuDataJakarta/1.0/satudata?kategori=dataset&tipe=detail&url=data-lokasi-pasar-perusahaan-umum-daerah-perumda-pasar-jaya
+                      - generic [ref=f16e575]: 
+                  - paragraph [ref=f16e577]: Gunakan endpoint ini untuk mengakses data dataset secara programmatic.
+                - generic [ref=f16e578]:
+                  - generic [ref=f16e580]:
+                    - generic [ref=f16e581]: 
+                    - text: Menampilkan 5 dari 25 baris data
+                  - button "Muat Semua Data" [ref=f16e583] [cursor=pointer]:
+                    - generic [ref=f16e584]: 
+                - generic [ref=f16e587]:
+                  - generic [ref=f16e588]:
+                    - generic [ref=f16e589]:
+                      - generic [ref=f16e590]: 
+                      - text: Output JSON
+                    - generic [ref=f16e591]: 5 / 25 entri
+                  - generic [ref=f16e593]:
+                    - generic [ref=f16e594]: copy
+                    - generic [ref=f16e599] [cursor=pointer]:
+                      - text: "["
+                      - generic [ref=f16e601]:
+                        - generic [ref=f16e603]:
+                          - text: "{"
+                          - generic [ref=f16e604]:
+                            - text: "alamat:"
+                            - generic [ref=f16e605]: "\"Jl. K.H. Fachrudin\""
+                            - text: ","
+                          - generic [ref=f16e606]:
+                            - text: "kecamatan:"
+                            - generic [ref=f16e607]: "\"Tanah Abang\""
+                            - text: ","
+                          - generic [ref=f16e608]:
+                            - text: "kelurahan:"
+                            - generic [ref=f16e609]: "\"Kampung Bali\""
+                            - text: ","
+                          - generic [ref=f16e610]:
+                            - text: "kode_pos:"
+                            - generic [ref=f16e611]: "\"10250\""
+                            - text: ","
+                          - generic [ref=f16e612]:
+                            - text: "koordinat_x:"
+                            - generic [ref=f16e613]: "\"-6.1874067\""
+                            - text: ","
+                          - generic [ref=f16e614]:
+                            - text: "koordinat_y:"
+                            - generic [ref=f16e615]: "\"106.8141357\""
+                            - text: ","
+                          - generic [ref=f16e616]:
+                            - text: "nama_pasar:"
+                            - generic [ref=f16e617]: "\"Pasar Besar Tanah Abang Blok (A-F-G)\""
+                            - text: ","
+                          - generic [ref=f16e618]:
+                            - text: "periode_data:"
+                            - generic [ref=f16e619]: "\"2024\""
+                            - text: ","
+                          - generic [ref=f16e620]:
+                            - text: "telepon:"
+                            - generic [ref=f16e621]: "\"021- 3160407 / 021- 31934178\""
+                            - text: ","
+                          - generic [ref=f16e622]:
+                            - text: "wilayah:"
+                            - generic [ref=f16e623]: "\"Kota. Adm. Jakarta Pusat\""
+                          - text: "}"
+                        - text: ","
+                      - generic [ref=f16e624]:
+                        - generic [ref=f16e626]:
+                          - text: "{"
+                          - generic [ref=f16e627]:
+                            - text: "alamat:"
+                            - generic [ref=f16e628]: "\"Jl. Kebon Jati\""
+                            - text: ","
+                          - generic [ref=f16e629]:
+                            - text: "kecamatan:"
+                            - generic [ref=f16e630]: "\"Tanah Abang\""
+                            - text: ","
+                          - generic [ref=f16e631]:
+                            - text: "kelurahan:"
+                            - generic [ref=f16e632]: "\"Kebon Kacang\""
+                            - text: ","
+                          - generic [ref=f16e633]:
+                            - text: "kode_pos:"
+                            - generic [ref=f16e634]: "\"10240\""
+                            - text: ","
+                          - generic [ref=f16e635]:
+                            - text: "koordinat_x:"
+                            - generic [ref=f16e636]: "\"-6.1874067\""
+                            - text: ","
+                          - generic [ref=f16e637]:
+                            - text: "koordinat_y:"
+                            - generic [ref=f16e638]: "\"106.8141357\""
+                            - text: ","
+                          - generic [ref=f16e639]:
+                            - text: "nama_pasar:"
+                            - generic [ref=f16e640]: "\"Pasar Besar Tanah Abang Blok B\""
+                            - text: ","
+                          - generic [ref=f16e641]:
+                            - text: "periode_data:"
+                            - generic [ref=f16e642]: "\"2024\""
+                            - text: ","
+                          - generic [ref=f16e643]:
+                            - text: "telepon:"
+                            - generic [ref=f16e644]: "\"N/A\""
+                            - text: ","
+                          - generic [ref=f16e645]:
+                            - text: "wilayah:"
+                            - generic [ref=f16e646]: "\"Kota. Adm. Jakarta Pusat\""
+                          - text: "}"
+                        - text: ","
+                      - generic [ref=f16e647]:
+                        - generic [ref=f16e649]:
+                          - text: "{"
+                          - generic [ref=f16e650]:
+                            - text: "alamat:"
+                            - generic [ref=f16e651]: "\"Jl. Senen Raya / Stasiun Senen\""
+                            - text: ","
+                          - generic [ref=f16e652]:
+                            - text: "kecamatan:"
+                            - generic [ref=f16e653]: "\"Senen\""
+                            - text: ","
+                          - generic [ref=f16e654]:
+                            - text: "kelurahan:"
+                            - generic [ref=f16e655]: "\"Senen\""
+                            - text: ","
+                          - generic [ref=f16e656]:
+                            - text: "kode_pos:"
+                            - generic [ref=f16e657]: "\"10410\""
+                            - text: ","
+                          - generic [ref=f16e658]:
+                            - text: "koordinat_x:"
+                            - generic [ref=f16e659]: "\"-6.1762651\""
+                            - text: ","
+                          - generic [ref=f16e660]:
+                            - text: "koordinat_y:"
+                            - generic [ref=f16e661]: "\"106.8424\""
+                            - text: ","
+                          - generic [ref=f16e662]:
+                            - text: "nama_pasar:"
+                            - generic [ref=f16e663]: "\"Pasar Senen Blok Ill\""
+                            - text: ","
+                          - generic [ref=f16e664]:
+                            - text: "periode_data:"
+                            - generic [ref=f16e665]: "\"2024\""
+                            - text: ","
+                          - generic [ref=f16e666]:
+                            - text: "telepon:"
+                            - generic [ref=f16e667]: "\"021- 4210411 / 021- 42881877\""
+                            - text: ","
+                          - generic [ref=f16e668]:
+                            - text: "wilayah:"
+                            - generic [ref=f16e669]: "\"Kota. Adm. Jakarta Pusat\""
+                          - text: "}"
+                        - text: ","
+                      - generic [ref=f16e670]:
+                        - generic [ref=f16e672]:
+                          - text: "{"
+                          - generic [ref=f16e673]:
+                            - text: "alamat:"
+                            - generic [ref=f16e674]: "\"Jl. Senen Raya / Stasiun Senen\""
+                            - text: ","
+                          - generic [ref=f16e675]:
+                            - text: "kecamatan:"
+                            - generic [ref=f16e676]: "\"Senen\""
+                            - text: ","
+                          - generic [ref=f16e677]:
+                            - text: "kelurahan:"
+                            - generic [ref=f16e678]: "\"Senen\""
+                            - text: ","
+                          - generic [ref=f16e679]:
+                            - text: "kode_pos:"
+                            - generic [ref=f16e680]: "\"10410\""
+                            - text: ","
+                          - generic [ref=f16e681]:
+                            - text: "koordinat_x:"
+                            - generic [ref=f16e682]: "\"-6.17433\""
+                            - text: ","
+                          - generic [ref=f16e683]:
+                            - text: "koordinat_y:"
+                            - generic [ref=f16e684]: "\"106.842143\""
+                            - text: ","
+                          - generic [ref=f16e685]:
+                            - text: "nama_pasar:"
+                            - generic [ref=f16e686]: "\"Pasar Senen Blok VI\""
+                            - text: ","
+                          - generic [ref=f16e687]:
+                            - text: "periode_data:"
+                            - generic [ref=f16e688]: "\"2024\""
+                            - text: ","
+                          - generic [ref=f16e689]:
+                            - text: "telepon:"
+                            - generic [ref=f16e690]: "\"021- 4210411 / 021- 42881877\""
+                            - text: ","
+                          - generic [ref=f16e691]:
+                            - text: "wilayah:"
+                            - generic [ref=f16e692]: "\"Kota. Adm. Jakarta Pusat\""
+                          - text: "}"
+                        - text: ","
+                      - generic [ref=f16e695]:
+                        - text: "{"
+                        - generic [ref=f16e696]:
+                          - text: "alamat:"
+                          - generic [ref=f16e697]: "\"Jl. Bendungan Hilir Raya\""
+                          - text: ","
+                        - generic [ref=f16e698]:
+                          - text: "kecamatan:"
+                          - generic [ref=f16e699]: "\"Tanah Abang\""
+                          - text: ","
+                        - generic [ref=f16e700]:
+                          - text: "kelurahan:"
+                          - generic [ref=f16e701]: "\"Bendungan Hilir\""
+                          - text: ","
+                        - generic [ref=f16e702]:
+                          - text: "kode_pos:"
+                          - generic [ref=f16e703]: "\"10210\""
+                          - text: ","
+                        - generic [ref=f16e704]:
+                          - text: "koordinat_x:"
+                          - generic [ref=f16e705]: "\"-6.21543\""
+                          - text: ","
+                        - generic [ref=f16e706]:
+                          - text: "koordinat_y:"
+                          - generic [ref=f16e707]: "\"106.81535\""
+                          - text: ","
+                        - generic [ref=f16e708]:
+                          - text: "nama_pasar:"
+                          - generic [ref=f16e709]: "\"Pasar Bendungan Hilir\""
+                          - text: ","
+                        - generic [ref=f16e710]:
+                          - text: "periode_data:"
+                          - generic [ref=f16e711]: "\"2024\""
+                          - text: ","
+                        - generic [ref=f16e712]:
+                          - text: "telepon:"
+                          - generic [ref=f16e713]: "\"021- 5733574\""
+                          - text: ","
+                        - generic [ref=f16e714]:
+                          - text: "wilayah:"
+                          - generic [ref=f16e715]: "\"Kota. Adm. Jakarta Pusat\""
+                        - text: "}"
+                      - text: "]"
+              - button "Tutup" [ref=f16e717] [cursor=pointer]:
+                - generic [ref=f16e718]: 
+                - text: Tutup
+          - text: 
+        - generic [ref=f16e720]:
+          - heading "DATASET TERKAIT" [level=5] [ref=f16e722]
+          - region "Gallery" [ref=f16e725]:
+            - list [ref=f16e727]:
+              - listitem [ref=f16e728]:
+                - generic [ref=f16e731] [cursor=pointer]:
+                  - generic [ref=f16e732]:
+                    - generic [ref=f16e733]: Dataset
+                    - generic [ref=f16e734]: Open Data
+                  - heading [level=5] [ref=f16e735]: Data Alat Ukur, Takar, Timbang, dan Perlengkapannya...
+                  - generic [ref=f16e737]:
+                    - generic [ref=f16e738]: 
+                    - text: 4 Februari 2025
+              - listitem [ref=f16e739]:
+                - generic [ref=f16e742] [cursor=pointer]:
+                  - generic [ref=f16e743]:
+                    - generic [ref=f16e744]: Dataset
+                    - generic [ref=f16e745]: Open Data
+                  - heading [level=5] [ref=f16e746]: Data Harga Bahan Pokok di Provinsi DKI Jakarta
+                  - generic [ref=f16e748]:
+                    - generic [ref=f16e749]: 
+                    - text: 24 Februari 2025
+              - listitem [ref=f16e750]:
+                - generic [ref=f16e753] [cursor=pointer]:
+                  - generic [ref=f16e754]:
+                    - generic [ref=f16e755]: Dataset
+                    - generic [ref=f16e756]: Open Data
+                  - heading [level=5] [ref=f16e757]: Jumlah Usaha Mikro, Kecil, dan Menengah (UMKM)...
+                  - generic [ref=f16e759]:
+                    - generic [ref=f16e760]: 
+                    - text: 5 Februari 2025
+              - listitem [ref=f16e761]:
+                - generic [ref=f16e764] [cursor=pointer]:
+                  - generic [ref=f16e765]:
+                    - generic [ref=f16e766]: Dataset
+                    - generic [ref=f16e767]: Open Data
+                  - heading [level=5] [ref=f16e768]: Jumlah Jakarta Entrepreneur (Jakpreneur) di...
+                  - generic [ref=f16e770]:
+                    - generic [ref=f16e771]: 
+                    - text: 3 Juli 2025
+              - listitem [ref=f16e772]:
+                - generic [ref=f16e775] [cursor=pointer]:
+                  - generic [ref=f16e776]:
+                    - generic [ref=f16e777]: Dataset
+                    - generic [ref=f16e778]: Open Data
+                  - heading [level=5] [ref=f16e779]: Jumlah Warung Kelontong Binaan Dinas Perindustrian,...
+                  - generic [ref=f16e781]:
+                    - generic [ref=f16e782]: 
+                    - text: 3 Juli 2025
+              - listitem [ref=f16e783]:
+                - generic [ref=f16e786] [cursor=pointer]:
+                  - generic [ref=f16e787]:
+                    - generic [ref=f16e788]: Dataset
+                    - generic [ref=f16e789]: Open Data
+                  - heading [level=5] [ref=f16e790]: Jumlah Pasar Semi Permanen Binaan Dinas...
+                  - generic [ref=f16e792]:
+                    - generic [ref=f16e793]: 
+                    - text: 3 Juli 2025
+              - listitem [ref=f16e794]:
+                - generic [ref=f16e797] [cursor=pointer]:
+                  - generic [ref=f16e798]:
+                    - generic [ref=f16e799]: Dataset
+                    - generic [ref=f16e800]: Open Data
+                  - heading [level=5] [ref=f16e801]: Jumlah Pasar Bangunan Permanen Binaan Dinas...
+                  - generic [ref=f16e803]:
+                    - generic [ref=f16e804]: 
+                    - text: 3 Juli 2025
+              - listitem [ref=f16e805]:
+                - generic [ref=f16e808] [cursor=pointer]:
+                  - generic [ref=f16e809]:
+                    - generic [ref=f16e810]: Dataset
+                    - generic [ref=f16e811]: Open Data
+                  - heading [level=5] [ref=f16e812]: Jumlah Restoran per Kelurahan
+                  - generic [ref=f16e814]:
+                    - generic [ref=f16e815]: 
+                    - text: 25 Juni 2025
+              - listitem [ref=f16e816]:
+                - generic "Data Alat Ukur, Takar, Timbang, dan Perlengkapannya (UTTP) di Pasar yang Telah Ditera Ulang" [ref=f16e817] [cursor=pointer]:
+                  - img "Data Alat Ukur, Takar, Timbang, dan Perlengkapannya (UTTP) di Pasar yang Telah Ditera Ulang" [ref=f16e818]
+                  - generic [ref=f16e819]:
+                    - generic [ref=f16e820]:
+                      - generic [ref=f16e821]: Dataset
+                      - generic [ref=f16e822]: Open Data
+                    - heading "Data Alat Ukur, Takar, Timbang, dan Perlengkapannya..." [level=5] [ref=f16e823]
+                    - generic [ref=f16e825]:
+                      - generic [ref=f16e826]: 
+                      - text: 4 Februari 2025
+              - listitem [ref=f16e827]:
+                - generic "Data Harga Bahan Pokok di Provinsi DKI Jakarta" [ref=f16e828] [cursor=pointer]:
+                  - img "Data Harga Bahan Pokok di Provinsi DKI Jakarta" [ref=f16e829]
+                  - generic [ref=f16e830]:
+                    - generic [ref=f16e831]:
+                      - generic [ref=f16e832]: Dataset
+                      - generic [ref=f16e833]: Open Data
+                    - heading "Data Harga Bahan Pokok di Provinsi DKI Jakarta" [level=5] [ref=f16e834]
+                    - generic [ref=f16e836]:
+                      - generic [ref=f16e837]: 
+                      - text: 24 Februari 2025
+              - listitem [ref=f16e838]:
+                - generic "Jumlah Usaha Mikro, Kecil, dan Menengah (UMKM) Binaan Pemerintah Provinsi DKI Jakarta" [ref=f16e839] [cursor=pointer]:
+                  - img "Jumlah Usaha Mikro, Kecil, dan Menengah (UMKM) Binaan Pemerintah Provinsi DKI Jakarta" [ref=f16e840]
+                  - generic [ref=f16e841]:
+                    - generic [ref=f16e842]:
+                      - generic [ref=f16e843]: Dataset
+                      - generic [ref=f16e844]: Open Data
+                    - heading "Jumlah Usaha Mikro, Kecil, dan Menengah (UMKM)..." [level=5] [ref=f16e845]
+                    - generic [ref=f16e847]:
+                      - generic [ref=f16e848]: 
+                      - text: 5 Februari 2025
+              - listitem [ref=f16e849]:
+                - generic [ref=f16e852] [cursor=pointer]:
+                  - generic [ref=f16e853]:
+                    - generic [ref=f16e854]: Dataset
+                    - generic [ref=f16e855]: Open Data
+                  - heading [level=5] [ref=f16e856]: Jumlah Jakarta Entrepreneur (Jakpreneur) di...
+                  - generic [ref=f16e858]:
+                    - generic [ref=f16e859]: 
+                    - text: 3 Juli 2025
+              - listitem [ref=f16e860]:
+                - generic [ref=f16e863] [cursor=pointer]:
+                  - generic [ref=f16e864]:
+                    - generic [ref=f16e865]: Dataset
+                    - generic [ref=f16e866]: Open Data
+                  - heading [level=5] [ref=f16e867]: Jumlah Warung Kelontong Binaan Dinas Perindustrian,...
+                  - generic [ref=f16e869]:
+                    - generic [ref=f16e870]: 
+                    - text: 3 Juli 2025
+              - listitem [ref=f16e871]:
+                - generic [ref=f16e874] [cursor=pointer]:
+                  - generic [ref=f16e875]:
+                    - generic [ref=f16e876]: Dataset
+                    - generic [ref=f16e877]: Open Data
+                  - heading [level=5] [ref=f16e878]: Jumlah Pasar Semi Permanen Binaan Dinas...
+                  - generic [ref=f16e880]:
+                    - generic [ref=f16e881]: 
+                    - text: 3 Juli 2025
+              - listitem [ref=f16e882]:
+                - generic [ref=f16e885] [cursor=pointer]:
+                  - generic [ref=f16e886]:
+                    - generic [ref=f16e887]: Dataset
+                    - generic [ref=f16e888]: Open Data
+                  - heading [level=5] [ref=f16e889]: Jumlah Pasar Bangunan Permanen Binaan Dinas...
+                  - generic [ref=f16e891]:
+                    - generic [ref=f16e892]: 
+                    - text: 3 Juli 2025
+              - listitem [ref=f16e893]:
+                - generic [ref=f16e896] [cursor=pointer]:
+                  - generic [ref=f16e897]:
+                    - generic [ref=f16e898]: Dataset
+                    - generic [ref=f16e899]: Open Data
+                  - heading [level=5] [ref=f16e900]: Jumlah Restoran per Kelurahan
+                  - generic [ref=f16e902]:
+                    - generic [ref=f16e903]: 
+                    - text: 25 Juni 2025
+              - listitem [ref=f16e904]:
+                - generic [ref=f16e907] [cursor=pointer]:
+                  - generic [ref=f16e908]:
+                    - generic [ref=f16e909]: Dataset
+                    - generic [ref=f16e910]: Open Data
+                  - heading [level=5] [ref=f16e911]: Data Alat Ukur, Takar, Timbang, dan Perlengkapannya...
+                  - generic [ref=f16e913]:
+                    - generic [ref=f16e914]: 
+                    - text: 4 Februari 2025
+              - listitem [ref=f16e915]:
+                - generic [ref=f16e918] [cursor=pointer]:
+                  - generic [ref=f16e919]:
+                    - generic [ref=f16e920]: Dataset
+                    - generic [ref=f16e921]: Open Data
+                  - heading [level=5] [ref=f16e922]: Data Harga Bahan Pokok di Provinsi DKI Jakarta
+                  - generic [ref=f16e924]:
+                    - generic [ref=f16e925]: 
+                    - text: 24 Februari 2025
+              - listitem [ref=f16e926]:
+                - generic [ref=f16e929] [cursor=pointer]:
+                  - generic [ref=f16e930]:
+                    - generic [ref=f16e931]: Dataset
+                    - generic [ref=f16e932]: Open Data
+                  - heading [level=5] [ref=f16e933]: Jumlah Usaha Mikro, Kecil, dan Menengah (UMKM)...
+                  - generic [ref=f16e935]:
+                    - generic [ref=f16e936]: 
+                    - text: 5 Februari 2025
+              - listitem [ref=f16e937]:
+                - generic [ref=f16e940] [cursor=pointer]:
+                  - generic [ref=f16e941]:
+                    - generic [ref=f16e942]: Dataset
+                    - generic [ref=f16e943]: Open Data
+                  - heading [level=5] [ref=f16e944]: Jumlah Jakarta Entrepreneur (Jakpreneur) di...
+                  - generic [ref=f16e946]:
+                    - generic [ref=f16e947]: 
+                    - text: 3 Juli 2025
+              - listitem [ref=f16e948]:
+                - generic [ref=f16e951] [cursor=pointer]:
+                  - generic [ref=f16e952]:
+                    - generic [ref=f16e953]: Dataset
+                    - generic [ref=f16e954]: Open Data
+                  - heading [level=5] [ref=f16e955]: Jumlah Warung Kelontong Binaan Dinas Perindustrian,...
+                  - generic [ref=f16e957]:
+                    - generic [ref=f16e958]: 
+                    - text: 3 Juli 2025
+              - listitem [ref=f16e959]:
+                - generic [ref=f16e962] [cursor=pointer]:
+                  - generic [ref=f16e963]:
+                    - generic [ref=f16e964]: Dataset
+                    - generic [ref=f16e965]: Open Data
+                  - heading [level=5] [ref=f16e966]: Jumlah Pasar Semi Permanen Binaan Dinas...
+                  - generic [ref=f16e968]:
+                    - generic [ref=f16e969]: 
+                    - text: 3 Juli 2025
+              - listitem [ref=f16e970]:
+                - generic [ref=f16e973] [cursor=pointer]:
+                  - generic [ref=f16e974]:
+                    - generic [ref=f16e975]: Dataset
+                    - generic [ref=f16e976]: Open Data
+                  - heading [level=5] [ref=f16e977]: Jumlah Pasar Bangunan Permanen Binaan Dinas...
+                  - generic [ref=f16e979]:
+                    - generic [ref=f16e980]: 
+                    - text: 3 Juli 2025
+              - listitem [ref=f16e981]:
+                - generic [ref=f16e984] [cursor=pointer]:
+                  - generic [ref=f16e985]:
+                    - generic [ref=f16e986]: Dataset
+                    - generic [ref=f16e987]: Open Data
+                  - heading [level=5] [ref=f16e988]: Jumlah Restoran per Kelurahan
+                  - generic [ref=f16e990]:
+                    - generic [ref=f16e991]: 
+                    - text: 25 Juni 2025
+            - button "Navigate to previous slide" [ref=f16e992] [cursor=pointer]:
+              - img "Arrow pointing to the left" [ref=f16e993]
+            - button "Navigate to next slide" [ref=f16e995] [cursor=pointer]:
+              - img "Arrow pointing to the right" [ref=f16e996]
+            - generic [ref=f16e998]: Item 1 of 8
+    - generic [ref=f16e38]:
+      - generic [ref=f16e39]:
+        - paragraph [ref=f16e40]: "Kontak Kami :"
+        - paragraph [ref=f16e41]: Bidang Data dan Statistik Jl. Medan Merdeka Selatan Jakarta Pusat
+        - paragraph [ref=f16e42]: "Help Desk : 0813 4000 3614"
+        - paragraph [ref=f16e43]: "Email : data.statistik@jakarta.go.id"
+      - generic [ref=f16e44]:
+        - link [ref=f16e45] [cursor=pointer]:
+          - /url: https://jakarta.go.id/
+        - link [ref=f16e47] [cursor=pointer]:
+          - /url: https://ppid.jakarta.go.id/
+        - link [ref=f16e49] [cursor=pointer]:
+          - /url: https://www.beritajakarta.id/
+        - link [ref=f16e51] [cursor=pointer]:
+          - /url: https://smartcity.jakarta.go.id/id/
+          - img "Logo Jakarta Smart City" [ref=f16e52]
+        - link [ref=f16e53] [cursor=pointer]:
+          - /url: https://jalahoaks.jakarta.go.id/
+          - img "Logo Jalahoaks Jakarta" [ref=f16e54]
+        - link [ref=f16e55] [cursor=pointer]:
+          - /url: https://data.go.id
+          - img "Logo Satu Data Indonesia" [ref=f16e56]
+      - generic [ref=f16e57]:
+        - button "Masuk" [ref=f16e58] [cursor=pointer]
+        - paragraph [ref=f16e59]:
+          - img "Icon traffic kunjungan harian" [ref=f16e60]
+          - text: "Kunjungan Minggu Ini: 2.017"
+          - img "Icon insight total kunjungan" [ref=f16e61]
+          - text: "Total Kunjungan: 276.211"
+      - paragraph [ref=f16e63]: Copyright © 2026 Dinas Komunikasi, Informatika dan Statistik Provinsi DKI Jakarta. All Right Reserved
+    - generic [ref=f16e65] [cursor=pointer]:
+      - link [ref=f16e66]:
+        - /url: /chatbot
+      - generic [ref=f16e68]: 
+    - button "Umpan Balik" [ref=f16e69] [cursor=pointer]
+  - generic:
+    - button "Menu Aksesibilitas" [ref=f16e71] [cursor=pointer]
+    - dialog [ref=f16e75]:
+      - banner [ref=f16e76]:
+        - generic [ref=f16e82]:
+          - heading "Menu Aksesibilitas" [level=2] [ref=f16e83]
+          - paragraph [ref=f16e84]: Sesuaikan tampilan agar lebih nyaman dibaca
+        - button "Tutup menu aksesibilitas" [ref=f16e85] [cursor=pointer]:
+          - generic [ref=f16e86]: 
+      - generic [ref=f16e87]:
+        - generic [ref=f16e88]:
+          - heading "Teks & Bacaan" [level=3] [ref=f16e89]
+          - generic [ref=f16e91]:
+            - button "Moda Suara Baca konten dengan suara" [ref=f16e92] [cursor=pointer]:
+              - generic [ref=f16e95]: Moda Suara
+              - generic [ref=f16e96]: Baca konten dengan suara
+            - 'button "Perbesar Teks Ukuran teks: level 0 dari 4" [ref=f16e97] [cursor=pointer]':
+              - generic [ref=f16e101]: Perbesar Teks
+              - 'generic "Ukuran teks: level 0 dari 4" [ref=f16e102]'
+            - button "Perkecil Teks" [ref=f16e107] [cursor=pointer]
+            - button "Pertegas Teks Font lebih mudah dibaca" [ref=f16e117] [cursor=pointer]:
+              - generic [ref=f16e121]: Pertegas Teks
+              - generic [ref=f16e122]: Font lebih mudah dibaca
+        - generic [ref=f16e123]:
+          - heading "Gaya Tulisan" [level=3] [ref=f16e124]
+          - generic [ref=f16e126]:
+            - button "Normal" [pressed] [ref=f16e127] [cursor=pointer]:
+              - generic [ref=f16e128]: 
+              - generic [ref=f16e130]: 
+            - button "Rata Kiri" [ref=f16e133] [cursor=pointer]:
+              - generic [ref=f16e134]: 
+            - button "Rata Tengah" [ref=f16e137] [cursor=pointer]:
+              - generic [ref=f16e138]: 
+            - button "Rata Kanan" [ref=f16e141] [cursor=pointer]:
+              - generic [ref=f16e142]: 
+            - button "Garis Miring" [ref=f16e145] [cursor=pointer]:
+              - generic [ref=f16e146]: 
+            - button "Garis Bawah" [ref=f16e149] [cursor=pointer]:
+              - generic [ref=f16e150]: 
+        - generic [ref=f16e153]:
+          - heading "Warna & Kontras" [level=3] [ref=f16e154]
+          - generic [ref=f16e156]:
+            - button "Skala Abu-abu" [ref=f16e157] [cursor=pointer]
+            - button "Kontras+" [ref=f16e163] [cursor=pointer]
+            - button "Klise" [ref=f16e169] [cursor=pointer]
+            - button "Penerangan" [ref=f16e174] [cursor=pointer]
+            - button "Mode Malam" [ref=f16e180] [cursor=pointer]
+        - generic [ref=f16e185]:
+          - heading "Navigasi" [level=3] [ref=f16e186]
+          - button "Garis Bawahi Tautan Tandai semua tautan dengan garis bawah" [ref=f16e189] [cursor=pointer]:
+            - generic [ref=f16e193]: Garis Bawahi Tautan
+            - generic [ref=f16e194]: Tandai semua tautan dengan garis bawah
+      - contentinfo [ref=f16e195]:
+        - paragraph [ref=f16e196]:
+          - generic [ref=f16e197]: Ctrl
+          - text: +
+          - generic [ref=f16e198]: U
+          - text: untuk buka/tutup
+        - button "Atur Ulang Semua" [ref=f16e199] [cursor=pointer]:
+          - generic [ref=f16e200]: 
+          - text: Atur Ulang Semua

@@ -1,0 +1,417 @@
+- generic [active] [ref=f7e1]:
+  - generic [ref=f7e3]:
+    - navigation [ref=f7e5]:
+      - generic [ref=f7e6]:
+        - link [ref=f7e7] [cursor=pointer]:
+          - /url: /home
+        - button "Toggle navigation" [ref=f7e9] [cursor=pointer]
+        - generic: Indonesia
+    - generic [ref=f7e12]:
+      - list [ref=f7e17]:
+        - listitem [ref=f7e18] [cursor=pointer]:
+          - link "Home" [ref=f7e19]:
+            - /url: /home
+          - text: /
+        - listitem [ref=f7e20] [cursor=pointer]:
+          - link "Dataset" [ref=f7e21]:
+            - /url: /search?q=&halaman=all&kategori=dataset&topik=all&organisasi=all&status=all&sort=desc&page_no=1&show_filter=true&lang=id
+      - generic [ref=f7e23]:
+        - generic [ref=f7e26]:
+          - generic [ref=f7e29]:
+            - textbox "Data apa yang kamu cari?" [ref=f7e30]: umkm
+            - generic [ref=f7e31] [cursor=pointer]: 
+            - img "Cari" [ref=f7e34] [cursor=pointer]
+          - generic [ref=f7e35]: 414 Dataset ditemukan
+          - combobox [ref=f7e37]:
+            - option "Tanggal Terbaru" [selected]
+            - option "A-Z"
+            - option "Terpopuler"
+        - list [ref=f7e42]:
+          - listitem [ref=f7e43]:
+            - heading [level=4] [ref=f7e44]:
+              - img "Icon Filter" [ref=f7e45]
+              - text: Halaman
+            - generic [ref=f7e46]:
+              - checkbox [ref=f7e47] [cursor=pointer]
+              - generic [ref=f7e48]: All
+            - generic [ref=f7e49]:
+              - checkbox [checked] [ref=f7e50] [cursor=pointer]
+              - generic [ref=f7e51]: Open Data
+            - generic [ref=f7e52]:
+              - checkbox [ref=f7e53] [cursor=pointer]
+              - generic [ref=f7e54]: Statistik Sektoral
+            - generic [ref=f7e55]:
+              - checkbox [ref=f7e56] [cursor=pointer]
+              - generic [ref=f7e57]: Visualisasi
+            - generic [ref=f7e58]:
+              - checkbox [ref=f7e59] [cursor=pointer]
+              - generic [ref=f7e60]: Jakarta Satu
+          - listitem [ref=f7e61]:
+            - heading [level=4] [ref=f7e62]:
+              - img "Icon Kategori" [ref=f7e63]
+              - text: Kategori
+            - generic [ref=f7e64]:
+              - checkbox [ref=f7e65] [cursor=pointer]
+              - generic [ref=f7e66]: All
+            - generic [ref=f7e67]:
+              - checkbox [checked] [ref=f7e68] [cursor=pointer]
+              - generic [ref=f7e69]: Dataset
+          - listitem [ref=f7e70]:
+            - heading [level=4] [ref=f7e71]:
+              - img "Icon Topik" [ref=f7e72]
+              - text: Topik
+            - text: Selengkapnya...
+          - listitem [ref=f7e73]:
+            - heading [level=4] [ref=f7e74]:
+              - img "Icon Organisasi" [ref=f7e75]
+              - text: Organisasi
+            - text: Selengkapnya...
+          - listitem [ref=f7e76]:
+            - heading "Status" [level=4] [ref=f7e77]
+            - generic [ref=f7e78]:
+              - checkbox [ref=f7e79] [cursor=pointer]
+              - generic [ref=f7e80]: Publik
+            - generic [ref=f7e81]:
+              - checkbox [ref=f7e82] [cursor=pointer]
+              - generic [ref=f7e83]: Terbatas
+          - listitem [ref=f7e84]:
+            - button "Hapus Filter" [ref=f7e85] [cursor=pointer]
+        - generic [ref=f7e97]:
+          - link "Data Usaha Mikro, Kecil, dan Menengah (UMKM) Berdasarkan Status di Provinsi DKI Jakarta Data Usaha Mikro, Kecil, dan Menengah (UMKM) Berdasarkan Status di Provinsi DKI Jakarta UMKM Usaha Mikro Usaha Kecil Data Usaha Mikro, Kecil dan Menengah (UMKM) yang dilengkapi dengan statusnya seperti, aktif atau tidak beroperasi yang ada di Provinsi DKI Jakarta. Open Data Dataset Publik 26 Juni 2026" [ref=f7e270] [cursor=pointer]:
+            - /url: https://satudata.jakarta.go.id/open-data/detail?kategori=dataset&page_url=data-usaha-mikro-kecil-dan-menengah-umkm-berdasarkan-status-di-provinsi-dki-jakarta&data_no=1
+            - generic [ref=f7e271]:
+              - img "Data Usaha Mikro, Kecil, dan Menengah (UMKM) Berdasarkan Status di Provinsi DKI Jakarta" [ref=f7e273]
+              - generic [ref=f7e274]:
+                - heading [level=5] [ref=f7e275]:
+                  - generic [ref=f7e276]:
+                    - text: Data Usaha Mikro, Kecil, dan Menengah (
+                    - mark [ref=f7e277]: UMKM
+                    - text: ) Berdasarkan Status di Provinsi DKI Jakarta
+                - generic [ref=f7e278]:
+                  - mark [ref=f7e281]: UMKM
+                  - generic [ref=f7e282]: Usaha Mikro
+                  - generic [ref=f7e283]: Usaha Kecil
+                - paragraph [ref=f7e284]:
+                  - generic [ref=f7e285]:
+                    - text: Data Usaha Mikro, Kecil dan Menengah (
+                    - mark [ref=f7e286]: UMKM
+                    - text: ) yang dilengkapi dengan statusnya seperti, aktif atau tidak beroperasi yang ada di Provinsi DKI Jakarta.
+                - generic [ref=f7e288]:
+                  - generic [ref=f7e289]:
+                    - generic [ref=f7e290]: Open Data
+                    - generic [ref=f7e291]: Dataset
+                    - generic [ref=f7e292]: Publik
+                  - generic [ref=f7e294]:
+                    - generic [ref=f7e295]: 
+                    - text: 26 Juni 2026
+          - link "Jumlah Karyawan yang Bekerja di Sektor Usaha Mikro, Kecil, dan Menengah (UMKM) Jumlah Karyawan yang Bekerja di Sektor Usaha Mikro, Kecil, dan Menengah (UMKM) Karyawan Bekerja Sektor UMKM Banyaknya tenaga kerja yang bekerja pada usaha yang termasuk kategori Usaha Mikro, Kecil, dan Menengah (UMKM) dalam periode referensi tertentu. Open Data Dataset Publik 4 Mei 2026" [ref=f7e296] [cursor=pointer]:
+            - /url: https://satudata.jakarta.go.id/open-data/detail?kategori=dataset&page_url=jumlah-karyawan-yang-bekerja-di-sektor-usaha-mikro-kecil-dan-menengah-umkm&data_no=1
+            - generic [ref=f7e297]:
+              - img "Jumlah Karyawan yang Bekerja di Sektor Usaha Mikro, Kecil, dan Menengah (UMKM)" [ref=f7e299]
+              - generic [ref=f7e300]:
+                - heading [level=5] [ref=f7e301]:
+                  - generic [ref=f7e302]:
+                    - text: Jumlah Karyawan yang Bekerja di Sektor Usaha Mikro, Kecil, dan Menengah (
+                    - mark [ref=f7e303]: UMKM
+                    - text: )
+                - generic [ref=f7e304]:
+                  - generic [ref=f7e305]: Karyawan
+                  - generic [ref=f7e306]: Bekerja
+                  - generic [ref=f7e308]:
+                    - text: Sektor
+                    - mark [ref=f7e309]: UMKM
+                - paragraph [ref=f7e310]:
+                  - generic [ref=f7e311]:
+                    - text: Banyaknya tenaga kerja yang bekerja pada usaha yang termasuk kategori Usaha Mikro, Kecil, dan Menengah (
+                    - mark [ref=f7e312]: UMKM
+                    - text: ) dalam periode referensi tertentu.
+                - generic [ref=f7e314]:
+                  - generic [ref=f7e315]:
+                    - generic [ref=f7e316]: Open Data
+                    - generic [ref=f7e317]: Dataset
+                    - generic [ref=f7e318]: Publik
+                  - generic [ref=f7e320]:
+                    - generic [ref=f7e321]: 
+                    - text: 4 Mei 2026
+          - link "Jumlah Usaha Mikro, Kecil, dan Menengah (UMKM) Berdasarkan Sektor Usaha, Tenaga Kerja, Aset, Omzet, dan Skala Usaha Jumlah Usaha Mikro, Kecil, dan Menengah (UMKM) Berdasarkan Sektor Usaha, Tenaga Kerja, Aset, Omzet, dan Skala Usaha Jakpreneur Jumlah UMKM Peserta Jakpreneur berdasarkan Skala Usaha, sektor usaha, tenaga kerja, aset-omzet, dan Skala Usaha Hasil Pendataan Lengkap Koperasi Usaha Mikro Kecil... Open Data Dataset Publik 4 Mei 2026" [ref=f7e322] [cursor=pointer]:
+            - /url: https://satudata.jakarta.go.id/open-data/detail?kategori=dataset&page_url=jumlah-usaha-mikro-kecil-dan-menengah-umkm-berdasarkan-sektor-usaha-tenaga-kerja-aset-omzet-dan-skala-usaha&data_no=1
+            - generic [ref=f7e323]:
+              - img "Jumlah Usaha Mikro, Kecil, dan Menengah (UMKM) Berdasarkan Sektor Usaha, Tenaga Kerja, Aset, Omzet, dan Skala Usaha" [ref=f7e325]
+              - generic [ref=f7e326]:
+                - heading [level=5] [ref=f7e327]:
+                  - generic [ref=f7e328]:
+                    - text: Jumlah Usaha Mikro, Kecil, dan Menengah (
+                    - mark [ref=f7e329]: UMKM
+                    - text: ) Berdasarkan Sektor Usaha, Tenaga Kerja, Aset, Omzet, dan Skala Usaha
+                - generic [ref=f7e330]: Jakpreneur
+                - paragraph [ref=f7e332]:
+                  - generic [ref=f7e333]:
+                    - text: Jumlah
+                    - mark [ref=f7e334]: UMKM
+                    - text: Peserta Jakpreneur berdasarkan Skala Usaha, sektor usaha, tenaga kerja, aset-omzet, dan Skala Usaha Hasil Pendataan Lengkap Koperasi Usaha Mikro Kecil...
+                - generic [ref=f7e336]:
+                  - generic [ref=f7e337]:
+                    - generic [ref=f7e338]: Open Data
+                    - generic [ref=f7e339]: Dataset
+                    - generic [ref=f7e340]: Publik
+                  - generic [ref=f7e342]:
+                    - generic [ref=f7e343]: 
+                    - text: 4 Mei 2026
+          - link "Data Penerima Bantuan Sarana/Prasarana Usaha Mikro, Kecil, dan Menengah (UMKM) Data Penerima Bantuan Sarana/Prasarana Usaha Mikro, Kecil, dan Menengah (UMKM) UKM Bantuan Data Peserta Pelatihan Wirausaha Industri Baru (WUIB) yang Menerima Bantuan Sarana/Prasarana Usaha Mikro, Kecil Menengah (UMKM) Open Data Dataset Terbatas 14 April 2025" [ref=f7e344] [cursor=pointer]:
+            - /url: https://satudata.jakarta.go.id/open-data/detail?kategori=dataset&page_url=data-penerima-bantuan-saranaprasarana-usaha-mikro-kecil-dan-menengah-umkm&data_no=1
+            - generic [ref=f7e345]:
+              - img "Data Penerima Bantuan Sarana/Prasarana Usaha Mikro, Kecil, dan Menengah (UMKM)" [ref=f7e347]
+              - generic [ref=f7e348]:
+                - heading [level=5] [ref=f7e349]:
+                  - generic [ref=f7e350]:
+                    - text: Data Penerima Bantuan Sarana/Prasarana Usaha Mikro, Kecil, dan Menengah (
+                    - mark [ref=f7e351]: UMKM
+                    - text: )
+                - generic [ref=f7e352]:
+                  - generic [ref=f7e353]: UKM
+                  - generic [ref=f7e354]: Bantuan
+                - paragraph [ref=f7e355]:
+                  - generic [ref=f7e356]:
+                    - text: Data Peserta Pelatihan Wirausaha Industri Baru (WUIB) yang Menerima Bantuan Sarana/Prasarana Usaha Mikro, Kecil Menengah (
+                    - mark [ref=f7e357]: UMKM
+                    - text: )
+                - generic [ref=f7e359]:
+                  - generic [ref=f7e360]:
+                    - generic [ref=f7e361]: Open Data
+                    - generic [ref=f7e362]: Dataset
+                    - generic [ref=f7e363]: Terbatas
+                  - generic [ref=f7e365]:
+                    - generic [ref=f7e366]: 
+                    - text: 14 April 2025
+          - link "Data Usaha Mikro, Kecil, dan Menengah (UMKM) Data Usaha Mikro, Kecil, dan Menengah (UMKM) UKM Jakpreneur Usaha Kecil Menengah Data Usaha Mikro, Kecil, Menengah (UMKM) pada sistem jakpreneur/Sistem Informasi Data Tunggal (SIDT) Open Data Dataset Publik 25 Maret 2025" [ref=f7e367] [cursor=pointer]:
+            - /url: https://satudata.jakarta.go.id/open-data/detail?kategori=dataset&page_url=data-usaha-mikro-kecil-dan-menengah-umkm&data_no=1
+            - generic [ref=f7e368]:
+              - img "Data Usaha Mikro, Kecil, dan Menengah (UMKM)" [ref=f7e370]
+              - generic [ref=f7e371]:
+                - heading [level=5] [ref=f7e372]:
+                  - generic [ref=f7e373]:
+                    - text: Data Usaha Mikro, Kecil, dan Menengah (
+                    - mark [ref=f7e374]: UMKM
+                    - text: )
+                - generic [ref=f7e375]:
+                  - generic [ref=f7e376]: UKM
+                  - generic [ref=f7e377]: Jakpreneur
+                  - generic [ref=f7e378]: Usaha Kecil Menengah
+                - paragraph [ref=f7e379]:
+                  - generic [ref=f7e380]:
+                    - text: Data Usaha Mikro, Kecil, Menengah (
+                    - mark [ref=f7e381]: UMKM
+                    - text: ) pada sistem jakpreneur/Sistem Informasi Data Tunggal (SIDT)
+                - generic [ref=f7e383]:
+                  - generic [ref=f7e384]:
+                    - generic [ref=f7e385]: Open Data
+                    - generic [ref=f7e386]: Dataset
+                    - generic [ref=f7e387]: Publik
+                  - generic [ref=f7e389]:
+                    - generic [ref=f7e390]: 
+                    - text: 25 Maret 2025
+          - link "Persentase Pertumbuhan Pelaku Usaha Mikro, Kecil, dan Menengah (UMKM) Persentase Pertumbuhan Pelaku Usaha Mikro, Kecil, dan Menengah (UMKM) Pertumbuhan Pelaku UMKM Pelaku UMKM UMKM Indikator ini akan menunjukkan angka pertumbuhan pelaku UMKM setiap tahunnya di Provinsi DKI Jakarta. Metode Pengukuran ((Jumlah pelaku UMKM tahun n - Jumlah pelaku... Open Data Dataset Publik 25 Februari 2025" [ref=f7e391] [cursor=pointer]:
+            - /url: https://satudata.jakarta.go.id/open-data/detail?kategori=dataset&page_url=persentase-pertumbuhan-pelaku-usaha-mikro-kecil-dan-menengah-umkm&data_no=1
+            - generic [ref=f7e392]:
+              - img "Persentase Pertumbuhan Pelaku Usaha Mikro, Kecil, dan Menengah (UMKM)" [ref=f7e394]
+              - generic [ref=f7e395]:
+                - heading [level=5] [ref=f7e396]:
+                  - generic [ref=f7e397]:
+                    - text: Persentase Pertumbuhan Pelaku Usaha Mikro, Kecil, dan Menengah (
+                    - mark [ref=f7e398]: UMKM
+                    - text: )
+                - generic [ref=f7e399]:
+                  - generic [ref=f7e401]:
+                    - text: Pertumbuhan Pelaku
+                    - mark [ref=f7e402]: UMKM
+                  - generic [ref=f7e404]:
+                    - text: Pelaku
+                    - mark [ref=f7e405]: UMKM
+                  - mark [ref=f7e408]: UMKM
+                - paragraph [ref=f7e409]:
+                  - generic [ref=f7e410]:
+                    - text: Indikator ini akan menunjukkan angka pertumbuhan pelaku
+                    - mark [ref=f7e411]: UMKM
+                    - text: setiap tahunnya di Provinsi DKI Jakarta. Metode Pengukuran ((Jumlah pelaku
+                    - mark [ref=f7e412]: UMKM
+                    - text: tahun n - Jumlah pelaku...
+                - generic [ref=f7e414]:
+                  - generic [ref=f7e415]:
+                    - generic [ref=f7e416]: Open Data
+                    - generic [ref=f7e417]: Dataset
+                    - generic [ref=f7e418]: Publik
+                  - generic [ref=f7e420]:
+                    - generic [ref=f7e421]: 
+                    - text: 25 Februari 2025
+          - link "Persentase Usaha Mikro, Kecil dan Menengah (UMKM) yang Terdigitalisasi Persentase Usaha Mikro, Kecil dan Menengah (UMKM) yang Terdigitalisasi UMKM UMKM Digital QRIS Indikator ini akan menunjukkan seberapa banyak UMKM yang sudah terdigitalisasi. Digitalisasi disini dicontohkan seperti penggunaan Quick Response Code Indonesian... Open Data Dataset Publik 23 April 2025" [ref=f7e422] [cursor=pointer]:
+            - /url: https://satudata.jakarta.go.id/open-data/detail?kategori=dataset&page_url=persentase-usaha-mikro-kecil-dan-menengah-umkm-yang-terdigitalisasi&data_no=1
+            - generic [ref=f7e423]:
+              - img "Persentase Usaha Mikro, Kecil dan Menengah (UMKM) yang Terdigitalisasi" [ref=f7e425]
+              - generic [ref=f7e426]:
+                - heading [level=5] [ref=f7e427]:
+                  - generic [ref=f7e428]:
+                    - text: Persentase Usaha Mikro, Kecil dan Menengah (
+                    - mark [ref=f7e429]: UMKM
+                    - text: ) yang Terdigitalisasi
+                - generic [ref=f7e430]:
+                  - mark [ref=f7e433]: UMKM
+                  - generic [ref=f7e435]:
+                    - mark [ref=f7e436]: UMKM
+                    - text: Digital
+                  - generic [ref=f7e437]: QRIS
+                - paragraph [ref=f7e438]:
+                  - generic [ref=f7e439]:
+                    - text: Indikator ini akan menunjukkan seberapa banyak
+                    - mark [ref=f7e440]: UMKM
+                    - text: yang sudah terdigitalisasi. Digitalisasi disini dicontohkan seperti penggunaan Quick Response Code Indonesian...
+                - generic [ref=f7e442]:
+                  - generic [ref=f7e443]:
+                    - generic [ref=f7e444]: Open Data
+                    - generic [ref=f7e445]: Dataset
+                    - generic [ref=f7e446]: Publik
+                  - generic [ref=f7e448]:
+                    - generic [ref=f7e449]: 
+                    - text: 23 April 2025
+          - link "Data Usaha Mikro, Kecil, dan Menengah (UMKM) Perikanan dan Unit Pengolahan Ikan (UPI) Data Usaha Mikro, Kecil, dan Menengah (UMKM) Perikanan dan Unit Pengolahan Ikan (UPI) Perikanan Unit Pengolahan Perikanan Data Usaha Mikro, Kecil, dan Menengah (UMKM) Perikanan dan Unit Pengolahan Ikan (UPI) di wilayah Provinsi DKI Jakarta, Open Data Dataset Publik 6 April 2026" [ref=f7e450] [cursor=pointer]:
+            - /url: https://satudata.jakarta.go.id/open-data/detail?kategori=dataset&page_url=data-usaha-mikro-kecil-dan-menengah-umkm-perikanan-dan-unit-pengolahan-ikan-upi&data_no=1
+            - generic [ref=f7e451]:
+              - img "Data Usaha Mikro, Kecil, dan Menengah (UMKM) Perikanan dan Unit Pengolahan Ikan (UPI)" [ref=f7e453]
+              - generic [ref=f7e454]:
+                - heading [level=5] [ref=f7e455]:
+                  - generic [ref=f7e456]:
+                    - text: Data Usaha Mikro, Kecil, dan Menengah (
+                    - mark [ref=f7e457]: UMKM
+                    - text: ) Perikanan dan Unit Pengolahan Ikan (UPI)
+                - generic [ref=f7e458]:
+                  - generic [ref=f7e459]: Perikanan
+                  - generic [ref=f7e460]: Unit Pengolahan Perikanan
+                - paragraph [ref=f7e461]:
+                  - generic [ref=f7e462]:
+                    - text: Data Usaha Mikro, Kecil, dan Menengah (
+                    - mark [ref=f7e463]: UMKM
+                    - text: ) Perikanan dan Unit Pengolahan Ikan (UPI) di wilayah Provinsi DKI Jakarta,
+                - generic [ref=f7e465]:
+                  - generic [ref=f7e466]:
+                    - generic [ref=f7e467]: Open Data
+                    - generic [ref=f7e468]: Dataset
+                    - generic [ref=f7e469]: Publik
+                  - generic [ref=f7e471]:
+                    - generic [ref=f7e472]: 
+                    - text: 6 April 2026
+        - generic [ref=f7e100]:
+          - paragraph [ref=f7e102]: Menampilkan 1-8 dari 414 hasil
+          - list [ref=f7e474]:
+            - listitem [ref=f7e475]:
+              - button "<" [ref=f7e476] [cursor=pointer]
+            - listitem [ref=f7e477]:
+              - button "1" [ref=f7e478] [cursor=pointer]
+            - listitem [ref=f7e479]:
+              - button "2" [ref=f7e480] [cursor=pointer]
+            - listitem [ref=f7e481]:
+              - button "3" [ref=f7e482] [cursor=pointer]
+            - listitem [ref=f7e483]:
+              - button "4" [ref=f7e484] [cursor=pointer]
+            - listitem [ref=f7e485]:
+              - button "5" [ref=f7e486] [cursor=pointer]
+            - listitem [ref=f7e487]:
+              - button "..." [ref=f7e488] [cursor=pointer]
+            - listitem [ref=f7e489]:
+              - button "52" [ref=f7e490] [cursor=pointer]
+            - listitem [ref=f7e491]:
+              - button ">" [ref=f7e492] [cursor=pointer]
+    - generic [ref=f7e107]:
+      - generic [ref=f7e108]:
+        - paragraph [ref=f7e109]: "Kontak Kami :"
+        - paragraph [ref=f7e110]: Bidang Data dan Statistik Jl. Medan Merdeka Selatan Jakarta Pusat
+        - paragraph [ref=f7e111]: "Help Desk : 0813 4000 3614"
+        - paragraph [ref=f7e112]: "Email : data.statistik@jakarta.go.id"
+      - generic [ref=f7e113]:
+        - link [ref=f7e114] [cursor=pointer]:
+          - /url: https://jakarta.go.id/
+        - link [ref=f7e116] [cursor=pointer]:
+          - /url: https://ppid.jakarta.go.id/
+        - link [ref=f7e118] [cursor=pointer]:
+          - /url: https://www.beritajakarta.id/
+        - link [ref=f7e120] [cursor=pointer]:
+          - /url: https://smartcity.jakarta.go.id/id/
+          - img "Logo Jakarta Smart City" [ref=f7e121]
+        - link [ref=f7e122] [cursor=pointer]:
+          - /url: https://jalahoaks.jakarta.go.id/
+          - img "Logo Jalahoaks Jakarta" [ref=f7e123]
+        - link [ref=f7e124] [cursor=pointer]:
+          - /url: https://data.go.id
+          - img "Logo Satu Data Indonesia" [ref=f7e125]
+      - generic [ref=f7e126]:
+        - button "Masuk" [ref=f7e127] [cursor=pointer]
+        - paragraph [ref=f7e128]:
+          - img "Icon traffic kunjungan harian" [ref=f7e129]
+          - text: "Kunjungan Minggu Ini: 2.017"
+          - img "Icon insight total kunjungan" [ref=f7e130]
+          - text: "Total Kunjungan: 276.211"
+      - paragraph [ref=f7e132]: Copyright © 2026 Dinas Komunikasi, Informatika dan Statistik Provinsi DKI Jakarta. All Right Reserved
+    - generic [ref=f7e134] [cursor=pointer]:
+      - link [ref=f7e135]:
+        - /url: /chatbot
+      - generic [ref=f7e137]: 
+    - button "Umpan Balik" [ref=f7e138] [cursor=pointer]
+  - generic:
+    - button "Menu Aksesibilitas" [ref=f7e140] [cursor=pointer]
+    - dialog [ref=f7e144]:
+      - banner [ref=f7e145]:
+        - generic [ref=f7e151]:
+          - heading "Menu Aksesibilitas" [level=2] [ref=f7e152]
+          - paragraph [ref=f7e153]: Sesuaikan tampilan agar lebih nyaman dibaca
+        - button "Tutup menu aksesibilitas" [ref=f7e154] [cursor=pointer]:
+          - generic [ref=f7e155]: 
+      - generic [ref=f7e156]:
+        - generic [ref=f7e157]:
+          - heading "Teks & Bacaan" [level=3] [ref=f7e158]
+          - generic [ref=f7e160]:
+            - button "Moda Suara Baca konten dengan suara" [ref=f7e161] [cursor=pointer]:
+              - generic [ref=f7e164]: Moda Suara
+              - generic [ref=f7e165]: Baca konten dengan suara
+            - 'button "Perbesar Teks Ukuran teks: level 0 dari 4" [ref=f7e166] [cursor=pointer]':
+              - generic [ref=f7e170]: Perbesar Teks
+              - 'generic "Ukuran teks: level 0 dari 4" [ref=f7e171]'
+            - button "Perkecil Teks" [ref=f7e176] [cursor=pointer]
+            - button "Pertegas Teks Font lebih mudah dibaca" [ref=f7e186] [cursor=pointer]:
+              - generic [ref=f7e190]: Pertegas Teks
+              - generic [ref=f7e191]: Font lebih mudah dibaca
+        - generic [ref=f7e192]:
+          - heading "Gaya Tulisan" [level=3] [ref=f7e193]
+          - generic [ref=f7e195]:
+            - button "Normal" [pressed] [ref=f7e196] [cursor=pointer]:
+              - generic [ref=f7e197]: 
+              - generic [ref=f7e199]: 
+            - button "Rata Kiri" [ref=f7e202] [cursor=pointer]:
+              - generic [ref=f7e203]: 
+            - button "Rata Tengah" [ref=f7e206] [cursor=pointer]:
+              - generic [ref=f7e207]: 
+            - button "Rata Kanan" [ref=f7e210] [cursor=pointer]:
+              - generic [ref=f7e211]: 
+            - button "Garis Miring" [ref=f7e214] [cursor=pointer]:
+              - generic [ref=f7e215]: 
+            - button "Garis Bawah" [ref=f7e218] [cursor=pointer]:
+              - generic [ref=f7e219]: 
+        - generic [ref=f7e222]:
+          - heading "Warna & Kontras" [level=3] [ref=f7e223]
+          - generic [ref=f7e225]:
+            - button "Skala Abu-abu" [ref=f7e226] [cursor=pointer]
+            - button "Kontras+" [ref=f7e232] [cursor=pointer]
+            - button "Klise" [ref=f7e238] [cursor=pointer]
+            - button "Penerangan" [ref=f7e243] [cursor=pointer]
+            - button "Mode Malam" [ref=f7e249] [cursor=pointer]
+        - generic [ref=f7e254]:
+          - heading "Navigasi" [level=3] [ref=f7e255]
+          - button "Garis Bawahi Tautan Tandai semua tautan dengan garis bawah" [ref=f7e258] [cursor=pointer]:
+            - generic [ref=f7e262]: Garis Bawahi Tautan
+            - generic [ref=f7e263]: Tandai semua tautan dengan garis bawah
+      - contentinfo [ref=f7e264]:
+        - paragraph [ref=f7e265]:
+          - generic [ref=f7e266]: Ctrl
+          - text: +
+          - generic [ref=f7e267]: U
+          - text: untuk buka/tutup
+        - button "Atur Ulang Semua" [ref=f7e268] [cursor=pointer]:
+          - generic [ref=f7e269]: 
+          - text: Atur Ulang Semua

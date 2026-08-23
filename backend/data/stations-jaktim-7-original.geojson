@@ -1,0 +1,12 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    { "type": "Feature", "properties": { "station_id": "matraman", "name": "Stasiun Matraman" }, "geometry": { "type": "Point", "coordinates": [106.8597528, -6.2125672] } },
+    { "type": "Feature", "properties": { "station_id": "pondok_jati", "name": "Stasiun Pondok Jati" }, "geometry": { "type": "Point", "coordinates": [106.8623419, -6.2091242] } },
+    { "type": "Feature", "properties": { "station_id": "jatinegara", "name": "Stasiun Jatinegara" }, "geometry": { "type": "Point", "coordinates": [106.8703394, -6.2149252] } },
+    { "type": "Feature", "properties": { "station_id": "klender", "name": "Stasiun Klender" }, "geometry": { "type": "Point", "coordinates": [106.8994133, -6.2133188] } },
+    { "type": "Feature", "properties": { "station_id": "buaran", "name": "Stasiun Buaran" }, "geometry": { "type": "Point", "coordinates": [106.92316, -6.2156064] } },
+    { "type": "Feature", "properties": { "station_id": "klender_baru", "name": "Stasiun Klender Baru" }, "geometry": { "type": "Point", "coordinates": [106.9401833, -6.2176591] } },
+    { "type": "Feature", "properties": { "station_id": "cakung", "name": "Stasiun Cakung" }, "geometry": { "type": "Point", "coordinates": [106.9524791, -6.219081] } }
+  ]
+}

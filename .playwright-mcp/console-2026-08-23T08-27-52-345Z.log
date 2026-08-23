@@ -1,0 +1,198 @@
+[      61ms] [LOG] Fetching stations… @ http://localhost:8083/map-check.local.html:79
+[      77ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:8083/favicon.ico:0
+[     117ms] [LOG] Got 90 stations. @ http://localhost:8083/map-check.local.html:79
+[     727ms] [WARNING] Image "pedestrian_polygon" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event. @ https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js:41
+[    1149ms] [LOG]   ancol: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    1266ms] [LOG]   ancol: 2 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    1284ms] [LOG]   angke: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    1319ms] [LOG]   angke: 17 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    1338ms] [LOG]   batu_ceper: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    1375ms] [LOG]   batu_ceper: 2 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    1394ms] [LOG]   bekasi: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    1433ms] [LOG]   bekasi: 8 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    1452ms] [LOG]   bekasi_timur: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    1485ms] [LOG]   bekasi_timur: 5 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    1504ms] [LOG]   bogor: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    1550ms] [LOG]   bogor: 72 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    1573ms] [LOG]   bojong_indah: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    1600ms] [LOG]   bojong_indah: 3 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    1619ms] [LOG]   bojonggede: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    1652ms] [LOG]   bojonggede: 10 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    1677ms] [LOG]   buaran: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    1703ms] [LOG]   buaran: 8 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    1721ms] [LOG]   cakung: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    1744ms] [LOG]   cakung: 0 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    1765ms] [LOG]   catang: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    1788ms] [LOG]   catang: 0 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    1808ms] [LOG]   cawang: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    1843ms] [LOG]   cawang: 43 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    1870ms] [LOG]   cibinong: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    1902ms] [LOG]   cibinong: 4 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    1923ms] [LOG]   cibitung: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    1952ms] [LOG]   cibitung: 4 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    1974ms] [LOG]   cicayur: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    2004ms] [LOG]   cicayur: 0 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    2024ms] [LOG]   cikarang: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    2054ms] [LOG]   cikarang: 5 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    2080ms] [LOG]   cikini: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    2122ms] [LOG]   cikini: 43 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    2146ms] [LOG]   cikoya: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    2172ms] [LOG]   cikoya: 0 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    2194ms] [LOG]   cilebut: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    2222ms] [LOG]   cilebut: 4 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    2246ms] [LOG]   cilegon: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    2275ms] [LOG]   cilegon: 7 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    2303ms] [LOG]   cilejit: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    2325ms] [LOG]   cilejit: 0 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    2354ms] [LOG]   cisauk: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    2385ms] [LOG]   cisauk: 6 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    2406ms] [LOG]   citayam: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    2436ms] [LOG]   citayam: 2 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    2457ms] [LOG]   citeras: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    2485ms] [LOG]   citeras: 0 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    2506ms] [LOG]   daru: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    2535ms] [LOG]   daru: 0 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    2555ms] [LOG]   depok: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    2589ms] [LOG]   depok: 10 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    2608ms] [LOG]   depok_baru: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    2638ms] [LOG]   depok_baru: 19 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    2659ms] [LOG]   duren_kalibata: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    2689ms] [LOG]   duren_kalibata: 10 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    2711ms] [LOG]   duri: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    2758ms] [LOG]   duri: 17 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    2792ms] [LOG]   gambir: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    2839ms] [LOG]   gambir: 22 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    2878ms] [LOG]   gang_sentiong: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    2922ms] [LOG]   gang_sentiong: 21 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    2941ms] [LOG]   gondangdia: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    2990ms] [LOG]   gondangdia: 115 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    3014ms] [LOG]   grogol: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    3057ms] [LOG]   grogol: 30 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    3091ms] [LOG]   jakarta_international_stadium: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    3143ms] [LOG]   jakarta_international_stadium: 0 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    3174ms] [LOG]   jakarta_kota: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    3249ms] [LOG]   jakarta_kota: 59 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    3285ms] [LOG]   jatake: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    3323ms] [LOG]   jatake: 0 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    3355ms] [LOG]   jatinegara: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    3392ms] [LOG]   jatinegara: 14 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    3426ms] [LOG]   jayakarta: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    3476ms] [LOG]   jayakarta: 23 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    3517ms] [LOG]   juanda: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    3609ms] [LOG]   juanda: 49 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    3642ms] [LOG]   jurangmangu: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    3693ms] [LOG]   jurangmangu: 14 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    3726ms] [LOG]   kalideres: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    3772ms] [LOG]   kalideres: 3 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    3809ms] [LOG]   kampung_bandan: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    3856ms] [LOG]   kampung_bandan: 6 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    3880ms] [LOG]   karangantu: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    3936ms] [LOG]   karangantu: 0 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    3963ms] [LOG]   karet: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    4007ms] [LOG]   karet: 10 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    4031ms] [LOG]   kebayoran: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    4075ms] [LOG]   kebayoran: 14 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    4110ms] [LOG]   kemayoran: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    4159ms] [LOG]   kemayoran: 16 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    4192ms] [LOG]   klender: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    4259ms] [LOG]   klender: 11 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    4330ms] [LOG]   klender_baru: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    4379ms] [LOG]   klender_baru: 7 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    4424ms] [LOG]   kramat: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    4461ms] [LOG]   kramat: 41 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    4487ms] [LOG]   kranji: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    4523ms] [LOG]   kranji: 1 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    4542ms] [LOG]   krenceng: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    4570ms] [LOG]   krenceng: 0 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    4591ms] [LOG]   lenteng_agung: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    4622ms] [LOG]   lenteng_agung: 1 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    4644ms] [LOG]   maja: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    4678ms] [LOG]   maja: 0 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    4707ms] [LOG]   mangga_besar: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    4738ms] [LOG]   mangga_besar: 19 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    4759ms] [LOG]   manggarai: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    4788ms] [LOG]   manggarai: 2 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    4808ms] [LOG]   matraman: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    4841ms] [LOG]   matraman: 20 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    4863ms] [LOG]   metland_telagamurni: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    4927ms] [LOG]   metland_telagamurni: 0 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    4957ms] [LOG]   nambo: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    4990ms] [LOG]   nambo: 0 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    5012ms] [LOG]   palmerah: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    5042ms] [LOG]   palmerah: 1 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    5080ms] [LOG]   parungpanjang: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    5123ms] [LOG]   parungpanjang: 0 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    5144ms] [LOG]   pasar_minggu: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    5173ms] [LOG]   pasar_minggu: 1 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    5193ms] [LOG]   pasar_minggu_baru: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    5225ms] [LOG]   pasar_minggu_baru: 4 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    5247ms] [LOG]   pasar_senen: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    5289ms] [LOG]   pasar_senen: 14 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    5308ms] [LOG]   pesing: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    5338ms] [LOG]   pesing: 1 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    5358ms] [LOG]   pondok_cina: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    5389ms] [LOG]   pondok_cina: 3 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    5413ms] [LOG]   pondok_jati: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    5588ms] [LOG]   pondok_jati: 23 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    5674ms] [LOG]   pondok_rajeg: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    5782ms] [LOG]   pondok_rajeg: 0 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    5810ms] [LOG]   pondok_ranji: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    5839ms] [LOG]   pondok_ranji: 0 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    5858ms] [LOG]   poris: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    5890ms] [LOG]   poris: 0 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    5911ms] [LOG]   rajawali: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    5941ms] [LOG]   rajawali: 0 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    5993ms] [LOG]   rangkasbitung: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    6029ms] [LOG]   rangkasbitung: 0 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    6058ms] [LOG]   rawa_buaya: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    6090ms] [LOG]   rawa_buaya: 1 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    6110ms] [LOG]   rawa_buntu: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    6141ms] [LOG]   rawa_buntu: 0 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    6161ms] [LOG]   sawah_besar: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    6194ms] [LOG]   sawah_besar: 45 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    6381ms] [LOG]   serpong: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    6558ms] [LOG]   serpong: 0 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    6614ms] [LOG]   sudimara: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    6660ms] [LOG]   sudimara: 0 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    6735ms] [LOG]   sudirman: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    6807ms] [LOG]   sudirman: 7 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    6843ms] [LOG]   taman_kota: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    6874ms] [LOG]   taman_kota: 0 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    6908ms] [LOG]   tambun: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    7075ms] [LOG]   tambun: 0 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    7224ms] [LOG]   tanah_abang: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    7317ms] [LOG]   tanah_abang: 7 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    7417ms] [LOG]   tanah_tinggi: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    7567ms] [LOG]   tanah_tinggi: 0 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    7657ms] [LOG]   tangerang: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    7714ms] [LOG]   tangerang: 4 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    7745ms] [LOG]   tanjung_barat: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    7788ms] [LOG]   tanjung_barat: 0 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    7828ms] [LOG]   tanjung_priuk: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    7890ms] [LOG]   tanjung_priuk: 2 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    7912ms] [LOG]   tebet: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    7955ms] [LOG]   tebet: 14 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    8038ms] [LOG]   tenjo: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    8146ms] [LOG]   tenjo: 0 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    8302ms] [LOG]   tigaraksa: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    8428ms] [LOG]   tigaraksa: 0 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    8543ms] [LOG]   universitas_indonesia: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    8690ms] [LOG]   universitas_indonesia: 0 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    8828ms] [LOG]   universitas_pancasila: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    8899ms] [LOG]   universitas_pancasila: 0 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    8944ms] [LOG]   walantaka: isochrone rendered @ http://localhost:8083/map-check.local.html:79
+[    9011ms] [LOG]   walantaka: 0 POIs plotted @ http://localhost:8083/map-check.local.html:79
+[    9015ms] [LOG] 
+All data loaded. window.__verification is ready. @ http://localhost:8083/map-check.local.html:79
+[   12018ms] [WARNING] Image "wetland_bg_11" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event. @ https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js:41
+[   13756ms] [WARNING] Expected value to be of type number, but found null instead. @ blob:http://localhost:8083/ca8d482b-c9d9-4293-842d-660ab6bfe466:0
+[   14048ms] [WARNING] Image "clinic" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event. @ https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js:41
+[   15909ms] [WARNING] Image "attraction" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event. @ https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js:41
+[   18738ms] [WARNING] Image "arrow" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event. @ https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js:41
+[   18739ms] [WARNING] Image "kindergarten" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event. @ https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js:41
+[   18739ms] [WARNING] Image "school" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event. @ https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js:41
+[   18739ms] [WARNING] Image "college" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event. @ https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js:41
+[   18739ms] [WARNING] Image "university" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event. @ https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js:41
+[   18740ms] [WARNING] Image "garden" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event. @ https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js:41
+[   18740ms] [WARNING] Image "sports_centre" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event. @ https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js:41
+[   18740ms] [WARNING] Image "swimming_pool" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event. @ https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js:41

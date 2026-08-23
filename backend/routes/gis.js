@@ -61,13 +61,40 @@ router.get(
   })
 );
 
+// GET /api/stations — every station, all regions. Added when the network
+// expanded from 7 (all region="jakarta_timur") to 90 stations across
+// many regions (Phase 7) — before that, /regions/:region/stations could
+// double as "get everything" since only one region existed. A page
+// wanting the whole network (see verify/map-check.template.html) needs
+// this rather than looping over every region's endpoint one at a time.
+router.get(
+  "/stations",
+  asyncHandler(async (req, res) => {
+    const rows = await prisma.$queryRaw`
+      SELECT id, name, region, prev_station_id, next_station_id, ST_AsGeoJSON(location) AS location_geojson
+      FROM "Station"
+      ORDER BY id
+    `;
+    res.json(
+      rows.map((r) => ({
+        id: r.id,
+        name: r.name,
+        region: r.region,
+        prev_station_id: r.prev_station_id,
+        next_station_id: r.next_station_id,
+        location: JSON.parse(r.location_geojson),
+      }))
+    );
+  })
+);
+
 // GET /api/regions/:region/stations
 router.get(
   "/regions/:region/stations",
   asyncHandler(async (req, res) => {
     const { region } = req.params;
     const rows = await prisma.$queryRaw`
-      SELECT id, name, region, ST_AsGeoJSON(location) AS location_geojson
+      SELECT id, name, region, prev_station_id, next_station_id, ST_AsGeoJSON(location) AS location_geojson
       FROM "Station"
       WHERE region = ${region}
       ORDER BY id
@@ -79,6 +106,8 @@ router.get(
         id: r.id,
         name: r.name,
         region: r.region,
+        prev_station_id: r.prev_station_id,
+        next_station_id: r.next_station_id,
         location: JSON.parse(r.location_geojson),
       }))
     );
