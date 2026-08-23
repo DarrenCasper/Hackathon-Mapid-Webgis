@@ -485,8 +485,178 @@ with Leaflet/MapLibre, whether `MAPID_API_KEY` is the right credential
 for tile requests or basemaps use a separate key). Will ask before
 writing the test page rather than guessing at an integration shape.
 
-## Phase 5 — Reports and moderation
-Not started.
+## Phase 5 — Reports and moderation ✅ done (2026-08-23)
 
-## Phase 6 — Coolify deployment prep
-Not started.
+**Files created:**
+- `middleware/auth.js` — `requireAuth`, verifies the `Authorization:
+  Bearer <token>` header via `jsonwebtoken`, attaches the decoded
+  payload to `req.moderator`. One generic 401 for both "no token" and
+  "bad/expired token" — deliberately doesn't distinguish, so a client
+  can't fingerprint which failure mode occurred.
+- `scripts/create-moderator.js` — interactive (`readline`) one-time
+  script: prompts for email/display name/password, hashes with bcrypt
+  (10 rounds), inserts via `prisma.moderator.create`. No credentials
+  hardcoded anywhere, per brief. Handles duplicate email (`P2002`)
+  cleanly.
+- `routes/reports.js` — `POST /api/reports`, fully public/no auth per
+  the project's scope boundary (no end-user accounts at all).
+  Validates `report_type` against the enum and basic required-field
+  shape *before* touching the DB; deliberately does NOT pre-check that
+  `station_id`/`poi_id` exist — lets Prisma's real FK constraint (P2003)
+  catch that, then translates it into a clean 400, per brief.
+- `routes/admin.js` — `POST /login` (bcrypt compare, signs a JWT valid
+  7 days — brief didn't specify an expiry, chose a week as reasonable
+  for a hackathon moderator tool, not specced elsewhere so flagging the
+  pick), then `router.use(requireAuth)` gates everything after it:
+  `GET /reports` (optional `?status=` filter, validated against the
+  enum), `POST /reports/:id/verify` (sets `status`, `moderator_note`,
+  `moderator_id` from the JWT payload, `resolved_at`; only accepts
+  `verified`/`rejected` — not `applied`, which is presumably set by a
+  different, not-yet-built workflow).
+- `server.js` — mounted both route files.
+
+**One polish fix made after finding it during testing, not just code
+review:** the FK-error handler in `reports.js` originally surfaced
+Prisma's raw constraint name (`meta.field_name` came back as
+`"Report_station_id_fkey (index)"`, not a clean `"station_id"`) — still
+technically a "clean 400," but leaking an internal constraint identifier
+isn't really in the spirit of "not a raw Prisma/Postgres error." Fixed
+by regex-extracting `station_id`/`poi_id` back out of that string.
+
+**Verified working — booted the server and ran the full flow against
+real data, not just code review:**
+- Login: wrong password → 401 generic message (doesn't reveal whether
+  the email existed); correct credentials → valid JWT
+- `GET /api/admin/reports` with no token → 401; with token → 200
+- `POST /api/reports`: invalid `station_id` → clean 400 (`"station_id
+  does not point to an existing record"`, confirmed NOT leaking the raw
+  constraint name after the fix); invalid `report_type` → 400 listing
+  valid values; valid submission → 201, no auth required
+- `GET /api/admin/reports?status=` — valid filter narrows correctly
+  (tested `pending` count 1, `verified` count 0 before verifying);
+  invalid status value → 400
+- Confirmed the brief's claim directly: `include: { station: true }`
+  returns the station object with `location` (the `Unsupported`
+  geometry column) simply omitted — no error, no raw query needed for
+  the relation itself
+- `POST /reports/:id/verify`: valid → 200, `moderator_id` correctly
+  pulled from the JWT (not the request body), `resolved_at` set;
+  nonexistent report id → 404 (`P2025` handled); `status: "applied"` →
+  400 (verify only accepts verified/rejected)
+- Test moderator + test report created for this verification pass were
+  deleted afterward — nothing left in the DB from testing
+
+**Unrelated environment note, not a code issue:** local port `3000` is
+now occupied by an `open-webui` Docker container (not part of this
+project) — `.env`'s `PORT=3000` will hit `EADDRINUSE` if that container
+happens to be running. Tested this phase on `3001` instead. Worth
+changing `.env`'s `PORT` to something else if this keeps happening, or
+just remembering to stop/check that container first — your call, not
+fixing `.env` myself without asking since it's your personal dev
+environment quirk, not a project bug.
+
+**What Phase 6 needs before it can start:** nothing blocking. All
+public + moderator-auth routes are live and tested end-to-end.
+
+## Phase 6 — Coolify deployment prep ✅ done (2026-08-23)
+
+**Two real bugs found and fixed before writing the Dockerfile — these
+would have broken any deployment, not just Coolify's:**
+
+1. **No `postinstall` hook.** `@prisma/client`'s generated code isn't
+   committed to git (correctly — it's derived from `schema.prisma`), but
+   nothing was triggering `prisma generate` after `npm install` either.
+   A fresh install anywhere (Coolify, a new dev machine, CI) would have
+   installed dependencies successfully and then crashed the moment
+   anything imported the Prisma Client. Added
+   `"postinstall": "prisma generate"` to `package.json`.
+2. **`prisma` CLI was a devDependency.** If a production install ever
+   strips dev deps (common on many platforms/Docker patterns), the
+   `postinstall` hook above would fail — `prisma generate` needs the
+   `prisma` package to exist to run at all. Moved it into regular
+   `dependencies`, matching Prisma's own guidance for exactly this
+   postinstall-generation pattern.
+
+Verified the fix by actually reinstalling and booting the server
+locally, not just reasoning about it.
+
+**Files created:**
+- `Dockerfile` — `node:24-slim` base (matches local dev's Node version).
+  Recommended over Nixpacks auto-detection specifically because this
+  project needs two non-generic steps (`prisma generate` before the app
+  can boot, `prisma migrate deploy` on every start so schema changes
+  apply automatically) that a generic Node build pack wouldn't know to
+  do — see README "Deploying (Coolify)" for the full reasoning.
+- `.dockerignore` — excludes `node_modules`, `.env`, `.git`, and
+  `valhalla/` (that data belongs to the separate Valhalla container, not
+  the API image) from the build context.
+
+**A third real bug found only by actually building the image, not by
+writing the Dockerfile correctly on paper:** the first local build
+produced a working image but with a live warning — Prisma couldn't
+detect OpenSSL on the `node:24-slim` base (Debian slim ships without
+it) and silently defaulted to guessing `openssl-1.1.x` for which engine
+binary to use. A wrong guess there means a build that succeeds but a
+Prisma Client that fails at runtime — exactly the kind of failure that's
+nasty to debug post-deploy since the build logs look clean. Fixed with
+`RUN apt-get update -y && apt-get install -y openssl` in the Dockerfile;
+rebuilt and confirmed the warning is gone.
+
+**Fully verified end-to-end locally, not just built:** ran the actual
+built image via `docker run` against the real `DATABASE_URL` — confirmed
+`prisma migrate deploy` correctly found and skipped all 3 already-applied
+migrations ("No pending migrations to apply"), the server booted, and
+`/api/health` + `/api/regions` both returned correct real data from
+inside the container. (Hit one Docker testing quirk along the way: `scp`-
+style `--env-file` doesn't strip quotes the way `dotenv` does, so a
+quoted `.env` value came through with literal quote characters — a
+local-testing artifact only, since Coolify's own env var injection uses
+its dashboard UI, not this file-parsing mechanism. Retested correctly
+with quotes stripped.) Test container/image cleaned up afterward.
+
+**CORS made configurable, not just commented:** `server.js`'s CORS now
+reads `ALLOWED_ORIGIN` from the environment (falls back to wide-open
+`*` when unset, which is the correct behavior right now — no frontend
+exists yet). Once the frontend has a real URL, restricting CORS is a
+Coolify dashboard env var change, not a code change — added
+`ALLOWED_ORIGIN` to `.env.example` with that explanation.
+
+**README additions:**
+- Full "Deploying (Coolify)" section: build-method reasoning (Dockerfile
+  over Nixpacks), a table of exactly which env vars to set in Coolify's
+  dashboard and — critically — which ones need a **different value**
+  than local `.env` (`DATABASE_URL` should be the internal Coolify
+  hostname in production, not the Tailscale IP local dev needs; this is
+  a genuine footgun if copy-pasted from `.env` directly), health check
+  path (`/api/health`, chosen specifically because it's DB-aware, not
+  just a liveness ping), and what to check first if a deploy comes up
+  unhealthy.
+- Noted where Valhalla actually runs now (the `casper` server, not
+  locally — carried forward from the Phase 3 migration) so this doesn't
+  get rediscovered as if it were new information.
+
+**Found already in place, not something I set up:** a git repo already
+exists at the project root with a GitHub remote configured
+(`DarrenCasper/Hackathon-Mapid-Webgis`) — done by you outside of any
+session with me. Did not touch git state (no `add`/`commit`/`push`) —
+per this project's standing rule, git actions only happen when
+explicitly asked.
+
+**What's needed to actually complete a deploy (all Coolify-dashboard UI
+actions only you can do — nothing left for me to prepare):**
+1. Commit and push the current changes (whenever you're ready — ask me
+   to do this if you want, I haven't touched git this session)
+2. In Coolify: create an Application resource pointed at the GitHub
+   repo, set Build Pack to Dockerfile, set Base Directory to `backend`
+   if the repo root isn't `backend/` itself
+3. Set the 7 env vars from the README table above — pay special
+   attention to `DATABASE_URL` needing the internal hostname, not the
+   Tailscale one
+4. Set health check path to `/api/health`
+5. Deploy, then verify `/api/health` returns `{"status":"ok","db":"connected"}`
+6. Once the frontend has a real URL, set `ALLOWED_ORIGIN` to it
+
+**Still outstanding, unrelated to Phase 6:** Phase 4B (MAPID basemap +
+Playwright verification) remains blocked on the same open question from
+before — no confirmed spec for the MAPID basemap product itself. Ask
+about this whenever it becomes relevant.

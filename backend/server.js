@@ -7,19 +7,21 @@ const morgan = require("morgan");
 
 const app = express();
 
-// CORS: wide open for local dev. Once this API has a real Coolify URL and
-// the frontend is deployed somewhere fixed, replace `origin: "*"` below
-// with `origin: "https://your-frontend-domain"` — see README "Coolify
-// deployment" section for why this can't stay wide open in production.
-app.use(cors({ origin: "*" }));
+// CORS: controlled by ALLOWED_ORIGIN, defaulting to wide open ("*") when
+// that var isn't set — which is exactly the case for local dev right
+// now, since it's not in .env yet. Once the frontend has a real deployed
+// URL, set ALLOWED_ORIGIN to it in Coolify's dashboard (see README
+// "Coolify deployment" section) — that's a config change, not a code
+// change, so nobody has to remember to come back and edit this file
+// once the frontend domain exists.
+app.use(cors({ origin: process.env.ALLOWED_ORIGIN || "*" }));
 
 app.use(morgan("dev")); // request logging to stdout
 app.use(express.json()); // parse JSON request bodies (needed for POST /api/reports, /api/admin/*)
 
 app.use("/api", require("./routes/gis"));
-// Mounted in Phase 5:
-//   app.use("/api/reports", require("./routes/reports"));
-//   app.use("/api/admin", require("./routes/admin"));
+app.use("/api/reports", require("./routes/reports"));
+app.use("/api/admin", require("./routes/admin"));
 
 // Fallback for any route not matched above.
 app.use((req, res) => {

@@ -125,6 +125,24 @@ a local Docker container, separate from Coolify, separate from Postgres.
    `VALHALLA_URL` in `.env.example`). `scripts/generate-isochrones.js`
    (Phase 3) POSTs to its `/isochrone` endpoint with `costing=pedestrian`.
 
+### Where Valhalla actually runs (current state, not just setup steps)
+
+The steps above are for setting this up from scratch on a new machine.
+As of Phase 3, **Valhalla already runs persistently on the `casper`
+server** (the same box that hosts the database) rather than on any one
+developer's laptop — the ~1hr first-boot tile build only needs to happen
+once, ever, not per-developer. `.env`'s `VALHALLA_URL` points at the
+server's Tailscale IP (`http://100.101.248.124:8002`), reachable over a
+direct (non-relayed) Tailscale connection with no extra firewall config
+needed. You only need to redo the local Docker setup above if you're
+setting up an entirely fresh Valhalla instance somewhere new — day to
+day, nothing needs to run locally for isochrones to work.
+
+The extract actually in use is `java-260821.osm.pbf` (whole Java island,
+~896MB) rather than a Jakarta-only sub-extract, since Geofabrik didn't
+have one available at the time — bigger file, longer one-time build, but
+guaranteed coverage.
+
 ## Environment variables
 
 See `.env.example` for the full list with inline explanations. Summary:
@@ -133,9 +151,11 @@ See `.env.example` for the full list with inline explanations. Summary:
 |---|---|---|
 | `DATABASE_URL` | Prisma | already-running Coolify Postgres, not started here |
 | `MAPID_API_KEY` | scripts/fetch-mapid-*.js | competition key, never commit |
+| `ANTHROPIC_API_KEY` | scripts/classify-categories.js | paid API, only needed to run that one script |
 | `JWT_SECRET` | moderator auth (Phase 5) | any long random string |
-| `VALHALLA_URL` | scripts/generate-isochrones.js | local Docker container |
+| `VALHALLA_URL` | scripts/generate-isochrones.js, and the deployed API if isochrones are ever regenerated in production | see "Where Valhalla actually runs" below |
 | `PORT` | server.js | local dev only — Coolify sets its own at deploy |
+| `ALLOWED_ORIGIN` | server.js CORS | unset = wide open (`*`); set once the frontend has a real URL |
 
 ## Reaching the database from your local machine
 
@@ -175,11 +195,63 @@ npm run dev     # node --watch server.js — restarts on file changes
 npm start       # plain node server.js
 ```
 
-Phase 1 currently has no routes mounted yet (routes/ is populated starting
-Phase 4) — this just confirms the Express server itself boots and is
-reachable.
-
 ## Deploying (Coolify)
 
-Covered in Phase 6, once there's actually an app to deploy. Not yet
-relevant at this stage.
+This API deploys as a Coolify **Application** resource pointed at this
+git repo — Coolify builds and runs it directly, you never manually
+`docker build`/`docker run` this in production. (Separate from
+`docker-compose.yml`, which is Valhalla-only infrastructure that already
+runs persistently on the server — see above. The API and Valhalla are
+two independent things Coolify/you manage separately.)
+
+### Build method: Dockerfile, not Nixpacks
+
+This repo includes a `Dockerfile` — in Coolify's Application settings,
+set the build pack to **Dockerfile** rather than letting Nixpacks
+auto-detect a generic Node project. Nixpacks *would* probably work for a
+plain Express app, but this project has two steps a generic Node
+auto-detector doesn't know to do: running `prisma generate` before the
+app can import a working Prisma Client, and running
+`prisma migrate deploy` on every start so schema changes apply
+automatically on deploy. The Dockerfile makes both steps explicit and
+was built and run locally to confirm it actually works end-to-end
+(including a real gotcha it caught: Debian slim images don't ship
+OpenSSL, which Prisma's engine needs to detect — without
+`apt-get install openssl`, the build succeeds but Prisma silently
+guesses the wrong engine binary and can fail at runtime).
+
+If your git repo root is `d:\Hackathon-Mapid\` (with `backend/` as a
+subfolder) rather than `backend/` itself, set Coolify's **Base
+Directory** to `backend` so it finds the `Dockerfile` and build context
+in the right place.
+
+### Environment variables to set in Coolify's dashboard
+
+These are injected by Coolify at deploy time — none of them come from a
+committed `.env` file (which stays local-only and gitignored):
+
+| Variable | Value to use in Coolify | Why it differs from local `.env` |
+|---|---|---|
+| `DATABASE_URL` | The **original internal Coolify hostname** (e.g. `postgres://Casper:...@mk7ayr3frijitxqkgo2a29hm:5432/transitfit`) | The deployed API runs *inside* Coolify's network, alongside Postgres — it should use fast, private internal networking, not the Tailscale IP or public port that local dev needed to reach the DB from outside that network. Grab the current internal connection string fresh from the Postgres resource's page in Coolify rather than reusing the local `.env` value. |
+| `VALHALLA_URL` | `http://100.101.248.124:8002` (Tailscale IP) | Same value as local dev — Valhalla runs on the same physical server via Tailscale, and Tailscale routing works independently of whatever Docker network Coolify puts the API container on. Confirm this still resolves once actually deployed rather than assuming. |
+| `JWT_SECRET` | A long random string | Can reuse the local dev value or generate a fresh one — either is fine, just keep it secret. |
+| `MAPID_API_KEY` | The competition key | Same value as local `.env`. |
+| `ANTHROPIC_API_KEY` | Your Anthropic key | Only needed if `classify-categories.js` is ever run against production — the running API itself never calls this. |
+| `PORT` | Usually left unset | Coolify typically injects and manages this itself; the app reads `process.env.PORT` either way (`server.js` falls back to `3000` if unset). |
+| `ALLOWED_ORIGIN` | Your frontend's real deployed URL | **Leave unset until the frontend has a real URL** (defaults to wide-open `*`, fine for early testing) — once it exists, set this so the API stops accepting requests from arbitrary origins. This is a dashboard change, not a code change. |
+
+### Health check
+
+Set Coolify's health check path to `/api/health` — unlike a generic
+"did the process start" check, this route actually confirms the
+database connection is alive (`SELECT 1`), not just that Express booted.
+A deploy that starts but can't reach `DATABASE_URL` will show as
+unhealthy here instead of silently serving 500s.
+
+### After deploying
+
+Hit `https://<your-coolify-app-url>/api/health` and confirm it returns
+`{"status":"ok","db":"connected"}`. If it doesn't, check Coolify's
+deployment logs first — a wrong `DATABASE_URL` (using the Tailscale IP
+instead of the internal hostname, for instance) will show up there as a
+Prisma connection error immediately on startup.

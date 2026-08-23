@@ -1,0 +1,12 @@
+# Keeps the Docker build context small and avoids ever baking secrets
+# or unrelated local artifacts into the image.
+node_modules
+.env
+.git
+.gitignore
+README.md
+build.md
+
+# The Valhalla routing container is separate infrastructure (see
+# docker-compose.yml) — its data has no business inside the API image.
+valhalla/
