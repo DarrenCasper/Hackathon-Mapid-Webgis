@@ -1259,3 +1259,126 @@ working tree until it's committed, pushed, and Coolify redeploys the
 container. The public
 `https://mapidapi.darrencasper.com/api/stations/:id/insights` route
 will 404 until that redeploy happens.
+
+## Phase 10 — AI chatbot (with an injection-screening safeguard)
+Added to plan 2026-08-23 (not started — real open questions below need
+answers first). **Note: this reverses the project owner's own earlier
+call in Phase 9's planning** ("either this or a chatbot, but unlikely a
+chatbot, so focus on the recommendations") — now wanted as an
+*additional* feature alongside the cached insight, not instead of it.
+Worth remembering why the original call was made (cost/predictability)
+when weighing this.
+
+**The feature, as described:** beyond the static cached recommendation
+(Phase 9), add a live conversational endpoint — a user can ask a
+question about a station and get an AI reply/recommendation, grounded
+in that station's real data (the "summary" the project owner mentioned
+feeding to the AI — interpreted as reusing the same context-aggregation
+logic `lib/generateStationInsight.js` already has, not necessarily a
+new public `/summary` endpoint of its own; confirm if a literal exposed
+summary route was actually wanted instead).
+
+**The safeguard, as described:** before spending a Claude Haiku call on
+a user's message, run it through a cheap OpenAI model first
+(`gpt-5.4-mini` was named) whose only job is deciding "is this actually
+an on-topic question about food/dining/entertainment near this
+station, or is it trying to redirect the AI off-topic / override its
+instructions (prompt injection)". Reject and short-circuit before
+Haiku if the guard flags it; only proceed to the real (grounded,
+station-data-fed) Haiku call if it passes. Sound instinct — this is a
+real, legitimate pattern (a cheap classifier gate in front of a more
+capable/expensive model), not overengineering.
+
+**Real open questions, not yet answered:**
+1. **`gpt-5.4-mini` needs verification, not assumption.** I don't have
+   live-verified OpenAI model IDs/pricing the way the `claude-api`
+   skill gives me for Anthropic models — before this goes into code,
+   confirm the exact real model ID (OpenAI's current naming may not
+   match what was typed here) and its actual per-token pricing.
+2. **New provider setup from scratch.** This needs a real
+   `OPENAI_API_KEY` (doesn't exist in this project yet), the `openai`
+   npm package, and — same guardrail as every other paid API in this
+   project — explicit confirmation before the first real call.
+3. **Cost model for a LIVE public endpoint.** Phase 9's insight route
+   is deliberately cache-only specifically to avoid a public route with
+   unlimited AI-call exposure. A chatbot can't be pre-cached the same
+   way (replies are dynamic, tied to whatever the user asks) — so this
+   route needs its own protection: rate limiting (e.g. per-IP, via
+   `express-rate-limit` or similar), and/or requiring some lightweight
+   anti-abuse gate beyond just the injection-screen (the screen filters
+   *topic*, not *volume* — someone could still send 1,000 on-topic
+   questions in a minute). Not designed yet.
+4. **Conversation state.** A "chatbot" implies multi-turn (it remembers
+   what you just asked). This project has an explicit scope boundary:
+   no end-user accounts, fully anonymous. Multi-turn history needs
+   *some* way to group messages into "one conversation" without an
+   account — likely a client-generated, ephemeral session id (not tied
+   to identity), but this needs an explicit decision: stored server-side
+   (new table) vs. the frontend resending full history each request
+   (stateless, simpler, no new schema).
+5. **Guard-model failure mode.** If the OpenAI call itself fails
+   (network error, key issue, rate limit on *their* side), does the
+   message get silently blocked, silently allowed through to Haiku
+   unguarded, or does the user see an error? Needs a deliberate answer,
+   not a default that happens to fall out of whichever try/catch gets
+   written first.
+
+**Not started — no code, no API key, no dependency added yet.**
+
+## Phase 11 — Bulk POI ingestion, more coverage for sparse stations
+Added to plan 2026-08-23. **Google Places API researched and ruled out
+2026-08-23** — real findings below, not a guess. Motivation stands:
+Haiku's recommendation quality is limited by real POI density per
+station, and several stations (Cakung, Catang, and others — see
+Phase 3/7/8 notes) are genuinely thin right now.
+
+**Google Places API: researched directly against Google's own
+documentation and current pricing page, ruled out.**
+- **ToS is a hard blocker for the plan as originally described**
+  ("fetch once, store forever"), confirmed directly from Google's
+  Places API policy page: only `place_id` is exempt from caching
+  restrictions and may be stored indefinitely — every other field
+  (name, address, category, coordinates, hours, ratings) is explicitly
+  prohibited from being cached/stored beyond Google's allowed
+  exceptions. This isn't ambiguous or a risk-tolerance judgment call;
+  it's the specific use case the policy exists to prevent. No pricing
+  tier or budget changes this.
+- **Cost, for completeness (though moot given the ToS finding):** real
+  current pricing pulled from Google's own pricing page — Nearby
+  Search Pro $32/1,000 requests (5,000/month free), Place Details
+  Essentials $5/1,000 (10,000/month free), Place Details Pro $17/1,000
+  (5,000/month free). At this project's actual scale (90 stations),
+  usage would likely have stayed within Google's free monthly caps —
+  cost was never actually the blocking issue here, the licensing was.
+
+**Alternative found and recommended: Overture Maps Foundation.** Free,
+Apache 2.0-licensed open POI dataset (Linux Foundation project, data
+assembled from multiple contributors including Foursquare), explicitly
+designed for downloading and storing in your own database permanently
+— no per-request cost, no caching-duration restriction, the direct
+opposite of Google's terms for this exact use case. Every other
+commercial alternative checked (Foursquare Places API, HERE, Yelp
+Fusion, TomTom, Mapbox Search, LocationIQ) has its own version of the
+same permanent-storage restriction Google has, to varying degrees —
+Overture and raw OSM data (which this project already uses) are the
+two genuine exceptions.
+
+**Revised plan, two parts, in order of effort:**
+1. **Expand existing OSM/Overpass tag coverage first** — zero new
+   integration, infrastructure already built and proven working
+   (`fetch-osm-fallback.js`, `fetch-osm-entertainment.js`). More
+   amenity/shop categories could meaningfully help the sparse stations
+   before reaching for an entirely new data source.
+2. **Overture Maps Places dataset** for genuine additional density
+   beyond what OSM has mapped — new script
+   (`fetch-overture-places.js`), same shape as every other Phase 3/8/11
+   ingestion script: `ST_Contains`-boundary verification (don't trust
+   an external source's own spatial filtering, same lesson learned
+   from both Overpass and would-be Google integration), case-insensitive
+   dedup, explicit category-mapping lookup table (not a guess-based
+   classifier), new `PoiSource` value (e.g. `overture_maps`) for honest
+   provenance — same pattern as `jakarta_opendata`.
+
+**Not started — no code written yet for either part.** Ruling out
+Google Places was the main open question for this phase; the revised
+plan above is ready to build whenever this phase is picked up.
