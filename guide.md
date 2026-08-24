@@ -121,8 +121,9 @@ Every POI whose location falls inside that station's isochrone.
 `source` is one of `mapid_missions` (real field survey data),
 `openstreetmap` (community-mapped, `verified_field` always `false`),
 `jakarta_opendata` (official government data, e.g. Jakarta's public
-market registry), or `mock` (currently unused — no mock data has been
-seeded).
+market registry), `overture_maps` (Overture Maps Foundation open POI
+data — the largest source by far, `verified_field` always `false`), or
+`mock` (currently unused — no mock data has been seeded).
 
 `category` is one of `kopi_minuman`, `quick_meal`, `warung_makan`,
 `bakery`, `casual_dining`, `hiburan`, or `null`.

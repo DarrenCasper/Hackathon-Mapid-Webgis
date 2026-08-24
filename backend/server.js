@@ -22,6 +22,7 @@ app.use(express.json()); // parse JSON request bodies (needed for POST /api/repo
 app.use("/api", require("./routes/gis"));
 app.use("/api/reports", require("./routes/reports"));
 app.use("/api/admin", require("./routes/admin"));
+app.use("/api", require("./routes/chat"));
 
 // Fallback for any route not matched above.
 app.use((req, res) => {

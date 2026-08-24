@@ -1,0 +1,13 @@
+-- Hand-written and applied via `prisma migrate deploy`, same reason as
+-- every other migration since `init`: the shadow database `migrate dev`
+-- needs doesn't have PostGIS enabled, so replaying full history there
+-- always fails regardless of what this migration changes.
+--
+-- Phase 11 — adds a distinct PoiSource value for Overture Maps
+-- Foundation data (free, Apache 2.0 / CDLA Permissive, explicitly
+-- licensed for permanent local storage — unlike Google Places, which is
+-- why this replaced that plan entirely). Needs its own enum value
+-- rather than reusing 'openstreetmap' or 'mock': Overture's places
+-- theme is sourced from Meta/Microsoft/Foursquare/PinMeTo/etc, not OSM,
+-- and it's real data, not placeholder.
+ALTER TYPE "PoiSource" ADD VALUE 'overture_maps';

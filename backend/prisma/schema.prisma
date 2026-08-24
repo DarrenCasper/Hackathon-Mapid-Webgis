@@ -88,6 +88,13 @@ enum PoiSource {
   // from 'mock' because it's real, not placeholder data. Mislabeling
   // this as either would misrepresent where it actually came from.
   jakarta_opendata
+
+  // Phase 11 — Overture Maps Foundation (free, Apache 2.0 / CDLA
+  // Permissive, explicitly licensed for permanent local storage —
+  // see scripts/fetch-overture-places.js). Sourced from Meta,
+  // Microsoft, Foursquare, PinMeTo and others, not OSM, so it gets its
+  // own value rather than reusing 'openstreetmap'.
+  overture_maps
   mock
 }
 

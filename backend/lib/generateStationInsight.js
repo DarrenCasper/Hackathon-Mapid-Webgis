@@ -8,11 +8,9 @@ const fs = require("fs");
 const path = require("path");
 const Anthropic = require("@anthropic-ai/sdk");
 const prisma = require("./db");
-const { getStationOrNull, getIsochronePolygon, getPoisInIsochrone, aggregatePoiStats } = require("./stations");
+const { buildStationContext } = require("./buildStationContext");
 
 const MODEL = "claude-haiku-4-5"; // same reasoning as classify-categories.js — bounded, structured-ish generation, not deep reasoning, doesn't justify a pricier model
-const INSIGHT_MINUTES = 15; // richest radius, same convention used throughout Phase 3's ingestion scripts
-const MAX_SAMPLE_NAMES = 12; // enough for the model to ground specific mentions without ballooning the prompt
 
 const SYSTEM_PROMPT = fs.readFileSync(
   path.join(__dirname, "..", "ai", "station-insight-prompt.md"),
@@ -20,40 +18,7 @@ const SYSTEM_PROMPT = fs.readFileSync(
 );
 
 async function generateStationInsight(stationId) {
-  const station = await getStationOrNull(stationId);
-  if (!station) {
-    throw new Error(`Station not found: ${stationId}`);
-  }
-
-  const polygon = await getIsochronePolygon(stationId, INSIGHT_MINUTES);
-  if (!polygon) {
-    throw new Error(`No ${INSIGHT_MINUTES}-minute isochrone found for station ${stationId}`);
-  }
-
-  const pois = await getPoisInIsochrone(stationId, INSIGHT_MINUTES);
-  const { poi_count_by_category, price_distribution } = aggregatePoiStats(pois);
-
-  // A small named sample, not the full list — keeps the prompt compact
-  // and matches the system prompt's "sample of specific place names"
-  // framing rather than a full data dump.
-  const sampleNames = pois.slice(0, MAX_SAMPLE_NAMES).map((p) => p.name);
-
-  const userMessage = `Station: ${station.name} (region: ${station.region})
-
-POI counts by category (within ${INSIGHT_MINUTES} minutes walking):
-${Object.entries(poi_count_by_category)
-  .map(([cat, count]) => `- ${cat}: ${count}`)
-  .join("\n")}
-
-Price distribution:
-${Object.entries(price_distribution)
-  .map(([tier, count]) => `- ${tier}: ${count}`)
-  .join("\n")}
-
-Total POIs found: ${pois.length}
-
-Sample of actual place names found nearby (not exhaustive):
-${sampleNames.length > 0 ? sampleNames.map((n) => `- ${n}`).join("\n") : "(none)"}`;
+  const { text: userMessage } = await buildStationContext(stationId);
 
   if (!process.env.ANTHROPIC_API_KEY) {
     throw new Error("ANTHROPIC_API_KEY is not set");

@@ -12,14 +12,17 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.0",
+    "@duckdb/node-api": "^1.5.5-r.4",
     "@prisma/client": "^5.20.0",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.0",
+    "express-rate-limit": "^8.6.2",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "node-cron": "^4.6.0",
+    "openai": "^7.5.0",
     "prisma": "^5.20.0"
   },
   "engines": {

@@ -1323,7 +1323,83 @@ capable/expensive model), not overengineering.
    not a default that happens to fall out of whichever try/catch gets
    written first.
 
-**Not started — no code, no API key, no dependency added yet.**
+**Built 2026-08-23 — all 5 open questions resolved, code written and
+syntax-checked. Not yet end-to-end tested — waiting on the project
+owner to add a real `OPENAI_API_KEY` to `.env` (they said they would).**
+
+1. **Model verified, not assumed.** Confirmed `gpt-5.4-mini` is a real,
+   current OpenAI model via direct research (multiple independent
+   pricing-tracker sources, one dated the same day as this session,
+   citing OpenAI's own pricing page) — $0.75/1M input, $4.50/1M output.
+   Fetched the exact API-callable model ID directly from OpenAI's own
+   docs page rather than trust a secondary source's formatting:
+   `gpt-5.4-mini`. Also found `gpt-5.4-nano` ($0.20/$1.25, cheaper) as a
+   possible future swap for this narrow classification-style guard task
+   — used `mini` as named, noted `nano` as an option, didn't switch
+   without asking.
+2. **New provider set up.** `openai` npm package installed,
+   `OPENAI_API_KEY` added to `.env.example` with an explanation. Also
+   verified — since this is genuinely new code, not a copy-paste of
+   remembered patterns — that OpenAI's **Responses API**
+   (`client.responses.create`), not the older Chat Completions API, is
+   what OpenAI's own docs currently recommend for new projects; checked
+   the installed SDK's own type definitions (`node_modules/openai`,
+   v7.5.0) to confirm `output_text` and `text.format` with
+   `json_schema`/`strict: true` are real, present APIs in this exact
+   installed version before writing code against them.
+3. **Rate limiting added.** `express-rate-limit`, scoped to only the
+   new `POST /stations/:id/chat` route (not applied globally) — 20
+   messages per 15 minutes per IP. Picked as a reasonable default for a
+   real conversation while bounding worst-case abuse cost; not tuned
+   against real traffic, since none exists yet — revisit once this is
+   live.
+4. **Conversation state: stateless, decided.** Frontend resends the
+   full message history each call; nothing persisted server-side. No
+   new schema, fits the project's explicit no-end-user-accounts
+   boundary cleanly — inventing a session/identity system to support
+   server-side history would have been a bigger scope change than this
+   feature warrants.
+5. **Guard failure mode: fails closed, decided.** If the OpenAI guard
+   call itself errors, the message is blocked with a clear "safety
+   check temporarily unavailable" reason, never silently passed through
+   to Haiku unguarded. Tradeoff made explicit in the code comment: an
+   OpenAI outage takes the chatbot down too, not just the guard —
+   accepted as the safer default for this project's scale.
+
+**Files created:**
+- `ai/chat-guard-prompt.md` / `ai/station-chat-prompt.md` — two
+  separate system prompts (the guard's and the real chatbot's), same
+  "readable document, not a string in code" pattern as Phase 9's
+  `station-insight-prompt.md`.
+- `lib/buildStationContext.js` — **extracted from
+  `generateStationInsight.js`**, not duplicated. Phase 10 needed the
+  exact same "gather this station's real POI/category/price data as an
+  AI-prompt-ready text block" logic Phase 9 already had — two AI
+  features independently assembling the same station's data would risk
+  the chatbot and the cached insight disagreeing about it. Verified
+  `generateStationInsight.js` still behaves identically after this
+  refactor (same output shape, same function signature at the call
+  sites that use it).
+- `lib/moderateChatMessage.js` — the guard. Uses OpenAI's
+  `text.format: { type: "json_schema", strict: true }` for a reliable
+  `{ allowed, reason }` decision (never free-text parsing) — same
+  "force structured output, don't parse prose" principle already used
+  for Claude tool-use in `classify-categories.js`.
+- `lib/generateChatReply.js` — the real reply generator, called only
+  after the guard allows a message. Folds the station's data into the
+  system prompt fresh per call (cheaper/simpler than re-sending it as a
+  message on every turn of a multi-turn conversation).
+- `routes/chat.js` — `POST /api/stations/:id/chat`, its own file
+  (matching how `reports.js`/`admin.js` are already separated by
+  concern) rather than added into `gis.js`. Validates message shape,
+  requires the last message to have `role: "user"`, runs the guard on
+  just that latest message, short-circuits with `{ allowed: false,
+  reason }` if rejected, otherwise calls `generateChatReply` and
+  returns `{ allowed: true, reply }`.
+
+**Not yet done:** end-to-end test (blocked on the real
+`OPENAI_API_KEY`), and updating `guide.md` with this new endpoint once
+it's confirmed working.
 
 ## Phase 11 — Bulk POI ingestion, more coverage for sparse stations
 Added to plan 2026-08-23. **Google Places API researched and ruled out
@@ -1379,6 +1455,119 @@ two genuine exceptions.
    classifier), new `PoiSource` value (e.g. `overture_maps`) for honest
    provenance — same pattern as `jakarta_opendata`.
 
-**Not started — no code written yet for either part.** Ruling out
-Google Places was the main open question for this phase; the revised
-plan above is ready to build whenever this phase is picked up.
+**Executed 2026-08-24.** Skipped part 1 (OSM/Overpass expansion) —
+Overture alone delivered enough density that the thin-coverage problem
+this phase exists to solve was resolved without it; `fetch-osm-
+entertainment.js` remains written-but-unrun from Phase 8, still a valid
+option later if specific stations need more.
+
+**Pricing — checked directly against the live schema, confirmed
+absent.** Before writing any code, ran `DESCRIBE` against Overture's
+actual places Parquet data (not just the docs): the complete column
+list is `id, geometry, categories, confidence, websites, emails,
+socials, phones, brand, addresses, names, sources, operating_status,
+basic_category, taxonomy, version, bbox, theme, type`. No price/cost
+field of any kind. So `Poi.price_tier` is **not** populated by this
+phase — Overture genuinely doesn't carry that data; this isn't a
+workaround-needed gap, it's an absent one. Told the user this directly
+before proceeding.
+
+**Access mechanism — verified live before building, not assumed.**
+Overture isn't a REST API; it publishes GeoParquet on a public S3
+bucket (`s3://overturemaps-us-west-2`), queried via DuckDB's
+spatial+httpfs extensions. No AWS account or credentials needed — the
+bucket is public, no cost. For Node.js, used `@duckdb/node-api`
+(the current, actively-maintained package — the older `duckdb` package
+is being sunset for DuckDB 1.5.x). Confirmed it has prebuilt binaries
+for both Windows x64 (this dev machine) and Linux x64 (the `node:24-
+slim` Coolify container), and confirmed a real `require()` + live S3
+query worked before writing the actual script. The release path is
+looked up dynamically from Overture's own STAC catalog
+(`https://stac.overturemaps.org/catalog.json`) rather than hardcoded,
+so the script doesn't go stale after next month's Overture release.
+
+**`scripts/fetch-overture-places.js`** — same shape as every prior
+ingestion script:
+- Bounding box computed from `ST_Extent` over all 90 stations' 15-min
+  isochrones (not a hardcoded Jabodetabek box), so it's always in sync
+  with the real network.
+- A broad, deliberately over-inclusive SQL-side prefilter (ILIKE on
+  ~30 food/drink/entertainment keyword fragments) narrows the S3 scan
+  before any row is even fetched — Jabodetabek's full places dataset in
+  that bbox would otherwise include hospitals, schools, shops, offices,
+  etc.
+- The real, precise classification is a Node-side explicit lookup
+  table (`categoryForOverturePlace`), not a guess-based classifier —
+  Overture's places taxonomy has 2,000+ possible category strings, so
+  this can't be exhaustive, but every mapped value is a real observed
+  Overture category, and anything unmapped is skipped and logged, never
+  force-mapped.
+- Same `ST_Contains`-against-our-own-isochrone-polygon verification as
+  every other source (Overture's own `bbox` column is a coarse
+  prefilter, same lesson as Overpass's `poly` filter).
+- Same case-insensitive, cross-source dedup (`LOWER(name)` +
+  `ST_DWithin` 30m) as `fetch-jakarta-opendata.js` — checked against
+  every existing POI regardless of which source added it.
+- New migration `20260824100000_overture_maps_source` —
+  `ALTER TYPE "PoiSource" ADD VALUE 'overture_maps'` — applied via
+  `migrate deploy` (same shadow-DB/PostGIS reason as every prior
+  migration).
+- `MIN_CONFIDENCE = 0.4` — a lenient noise floor, not a precision
+  target (Overture's own docs say confidence isn't calibrated across
+  providers); real filtering happens via category mapping + isochrone
+  containment. Excludes `operating_status = 'permanently_closed'` (kept
+  `NULL`/`'open'` — Overture's May 2026 release changed the default
+  to `NULL` meaning "no info," not "closed").
+
+**Real bug found and fixed via the first run's own honesty logging.**
+First run: 69,434 candidates → 9,405 saved, 7,434 unmapped. The
+unmapped-category log (printed every run, not just this one) surfaced
+real food/entertainment categories the lookup table had missed —
+`karaoke` (320), `desserts` (278), `donuts` (269), `cupcake_shop`
+(372), `dance_club` (155), `theatre` (69) — because Overture uses these
+as *bare* category strings, not the `_shop`/`_bar`-suffixed forms the
+table assumed. Corrected the lookup table against this real observed
+data and re-ran (safe/idempotent — dedup skipped the 9,405 already
+saved) — picked up 240 more. Final unmapped list on the second run is
+now all correctly-excluded categories (`barber`, `public_school`,
+`notary_public`, `health_food_store`, `restaurant_wholesale`,
+`food_delivery_service`, etc. — food-adjacent or prefilter false-
+positives, not places a commuter would walk to for food/drink/
+entertainment).
+
+**Final result:** 9,645 Overture POIs saved. Total `Poi` count across
+all sources: 736 → **10,381**. Breakdown: `casual_dining` 6,427,
+`kopi_minuman` 1,813, `quick_meal` 535, `bakery` 459, `hiburan` 411,
+`warung_makan` 0 (Overture's taxonomy has no real equivalent to this
+category — local eateries mostly landed under `*_restaurant` →
+`casual_dining` instead; not a bug, just a taxonomy mismatch worth
+knowing about). Spot-checked a random sample against `raw_category_text`
+— real places, real category mapping (e.g. "Pizza Hut" ←
+`pizza_restaurant` → `casual_dining`, "Jamane Kopi Cikini" ←
+`coffee_shop` → `kopi_minuman`).
+
+**Honest gap that remains:** the thinnest stations after this run are
+genuinely rural outer-network stops on the Banten-area lines — Tenjo,
+Cilejit, Catang, Jatake (0 POIs), Nambo/Tigaraksa/Cikoya (1). This
+isn't a script bug — Overture (and OSM) simply have little mapped
+around these areas, which likely reflects reality (far fewer real
+businesses near rural stations vs. central Jakarta). Not addressed
+further this phase; flagged for the user.
+
+**Price alternative found (not from Overture) — pending user decision,
+not yet built.** `Poi.harga_rata_rata` already holds 35 real prices
+from `mapid_missions` field-survey data (range: an anomalous "20"
+alongside a clean 5,000–75,000 spread, one 180,000 outlier). Proposed
+bucketing this into `price_tier` — zero new cost, real data already
+collected — but held off writing it: (1) the "20" row looks like a
+dropped-zero data entry error, not a real price, and shouldn't be
+silently "corrected" without the user's call; (2) bucket thresholds
+(e.g. ekonomis <15k / menengah 15k–35k / premium >35k) are a judgment
+call affecting AI-recommendation-facing data, asked the user rather
+than picked unilaterally. Only covers 35 of 10,381 POIs even if built
+— an honest caveat, not a fix for `price_tier` being null project-wide.
+
+**Not yet done:** update `guide.md`'s `source` enum list with
+`overture_maps`; decide (with the user) on the `price_tier` bucketing
+questions above; consider running `fetch-osm-entertainment.js` for the
+rural stations still at 0-1 POIs if the user wants that gap addressed.
