@@ -127,9 +127,16 @@ data — the largest source by far, `verified_field` always `false`), or
 
 `category` is one of `kopi_minuman`, `quick_meal`, `warung_makan`,
 `bakery`, `casual_dining`, `hiburan`, or `null`.
-`price_tier` is one of `ekonomis`, `menengah`, `premium`, or `null` —
-in practice this is **always `null` right now**, no data source
-populates it yet.
+`price_tier` is one of `ekonomis`, `menengah`, `premium`, or `null`.
+Populated only where real price data exists — currently that's a small
+subset of `mapid_missions` POIs (~35) with a real `harga_rata_rata`
+(average price in rupiah) from field surveys, bucketed at <15,000 /
+15,000–34,999 / ≥35,000. Every other source (`openstreetmap`,
+`jakarta_opendata`, `overture_maps`) has **no pricing data at all** —
+confirmed directly against Overture's schema before ruling it out (see
+`build.md` Phase 11) — so `price_tier` stays `null` for the large
+majority of POIs. Don't treat `null` as "cheap" or any other default;
+it means "unknown," full stop.
 
 ### `GET /stations/:id/context?minutes=10`
 Aggregated counts for that station — what a summary card/chart would

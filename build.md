@@ -1567,7 +1567,50 @@ call affecting AI-recommendation-facing data, asked the user rather
 than picked unilaterally. Only covers 35 of 10,381 POIs even if built
 — an honest caveat, not a fix for `price_tier` being null project-wide.
 
-**Not yet done:** update `guide.md`'s `source` enum list with
-`overture_maps`; decide (with the user) on the `price_tier` bucketing
-questions above; consider running `fetch-osm-entertainment.js` for the
-rural stations still at 0-1 POIs if the user wants that gap addressed.
+**`guide.md` updated 2026-08-25** — `source` enum list now includes
+`overture_maps`; `price_tier` documentation rewritten to explain it's
+populated only for a small `mapid_missions` subset, `null` elsewhere,
+and that `null` means "unknown," never "cheap."
+
+**Verification map tested live 2026-08-25** — regenerated
+`verify/map-check.local.html` and loaded it in a real browser (served
+over plain HTTP locally, since Playwright blocks `file://`). Rendered
+12,881 POI markers (higher than the 10,381 unique total because a POI
+inside two overlapping stations' isochrones gets its own marker per
+station) plus all 90 station markers, fully loaded in under 20 seconds.
+One load attempt crashed the tab; a retry loaded cleanly — worth
+knowing this page is now working well past the ~736-POI scale it was
+originally built/tested at (Phase 4B/7/8), but not a hard failure.
+Confirmed visually: density scales sensibly with real geography
+(Sudirman 645, Sawah Besar 440, Tebet 347 vs. single digits on rural
+outer stations).
+
+**`scripts/backfill-price-tier.js` written 2026-08-25** — the price
+alternative from earlier in this phase, now built: derives
+`Poi.price_tier` from the real `harga_rata_rata` values that already
+exist on ~35 `mapid_missions` POIs (the only source with any price
+data — Overture, OSM, and Jakarta opendata all confirmed to have none).
+One explicit, by-name-and-old-value data correction (the "Bubur Ayam
+Sunda" row's implausible `harga_rata_rata = 20` → `20,000`, a dropped-
+zero entry error) — not a blanket heuristic, so it can never silently
+alter a legitimately cheap item. Thresholds: ekonomis <15,000 /
+menengah 15,000–34,999 / premium ≥35,000 rupiah, chosen against the
+real observed spread. Idempotent — only touches rows where
+`price_tier IS NULL`, so it never overwrites a future manual
+correction.
+
+**Run 2026-08-26** (delayed by the same intermittent Tailscale DB
+connectivity drop noted earlier in this phase — resolved on its own,
+retried and succeeded). Result: 1 row corrected (20 → 20,000), 35 rows
+backfilled — **7 `ekonomis`, 22 `menengah`, 6 `premium`**. `Poi.price_tier`
+is no longer uniformly `null` project-wide, though still only covers
+this one small real-data subset; every other source still has `null`
+(honest — no other source carries price data, see above).
+
+**Phase 11 complete.** POI density: 736 → 10,381. New source
+`overture_maps`. `price_tier` now partially populated from real data.
+`guide.md` and this file both current as of 2026-08-26.
+
+**Not started, optional follow-up:** `fetch-osm-entertainment.js`
+(written Phase 8, never run) for the handful of rural stations still
+at 0-1 POIs, if the user wants that specific gap addressed later.
