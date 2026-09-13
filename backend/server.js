@@ -7,14 +7,21 @@ const morgan = require("morgan");
 
 const app = express();
 
-// CORS: controlled by ALLOWED_ORIGIN, defaulting to wide open ("*") when
-// that var isn't set — which is exactly the case for local dev right
-// now, since it's not in .env yet. Once the frontend has a real deployed
-// URL, set ALLOWED_ORIGIN to it in Coolify's dashboard (see README
-// "Coolify deployment" section) — that's a config change, not a code
-// change, so nobody has to remember to come back and edit this file
-// once the frontend domain exists.
-app.use(cors({ origin: process.env.ALLOWED_ORIGIN || "*" }));
+// CORS: controlled by ALLOWED_ORIGIN, a comma-separated list of allowed
+// origins (e.g. "https://mapid.darrencasper.com,http://localhost:5173")
+// — a list, not a single string, because frontend/.env points
+// VITE_API_BASE_URL at the PRODUCTION API even during local dev (see
+// frontend/.env.example), so locking this down to only the deployed
+// frontend domain would break `npm run dev` on localhost too. Falls
+// back to wide open ("*") when unset, which is only true for local dev
+// right now — set ALLOWED_ORIGIN for real in Coolify's dashboard (see
+// README "Coolify deployment" section) to actually lock this down in
+// production; that's a config change, not a code change.
+const allowedOrigins = (process.env.ALLOWED_ORIGIN)
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+app.use(cors({ origin: allowedOrigins.includes("*") ? "*" : allowedOrigins }));
 
 app.use(morgan("dev")); // request logging to stdout
 app.use(express.json({limit:"3mb"})); // includes an optional report photo (maximum 2 MB binary)
