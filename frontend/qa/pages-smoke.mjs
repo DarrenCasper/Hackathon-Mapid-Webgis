@@ -73,6 +73,9 @@ try {
     failRoute = false;
     await page.locator(".route-summary").getByRole("button",{name:"Coba lagi"}).click();
     await page.locator(".route-summary").filter({hasText:findRoute(routingGraph,from,to,[],[]).distance_m+" m"}).waitFor();
+    assert.match(await page.locator(".insight-wrap").textContent(), /AI Station Insight/);
+    assert.match(await page.locator(".insight-wrap").textContent(), /Tanya AI seputar stasiun ini[\s\S]*Segera hadir/);
+    assert.match(await page.locator(".place-card").first().textContent(), /Data Terbuka/);
     assert.ok(routeCalls > 0);
     await page.getByRole("link",{name:"Laporkan jalur ↗"}).click();
     await page.locator(".report-map canvas").waitFor();
