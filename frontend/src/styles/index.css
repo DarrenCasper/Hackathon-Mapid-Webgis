@@ -1,0 +1,37 @@
+@import "tailwindcss";
+@import "maplibre-gl/dist/maplibre-gl.css";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", Inter, system-ui, sans-serif;
+
+  /* Base surfaces */
+  --color-canvas: #f8fafc; /* slate-50 */
+  --color-surface: #ffffff;
+  --color-border: #e2e8f0; /* slate-200 */
+
+  /* Accent */
+  --color-accent: #4f46e5; /* indigo-600 */
+  --color-accent-hover: #4338ca; /* indigo-700 */
+
+  /* Isochrone layers */
+  --color-isochrone-10: #a855f7; /* purple-500 */
+  --color-isochrone-15: #3b82f6; /* blue-500 */
+
+  /* Badges */
+  --color-validated: #10b981; /* emerald-500 */
+  --color-validated-bg: #d1fae5; /* emerald-100 */
+  --color-muted-badge: #71717a; /* zinc-500 */
+  --color-muted-badge-bg: #f4f4f5; /* zinc-100 */
+}
+
+body {
+  background-color: var(--color-canvas);
+  color: #0f172a;
+  font-family: var(--font-sans);
+}
+
+/* MapLibre canvas must fill its flex/grid parent explicitly */
+.maplibregl-map {
+  width: 100%;
+  height: 100%;
+}
