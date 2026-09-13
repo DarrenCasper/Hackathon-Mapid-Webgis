@@ -1,0 +1,12 @@
+# Keeps the Docker build context small and avoids ever baking secrets
+# or unrelated local artifacts into the image — same reasoning as
+# backend/.dockerignore.
+node_modules
+dist
+.env
+.env.*
+!.env.example
+.git
+.gitignore
+README.md
+frontend.md
