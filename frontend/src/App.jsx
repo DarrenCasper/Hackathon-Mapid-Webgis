@@ -25,6 +25,7 @@ export default function App() {
   const [mobileView, setMobileView] = useState("map");
   const [filtersOpen, setFiltersOpen] = useState(false);
   const minutes = useMapStore((state) => state.minutes);
+  const selectedStationId = useMapStore((state) => state.selectedStationId);
   const filters = useMapStore((state) => state.filters);
   const activeFilters = filters.categories.length + Number(filters.maxPrice !== null) + Number(filters.onlyValidated);
 
@@ -56,7 +57,7 @@ export default function App() {
         </section>
         <section className={`results-panel ${mobileView === "list" ? "mobile-active" : ""}`} aria-label="Daftar tempat">
           <div className="results-heading"><span className="eyebrow">PILIHAN DI SEKITARMU</span><h2>Mampir ke mana?</h2><p>Temukan yang pas untuk waktumu.</p></div>
-          <div className="results-body"><RecommendationList /><div className="insight-wrap"><StationInsightPanel /><MiniChatbot /></div><div className="discovery-tip"><Sparkles size={17}/><p>Pilih kartu tempat untuk menyorot lokasinya di peta.</p></div></div>
+          <div className="results-body"><RecommendationList /><div className="insight-wrap"><StationInsightPanel /><MiniChatbot key={selectedStationId} /></div><div className="discovery-tip"><Sparkles size={17}/><p>Pilih kartu tempat untuk menyorot lokasinya di peta.</p></div></div>
         </section>
       </main>
       <nav className="mobile-view-switch" aria-label="Tampilan eksplorasi"><button aria-pressed={mobileView === "map"} onClick={() => setMobileView("map")}><Map size={18}/>Peta</button><button aria-pressed={mobileView === "list"} onClick={() => setMobileView("list")}><List size={18}/>Daftar tempat</button></nav>
