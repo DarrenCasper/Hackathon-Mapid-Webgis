@@ -28,7 +28,7 @@ yang manggil endpoint yang tidak ada.
 | Kisaran pengeluaran dari **Struk Go** (mis. "Rp18.000–28.000") | Data Struk Go di lapangan hasilnya sangat kecil/nyaris tidak ada — **keputusan tim: Struk Go tidak dipakai sama sekali**, bukan cuma "belum ada", memang di-drop dari scope. `Poi.price_tier` selalu `null` juga (tidak ada script yang pernah mengisinya) | Card tempat menampilkan **satu angka estimasi harga** dari `Poi.harga_rata_rata` ("≈ Rp15.000") atau "Data harga belum tersedia" kalau `null`. **Tidak ada rencana** tambah kolom harga min/max — jangan janjikan rentang harga di UI manapun |
 | Rute jalan kaki digambar sebagai garis di peta + "Start Rute" | Tidak ada endpoint routing publik dari backend sendiri. Valhalla cuma reachable via Tailscale privat dari server backend, tidak bisa dipanggil langsung dari browser. Backend cuma expose **isochrone polygon**, bukan garis rute | Lihat §12 — solusi utama: panggil **OpenRouteService (ORS)** langsung dari frontend (foot-walking profile, gratis, CORS diizinkan, tidak butuh backend berubah). Garis lurus + Google Maps link jadi fallback kalau ORS gagal/limit habis |
 | NLP search bar ("cari warung murah buka jam 7 pagi...") diproses AI | Tidak ada endpoint `/nlp/*` atau semacamnya. Satu-satunya AI di backend adalah `GET /stations/:id/insights` (teks statis ter-cache, di-generate harian, read-only) | MVP: parser NLP **sederhana di client** (regex/keyword matching → set filter terstruktur yang sudah ada: kategori, `minutes`, harga). Fase lanjutan: minta backend endpoint proxy ke Claude khusus untuk ini (jangan taruh Anthropic API key di frontend) |
-| Mini chatbot interaktif per stasiun | Tidak ada endpoint chat/percakapan. Cuma insight statis | MVP: panel "AI Station Insight" menampilkan teks dari `/insights` apa adanya (dengan skeleton kalau `null`). Chatbot beneran = stretch goal, butuh endpoint backend baru |
+| Mini chatbot interaktif per stasiun | ~~Tidak ada endpoint chat/percakapan. Cuma insight statis~~ **Update: sudah ada** — `POST /stations/:id/chat` dibangun belakangan (Phase 10), lihat §9 | ~~MVP: panel "AI Station Insight" menampilkan teks dari `/insights` apa adanya (dengan skeleton kalau `null`). Chatbot beneran = stretch goal, butuh endpoint backend baru~~ **Selesai dibangun** — `MiniChatbot.jsx` sekarang chat beneran, bukan shell, lihat §9 |
 | Badge "Tervalidasi Lapangan" vs "Data Terbuka" | **Ada** persis: `Poi.verified_field` (boolean) + `Poi.source` (`mapid_missions` / `openstreetmap` / `jakarta_opendata` / `mock`) | Bisa dibangun sesuai rencana, tidak ada gap. `verified_field === true` → badge emerald "Tervalidasi Lapangan"; selain itu → badge netral zinc dengan label sesuai `source` |
 | Jam operasional per tempat | `Poi.jam_buka` / `Poi.jam_tutup` **bukan gap teknis** — `resolve-pois.js` sudah mencoba menarik `properties.jam_buka`/`jam_tutup` dari raw data misi MAPID (`menugo`) kalau field itu terisi. Masalahnya operasional: surveyor lapangan jarang mengisi field jam buka/tutup saat submit misi di MAPID Apps, jadi hasilnya sering `null` bukan karena pipeline tidak jalan | Tampilkan jam kalau ada, fallback "Jam operasional belum tercatat" kalau `null`. **Perbaikan sebenarnya bukan di kode** — lihat §12 poin operasional (instruksikan tim survei lapangan) dan poin teknis (endpoint `PATCH /admin/pois/:id` untuk backfill dari laporan terverifikasi) |
 | Lapor kondisi jalur | `POST /reports` sudah live, publik, tanpa auth | Bisa dibangun 1:1 sesuai proposal, tidak ada gap |
@@ -272,9 +272,9 @@ Card menampilkan:
 `StationInsightPanel` → teks dari `useInsight`, dengan 3 state:
 loading skeleton, `insight === null` → "Insight untuk stasiun ini belum
 tersedia" + timestamp kosong, ada isi → render teks + `generated_at`
-relative time. `MiniChatbot` = `[MOCK]` placeholder Phase 2 (lihat §11),
-untuk MVP cukup tombol "Tanya AI (segera hadir)" disabled atau
-menyembunyikan seluruhnya sampai backend endpoint chat tersedia.
+relative time. `MiniChatbot` sudah chat beneran (lihat §9) — riwayat
+pesan + input, dihubungkan ke `POST /stations/:id/chat`, bukan lagi
+placeholder disabled.
 
 ### Bottom Bar
 `BottomStatsBar` dari `useContext` (`poi_count`, kategori dominan) +
@@ -296,12 +296,22 @@ tombol CTA "Lapor Kondisi Jalur" buka `ReportModal` (`useSubmitReport`).
    ke endpoint backend baru (mis. `POST /api/nlp/parse`) yang proxy ke
    Claude — jangan pernah taruh `ANTHROPIC_API_KEY` di kode frontend.
 
-**Mini chatbot per stasiun** — MVP: tidak dibangun sebagai chat beneran.
-Tampilkan `StationInsightPanel` saja (data real, cached, gratis dipanggil).
-Fase 2: minta backend bikin endpoint chat baru yang grounded ke data POI
-stasiun tsb (mirip prinsip `ai/station-insight-prompt.md` yang sudah ada
-di backend) — sampai ada, `MiniChatbot.jsx` cukup jadi shell UI kosong
-supaya gampang di-hook nanti tanpa refactor besar.
+**Mini chatbot per stasiun — dibangun, bukan lagi `[MOCK]`.** Backend
+sudah punya `POST /stations/:id/chat` (Phase 10) sejak sebelumnya, tapi
+`MiniChatbot.jsx` sempat tetap jadi shell placeholder karena ditulis
+saat endpoint itu belum ada — baru di-hook ke endpoint real belakangan.
+Sekarang: `api/useChat.js` (`useMutation` ke endpoint di atas) + state
+riwayat pesan disimpan di komponen (server stateless, lihat
+`backend/lib/generateChatReply.js`), di-remount lewat
+`key={selectedStationId}` di `App.jsx` supaya ganti stasiun = riwayat
+lama otomatis hilang. Balasan `allowed:false` (guard OpenAI menolak
+pesan off-topic/injeksi) dirender beda secara visual (amber +
+`ShieldAlert`), bukan sebagai balasan AI biasa. Backend juga sudah
+menambahkan laporan warga yang **terverifikasi moderator** (bukan yang
+masih `pending`) ke konteks AI (lihat `backend/lib/buildStationContext.js`
+& `build.md`), jadi user bisa tanya "ada laporan masalah di sekitar
+sini?" dan dapat jawaban jujur — termasuk kalau memang belum ada
+laporan terverifikasi, bukan dikarang.
 
 ---
 

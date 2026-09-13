@@ -131,6 +131,26 @@ async function getStationsNeedingInsightRefresh() {
   return rows.map((r) => r.id);
 }
 
+// Reports the AI's context (Phase 11 addendum) is allowed to treat as
+// real: 'verified' (a moderator confirmed it) or 'applied' (confirmed
+// AND already acted on, e.g. a route-blocking decision with on-site
+// evidence — see routes/walking.js's routePolicy). Deliberately
+// excludes 'pending' (unconfirmed — could be spam or a mistake) and
+// 'rejected' (confirmed false) — the AI should never present an
+// unverified or debunked report as a real incident.
+const TRUSTED_REPORT_STATUSES = ["verified", "applied"];
+
+// No geometry involved (Report.station_id is a plain FK), so this is a
+// normal Prisma Client query, not raw SQL like the helpers above.
+async function getStationIncidents(stationId, limit = 5) {
+  return prisma.report.findMany({
+    where: { station_id: stationId, status: { in: TRUSTED_REPORT_STATUSES } },
+    select: { report_type: true, description: true, status: true, created_at: true },
+    orderBy: { created_at: "desc" },
+    take: limit,
+  });
+}
+
 module.exports = {
   VALID_ISOCHRONE_MINUTES,
   POI_CATEGORIES,
@@ -141,4 +161,5 @@ module.exports = {
   serializePoi,
   aggregatePoiStats,
   getStationsNeedingInsightRefresh,
+  getStationIncidents,
 };

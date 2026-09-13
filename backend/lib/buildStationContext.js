@@ -9,10 +9,26 @@ const {
   getIsochronePolygon,
   getPoisInIsochrone,
   aggregatePoiStats,
+  getStationIncidents,
 } = require("./stations");
 
 const CONTEXT_MINUTES = 15; // richest radius, same convention used throughout Phase 3's ingestion scripts
 const MAX_SAMPLE_NAMES = 12; // enough for the model to ground specific mentions without ballooning the prompt
+const MAX_INCIDENTS = 5; // recent-first cap, same reasoning as MAX_SAMPLE_NAMES — enough to ground real mentions without ballooning the prompt
+
+// Same Indonesian labels frontend/src/api/useReports.js shows a
+// commuter when they file a report — kept in sync by hand since this is
+// backend code and can't import a frontend file; a mismatch here would
+// only affect how the AI phrases a report type, not any real behavior.
+const REPORT_TYPE_LABELS = {
+  trotoar_rusak: "Trotoar rusak",
+  akses_tertutup: "Akses tertutup",
+  banjir: "Banjir",
+  penyeberangan_tidak_aman: "Penyeberangan tidak aman",
+  tempat_tutup: "Tempat tutup",
+  umkm_baru: "UMKM baru",
+  info_lainnya: "Info lainnya",
+};
 
 async function buildStationContext(stationId) {
   const station = await getStationOrNull(stationId);
@@ -28,6 +44,7 @@ async function buildStationContext(stationId) {
   const pois = await getPoisInIsochrone(stationId, CONTEXT_MINUTES);
   const { poi_count_by_category, price_distribution } = aggregatePoiStats(pois);
   const sampleNames = pois.slice(0, MAX_SAMPLE_NAMES).map((p) => p.name);
+  const incidents = await getStationIncidents(stationId, MAX_INCIDENTS);
 
   const text = `Station: ${station.name} (region: ${station.region})
 
@@ -44,9 +61,18 @@ ${Object.entries(price_distribution)
 Total POIs found: ${pois.length}
 
 Sample of actual place names found nearby (not exhaustive):
-${sampleNames.length > 0 ? sampleNames.map((n) => `- ${n}`).join("\n") : "(none)"}`;
+${sampleNames.length > 0 ? sampleNames.map((n) => `- ${n}`).join("\n") : "(none)"}
 
-  return { station, pois, poi_count_by_category, price_distribution, text };
+Reports near this station confirmed real by a moderator (most recent first — this is NOT an exhaustive incident log, only what's been reported and verified):
+${
+  incidents.length > 0
+    ? incidents
+        .map((r) => `- [${REPORT_TYPE_LABELS[r.report_type] ?? r.report_type}] ${r.description} (${r.created_at.toISOString().slice(0, 10)})`)
+        .join("\n")
+    : "(none reported/verified so far)"
+}`;
+
+  return { station, pois, poi_count_by_category, price_distribution, incidents, text };
 }
 
 module.exports = { buildStationContext, CONTEXT_MINUTES };
