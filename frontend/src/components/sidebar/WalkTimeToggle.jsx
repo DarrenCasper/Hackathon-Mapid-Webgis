@@ -16,6 +16,7 @@ export function WalkTimeToggle() {
         {WALK_MINUTES_OPTIONS.map((m) => (
           <button
             key={m}
+            aria-pressed={minutes === m}
             onClick={() => setMinutes(m)}
             className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition ${
               minutes === m

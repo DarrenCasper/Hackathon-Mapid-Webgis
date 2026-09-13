@@ -18,6 +18,7 @@ export function ExitMarker({ coordinates }) {
 
     const marker = new Marker({ element: el }).setLngLat(coordinates).addTo(map);
     markerRef.current = marker;
+    map.flyTo({ center: coordinates, zoom: 14, duration: 500 });
 
     return () => marker.remove();
   }, [map, coordinates]);

@@ -3,37 +3,25 @@ import { useMapStore } from "../../store/useMapStore";
 import { useStation } from "../../api/useStation";
 import { usePois } from "../../api/usePois";
 import { ApiError } from "../../lib/apiClient";
-import { distanceMeters } from "../../lib/geo";
+import { sortPois } from "../../lib/poiSort";
+import { ArrowUpDown, MapPin } from "lucide-react";
 import { RecommendationCard } from "./RecommendationCard";
 import { RecommendationCardSkeleton } from "../shared/Skeleton";
 import { EmptyState } from "../shared/EmptyState";
 import { ErrorState } from "../shared/ErrorState";
+import { applyFilters } from "../../lib/poiFilters";
 
 // Semua filter (kategori, harga, validasi, search) diterapkan CLIENT-SIDE
 // dari satu hasil usePois — backend tidak punya query param untuk ini.
 // Lihat frontend.md §5.
-function applyFilters(pois, filters, searchQuery) {
-  return pois.filter((poi) => {
-    if (filters.onlyValidated && !poi.verified_field) return false;
-    if (filters.categories.length > 0 && !filters.categories.includes(poi.category)) return false;
-    if (filters.maxPrice != null) {
-      if (poi.harga_rata_rata == null || poi.harga_rata_rata > filters.maxPrice) return false;
-    }
-    if (searchQuery && !poi.name.toLowerCase().includes(searchQuery.toLowerCase())) {
-      // hanya jadi hard-filter kalau tidak ada filter terstruktur lain yang match
-      const hasStructuredMatch =
-        filters.categories.includes(poi.category) || (filters.maxPrice != null && poi.harga_rata_rata != null);
-      if (!hasStructuredMatch) return false;
-    }
-    return true;
-  });
-}
 
 export function RecommendationList() {
   const selectedStationId = useMapStore((s) => s.selectedStationId);
   const minutes = useMapStore((s) => s.minutes);
   const filters = useMapStore((s) => s.filters);
   const searchQuery = useMapStore((s) => s.searchQuery);
+  const sortBy = useMapStore((s) => s.sortBy);
+  const setSortBy = useMapStore((s) => s.setSortBy);
 
   const { data: station } = useStation(selectedStationId);
   const { data: pois, isLoading, isError, error, refetch } = usePois(selectedStationId, minutes);
@@ -43,16 +31,8 @@ export function RecommendationList() {
   const sortedPois = useMemo(() => {
     if (!pois) return [];
     const filtered = applyFilters(pois, filters, searchQuery);
-    return [...filtered].sort((a, b) => {
-      if (a.verified_field !== b.verified_field) return a.verified_field ? -1 : 1;
-      if (stationCoordinates) {
-        const da = distanceMeters(stationCoordinates, a.location.coordinates);
-        const db = distanceMeters(stationCoordinates, b.location.coordinates);
-        if (da !== db) return da - db;
-      }
-      return a.name.localeCompare(b.name);
-    });
-  }, [pois, filters, searchQuery, stationCoordinates]);
+    return sortPois(filtered, sortBy, stationCoordinates);
+  }, [pois, filters, searchQuery, stationCoordinates, sortBy]);
 
   if (!selectedStationId) {
     return <EmptyState title="Pilih stasiun untuk melihat rekomendasi kuliner" />;
@@ -90,10 +70,23 @@ export function RecommendationList() {
   }
 
   return (
-    <div className="space-y-2">
-      {sortedPois.map((poi) => (
+    <div className="recommendations">
+      <div className="results-summary" aria-live="polite">
+        <MapPin size={20} /><div><strong>{sortedPois.length} tempat ditemukan</strong><p>Dalam jangkauan {minutes} menit</p></div>
+      </div>
+      <label className="sort-control"><ArrowUpDown size={16} /><span>Urutkan</span>
+        <select aria-label="Urutkan tempat" value={sortBy} onChange={(event) => setSortBy(event.target.value)}>
+          <option value="recommended">Rekomendasi</option>
+          <option value="distance">Jarak terdekat</option>
+          <option value="price-asc">Harga termurah</option>
+          <option value="price-desc">Harga termahal</option>
+        </select>
+      </label>
+      {(sortBy === "price-asc" || sortBy === "price-desc") && <p className="sort-hint">Berdasarkan harga rata-rata. Harga belum tersedia ditampilkan terakhir.</p>}
+      {(sortBy === "price-asc" || sortBy === "price-desc") && sortedPois.every((poi) => poi.harga_rata_rata == null) && <p role="status" className="price-data-notice">Harga tempat di area ini belum tersedia. Untuk sementara, tempat diurutkan menurut jarak.</p>}
+      <div className="place-list">{sortedPois.map((poi) => (
         <RecommendationCard key={poi.id} poi={poi} stationCoordinates={stationCoordinates} />
-      ))}
+      ))}</div>
     </div>
   );
 }

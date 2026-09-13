@@ -2,6 +2,7 @@ import { getCategoryMeta } from "../../lib/constants";
 import { distanceMeters, estimateWalkMinutes, formatMeters, formatRupiah } from "../../lib/geo";
 import { ValidationBadge } from "./ValidationBadge";
 import { useMapStore } from "../../store/useMapStore";
+import { Coffee, Utensils, Croissant, ArrowUpRight, Footprints } from "lucide-react";
 
 // Alasan rekomendasi = template string client-side berbasis filter yang
 // match, BUKAN teks dari AI per-card (tidak ada endpoint untuk itu).
@@ -28,29 +29,23 @@ export function RecommendationCard({ poi, stationCoordinates }) {
   const meters = stationCoordinates ? distanceMeters(stationCoordinates, poi.location.coordinates) : null;
   const walkMinutes = meters != null ? estimateWalkMinutes(meters) : null;
   const isSelected = poi.id === selectedPoiId;
+  const CategoryIcon = poi.category === "kopi_minuman" ? Coffee : poi.category === "bakery" ? Croissant : Utensils;
 
   return (
+    <article>
     <button
       onClick={() => setSelectedPoi(poi.id)}
-      className={`w-full rounded-2xl border p-3 text-left transition ${
-        isSelected
-          ? "border-accent bg-accent/5"
-          : "border-slate-200 bg-white hover:border-slate-300"
-      }`}
+      aria-pressed={isSelected}
+      className={`place-card ${isSelected ? "is-selected" : ""}`}
     >
+      <div className="place-card-top"><span className="place-icon"><CategoryIcon size={21}/></span><span className="place-category">{meta.label}</span><ArrowUpRight size={17}/></div>
       <div className="flex items-start justify-between gap-2">
         <div>
           <p className="text-sm font-semibold text-slate-800">{poi.name}</p>
-          <span
-            className="mt-1 inline-block rounded-full px-2 py-0.5 text-[11px] font-medium text-white"
-            style={{ backgroundColor: meta.color }}
-          >
-            {meta.label}
-          </span>
         </div>
         {walkMinutes != null && (
           <div className="text-right">
-            <p className="text-sm font-bold text-accent">{walkMinutes} min walk</p>
+            <p className="place-walk"><Footprints size={13}/>{walkMinutes} menit</p>
             <p className="text-[11px] text-slate-400">
               {formatMeters(meters)} · estimasi lurus
             </p>
@@ -60,10 +55,13 @@ export function RecommendationCard({ poi, stationCoordinates }) {
 
       <div className="mt-2 flex items-center justify-between">
         <ValidationBadge verifiedField={poi.verified_field} source={poi.source} />
-        <span className="text-xs font-medium text-slate-600">{formatRupiah(poi.harga_rata_rata)}</span>
+        <span className="place-price">{formatRupiah(poi.harga_rata_rata)}</span>
       </div>
 
       <p className="mt-2 text-xs text-slate-500">{buildReason(poi, filters)}</p>
+      {isSelected && <span className="selected-place-label">Dipilih · lokasi ditandai di peta</span>}
     </button>
+    <a className="place-detail-link" href={`#/tempat/${poi.id}`} onClick={() => setSelectedPoi(poi.id)}>Detail tempat & menu <ArrowUpRight size={15}/></a>
+    </article>
   );
 }

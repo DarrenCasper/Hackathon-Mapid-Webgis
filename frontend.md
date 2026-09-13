@@ -1,5 +1,7 @@
 # TransitFit AI — Frontend Planning
 
+> Dokumen ini adalah rencana frontend awal. Implementasi dan setup saat ini dijelaskan di [frontend/README.md](frontend/README.md): routing memakai A* browser, laporan memakai halaman dengan pin peta, dan navigasi mendukung beberapa halaman. Bagian ORS, fallback garis lurus, dan ReportModal di bawah tidak lagi berlaku untuk implementasi saat ini.
+
 Companion untuk `build.md` (log backend) dan `guide.md` (kontrak API untuk
 frontend, base URL `https://mapidapi.darrencasper.com/api`, sudah live).
 Dokumen ini menerjemahkan brief desain dashboard (prompt UI/UX yang sudah

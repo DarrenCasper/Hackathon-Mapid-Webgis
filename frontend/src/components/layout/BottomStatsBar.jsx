@@ -1,6 +1,5 @@
 import { AlertCircle, Flag } from "lucide-react";
 import { useMapStore } from "../../store/useMapStore";
-import { useUiStore } from "../../store/useUiStore";
 import { useStationContext } from "../../api/useContext";
 import { getCategoryMeta } from "../../lib/constants";
 
@@ -14,15 +13,14 @@ function dominantCategory(counts) {
 export function BottomStatsBar() {
   const selectedStationId = useMapStore((s) => s.selectedStationId);
   const minutes = useMapStore((s) => s.minutes);
-  const setReportModalOpen = useUiStore((s) => s.setReportModalOpen);
   const { data: context } = useStationContext(selectedStationId, minutes);
 
   const dominant = dominantCategory(context?.poi_count_by_category);
   const dominantMeta = dominant ? getCategoryMeta(dominant) : null;
 
   return (
-    <footer className="flex h-14 shrink-0 items-center justify-between gap-4 border-t border-slate-200 bg-white px-4">
-      <div className="flex items-center gap-4 text-xs text-slate-600">
+    <footer className="flex min-h-14 shrink-0 flex-wrap items-center justify-between gap-4 border-t border-slate-200 bg-white px-4 py-2">
+      <div className="flex flex-wrap items-center gap-4 text-xs text-slate-600">
         {context ? (
           <>
             <span>
@@ -49,12 +47,14 @@ export function BottomStatsBar() {
       </div>
 
       <button
-        onClick={() => setReportModalOpen(true)}
+        aria-label="Laporkan kondisi jalur"
+        onClick={() => { window.location.hash = "/lapor"; }}
         className="flex items-center gap-1.5 rounded-full bg-accent px-3 py-1.5 text-xs font-medium text-white hover:bg-accent-hover"
       >
         <Flag className="h-3.5 w-3.5" />
         Lapor Kondisi Jalur
       </button>
+      <a href="#/admin" className="text-xs text-slate-500">Admin</a>
     </footer>
   );
 }

@@ -192,6 +192,15 @@ enum ReportStatus {
 }
 
 model Report {
+  route_edge_ids String[] @default([])
+  route_graph_version String?
+  route_feedback String?
+  verification_evidence String?
+  verified_on_site_at DateTime?
+  route_decisions RouteDecision[]
+  latitude      Float?
+  longitude     Float?
+  request_id    String?      @unique
   id             String       @id @default(uuid())
   station_id     String
   station        Station      @relation(fields: [station_id], references: [id])
@@ -206,4 +215,21 @@ model Report {
   moderator_note String?
   created_at     DateTime     @default(now())
   resolved_at    DateTime?
+}
+
+model WalkingGraph {
+  station_id String @id
+  version String
+  data Json
+  created_at DateTime @default(now())
+}
+
+model RouteDecision {
+  id String @id @default(uuid())
+  report_id String
+  report Report @relation(fields: [report_id], references: [id])
+  moderator_id String
+  decision String
+  evidence String
+  created_at DateTime @default(now())
 }

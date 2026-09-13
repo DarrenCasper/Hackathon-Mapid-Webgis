@@ -3,8 +3,9 @@ import { REPORT_TYPES } from "../../api/useReports";
 export function ReportTypeSelect({ value, onChange }) {
   return (
     <div>
-      <label className="mb-1 block text-xs font-medium text-slate-600">Jenis laporan</label>
+      <label htmlFor="report-type" className="mb-1 block text-xs font-medium text-slate-600">Jenis laporan</label>
       <select
+        id="report-type"
         className="w-full rounded-lg border border-slate-200 px-2.5 py-2 text-sm outline-none focus:border-accent"
         value={value}
         onChange={(e) => onChange(e.target.value)}

@@ -30,7 +30,9 @@ export function formatMeters(meters) {
 // dipakai IsochroneLayer untuk map.fitBounds tanpa perlu tambah dependency
 // turf hanya demi satu fungsi ini.
 export function polygonBounds(polygon) {
-  const ring = polygon.coordinates[0];
+  const ring = polygon.type === "MultiPolygon"
+    ? polygon.coordinates.flat(2)
+    : polygon.coordinates.flat();
   let minLng = Infinity, minLat = Infinity, maxLng = -Infinity, maxLat = -Infinity;
   for (const [lng, lat] of ring) {
     if (lng < minLng) minLng = lng;

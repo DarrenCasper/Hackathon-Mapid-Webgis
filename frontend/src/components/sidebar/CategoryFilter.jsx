@@ -23,6 +23,7 @@ export function CategoryFilter() {
           return (
             <button
               key={cat.value}
+              aria-pressed={active}
               onClick={() => toggle(cat.value)}
               className={`rounded-full border px-2.5 py-1 text-xs font-medium transition ${
                 active

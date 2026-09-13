@@ -23,10 +23,9 @@ export function PoiMarkers({ pois }) {
       const el = document.createElement("button");
       el.type = "button";
       el.setAttribute("aria-label", poi.name);
-      el.className = "block rounded-full border-2 border-white shadow cursor-pointer transition-transform";
-      el.style.backgroundColor = meta.color;
-      el.style.width = isSelected ? "18px" : "13px";
-      el.style.height = isSelected ? "18px" : "13px";
+      el.className = "poi-marker";
+      el.setAttribute("aria-pressed", String(isSelected));
+      el.style.setProperty("--marker-color", meta.color);
       el.addEventListener("click", () => setSelectedPoi(poi.id));
 
       const marker = new Marker({ element: el })

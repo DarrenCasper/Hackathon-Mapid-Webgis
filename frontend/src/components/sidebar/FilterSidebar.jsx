@@ -1,15 +1,19 @@
+import { RotateCcw } from "lucide-react";
 import { WalkTimeToggle } from "./WalkTimeToggle";
 import { CategoryFilter } from "./CategoryFilter";
 import { PriceFilter } from "./PriceFilter";
 import { ValidationToggle } from "./ValidationToggle";
+import { useMapStore } from "../../store/useMapStore";
 
 export function FilterSidebar() {
+  const resetFilters = useMapStore((state) => state.resetFilters);
   return (
-    <aside className="flex w-64 shrink-0 flex-col gap-5 overflow-y-auto border-r border-slate-200 bg-white p-4">
+    <div className="filter-sidebar">
       <WalkTimeToggle />
       <CategoryFilter />
       <PriceFilter />
       <ValidationToggle />
-    </aside>
+      <button className="reset-filters" onClick={resetFilters}><RotateCcw size={14}/> Reset pencarian & filter</button>
+    </div>
   );
 }

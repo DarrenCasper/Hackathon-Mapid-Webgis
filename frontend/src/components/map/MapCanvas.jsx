@@ -1,22 +1,27 @@
 import { useEffect, useRef, useState } from "react";
-import { Map as MapLibreMap, NavigationControl } from "maplibre-gl";
+import { Map as MapLibreMap, NavigationControl, setWorkerUrl } from "maplibre-gl";
+import mapWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
 import { MapContext } from "./MapContext";
+import { MapPinned } from "lucide-react";
 
 // Basemap MAPID (MapLibre style JSON) — key sama dengan yang dipakai
 // backend (MAPID_API_KEY), sudah terverifikasi jalan di build.md Phase 4B.
-const MAPID_STYLE_URL = `https://v2.basemap.mapid.io/styles/street-v2.0/style.json?key=${
-  import.meta.env.VITE_MAPID_API_KEY
-}`;
+const MAPID_KEY = import.meta.env.VITE_MAPID_API_KEY?.trim();
+const MAPID_STYLE_URL = `https://v2.basemap.mapid.io/styles/street-v2.0/style.json?key=${encodeURIComponent(MAPID_KEY ?? "")}`;
 
 const JAKARTA_CENTER = [106.8456, -6.2088];
+
+// MapLibre 6 resolves its worker relative to the bundle; Vite must emit it explicitly.
+setWorkerUrl(mapWorkerUrl);
 
 export function MapCanvas({ children }) {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
   const [mapInstance, setMapInstance] = useState(null);
+  const [mapError, setMapError] = useState(null);
 
   useEffect(() => {
-    if (!containerRef.current || mapRef.current) return;
+    if (!containerRef.current || mapRef.current || !MAPID_KEY) return;
 
     const map = new MapLibreMap({
       container: containerRef.current,
@@ -40,9 +45,11 @@ export function MapCanvas({ children }) {
     map.on("load", () => {
       map.resize();
       setMapInstance(map);
+      setMapError(null);
     });
     map.on("error", (e) => {
-      console.error("[MapCanvas] MapLibre error:", e.error ?? e);
+      console.error("[MapCanvas] MapLibre error", { message: e.error?.message?.replace(/key=[^&\s]+/g, "key=[redacted]") });
+      setMapError("Peta dasar gagal dimuat. Periksa koneksi dan konfigurasi kunci MAPID.");
     });
 
     mapRef.current = map;
@@ -56,8 +63,15 @@ export function MapCanvas({ children }) {
   }, []);
 
   return (
-    <div className="relative h-full w-full bg-slate-100">
+    <div className="absolute inset-0 bg-slate-100">
       <div ref={containerRef} className="h-full w-full" />
+      {(!MAPID_KEY || mapError) && (
+        <div role="status" className="map-unavailable">
+          <span className="map-unavailable-icon"><MapPinned size={34}/></span>
+          <h3>{!MAPID_KEY ? "Peta belum diaktifkan" : "Peta belum bisa dimuat"}</h3>
+          <p>{!MAPID_KEY ? "Konfigurasi layanan peta belum tersedia. Kamu tetap bisa menjelajahi tempat melalui daftar rekomendasi." : "Periksa koneksi internet, lalu muat ulang halaman. Daftar tempat tetap dapat digunakan."}</p>
+        </div>
+      )}
       <MapContext.Provider value={mapInstance}>
         {mapInstance ? children : null}
       </MapContext.Provider>
