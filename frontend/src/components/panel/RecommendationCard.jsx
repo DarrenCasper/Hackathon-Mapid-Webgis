@@ -32,6 +32,7 @@ export function RecommendationCard({ poi, stationCoordinates }) {
   const CategoryIcon = poi.category === "kopi_minuman" ? Coffee : poi.category === "bakery" ? Croissant : Utensils;
 
   return (
+    <article>
     <button
       onClick={() => setSelectedPoi(poi.id)}
       aria-pressed={isSelected}
@@ -60,5 +61,7 @@ export function RecommendationCard({ poi, stationCoordinates }) {
       <p className="mt-2 text-xs text-slate-500">{buildReason(poi, filters)}</p>
       {isSelected && <span className="selected-place-label">Dipilih · lokasi ditandai di peta</span>}
     </button>
+    <a className="place-detail-link" href={`#/tempat/${poi.id}`} onClick={() => setSelectedPoi(poi.id)}>Detail tempat & menu <ArrowUpRight size={15}/></a>
+    </article>
   );
 }

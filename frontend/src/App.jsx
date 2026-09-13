@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import "./styles/pages.css";
+import "./styles/routing.css";
+import { ProjectPages } from "./pages/ProjectPages";
 import { Map, List, SlidersHorizontal, Footprints, Sparkles } from "lucide-react";
 import { Header } from "./components/layout/Header";
 import { BottomStatsBar } from "./components/layout/BottomStatsBar";
@@ -6,13 +9,18 @@ import { FilterSidebar } from "./components/sidebar/FilterSidebar";
 import { MapSection } from "./components/map/MapSection";
 import { RecommendationList } from "./components/panel/RecommendationList";
 import { StationInsightPanel } from "./components/panel/StationInsightPanel";
-import { ReportModal } from "./components/report/ReportModal";
 import { StationSelector } from "./components/header/StationSelector";
 import { ExitSelector } from "./components/header/ExitSelector";
 import { NlpSearchBar } from "./components/header/NlpSearchBar";
 import { useMapStore } from "./store/useMapStore";
 
 export default function App() {
+  const [page, setPage] = useState(window.location.hash);
+  useEffect(() => {
+    const change = () => setPage(window.location.hash);
+    window.addEventListener("hashchange", change);
+    return () => window.removeEventListener("hashchange", change);
+  }, []);
   const [mobileView, setMobileView] = useState("map");
   const [filtersOpen, setFiltersOpen] = useState(false);
   const minutes = useMapStore((state) => state.minutes);
@@ -23,6 +31,7 @@ export default function App() {
     <div className="app-shell">
       <a className="skip-link" href="#explore">Lewati ke eksplorasi</a>
       <Header />
+      {page.startsWith("#/") && page !== "#/map" ? <ProjectPages page={page} /> : <>
       <main id="explore" className="explorer" tabIndex={-1}>
         <section className="discovery-panel" aria-label="Pencarian dan filter">
           <div className="discovery-intro">
@@ -51,7 +60,7 @@ export default function App() {
       </main>
       <nav className="mobile-view-switch" aria-label="Tampilan eksplorasi"><button aria-pressed={mobileView === "map"} onClick={() => setMobileView("map")}><Map size={18}/>Peta</button><button aria-pressed={mobileView === "list"} onClick={() => setMobileView("list")}><List size={18}/>Daftar tempat</button></nav>
       <BottomStatsBar />
-      <ReportModal />
+      </>}
     </div>
   );
 }

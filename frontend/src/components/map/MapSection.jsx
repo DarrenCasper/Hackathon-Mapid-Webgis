@@ -14,6 +14,8 @@ export function MapSection() {
   const selectedStationId = useMapStore((s) => s.selectedStationId);
   const minutes = useMapStore((s) => s.minutes);
   const selectedPoiId = useMapStore((s) => s.selectedPoiId);
+  const selectedPoiData = useMapStore((s) => s.selectedPoiData);
+  const selectedExitId = useMapStore((s) => s.selectedExitId);
   const filters = useMapStore((s) => s.filters);
   const searchQuery = useMapStore((s) => s.searchQuery);
 
@@ -22,15 +24,17 @@ export function MapSection() {
   const { data: pois } = usePois(selectedStationId, minutes);
 
   const visiblePois = useMemo(() => applyFilters(pois ?? [], filters, searchQuery), [pois, filters, searchQuery]);
-  const selectedPoi = visiblePois.find((p) => p.id === selectedPoiId);
+  const selectedPoi = visiblePois.find((p) => p.id === selectedPoiId) ?? (selectedPoiData?.id === selectedPoiId ? selectedPoiData : null);
+  const origin = station?.exits?.find(e => e.id === selectedExitId)?.location?.coordinates ?? station?.location?.coordinates;
+  const markerPois = selectedPoi && !visiblePois.some(p => p.id === selectedPoi.id) ? [...visiblePois,selectedPoi] : visiblePois;
 
   return (
     <MapCanvas>
       {station?.location?.coordinates && (
-        <ExitMarker coordinates={station.location.coordinates} />
+        <ExitMarker coordinates={origin} />
       )}
       {isochrone?.polygon && <IsochroneLayer polygon={isochrone.polygon} minutes={minutes} />}
-      <PoiMarkers pois={visiblePois} />
+      <PoiMarkers pois={markerPois} />
       {isochroneError && (
         <div role="alert" className="absolute bottom-3 left-3 right-3 rounded-lg bg-white p-3 text-sm text-red-700 shadow">
           {isochroneError.status === 404 ? "Data jangkauan berjalan belum tersedia untuk pilihan ini." : "Gagal memuat jangkauan berjalan dari backend."}
@@ -38,7 +42,7 @@ export function MapSection() {
       )}
       {station?.location?.coordinates && selectedPoi?.location?.coordinates && (
         <WalkingRouteLine
-          from={station.location.coordinates}
+          from={origin}
           to={selectedPoi.location.coordinates}
         />
       )}

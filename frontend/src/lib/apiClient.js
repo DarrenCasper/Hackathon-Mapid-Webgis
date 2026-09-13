@@ -13,7 +13,7 @@ export class ApiError extends Error {
   }
 }
 
-async function request(path, options = {}) {
+async function request(path, options) {
   if (!BASE_URL) {
     throw new ApiError("VITE_API_BASE_URL belum diisi di frontend/.env.local. Isi URL backend beserta /api, lalu restart frontend.", 0);
   }
@@ -40,6 +40,9 @@ async function request(path, options = {}) {
 }
 
 export const api = {
-  get: (path) => request(path),
+  get: (path) => request(path, {}),
+  getSignal: (path, signal) => request(path, {signal}),
+  adminGet: (path, token) => request(path, {headers:{Authorization:`Bearer ${token}`}}),
+  adminPost: (path, data, token) => request(path, {method:"POST",body:JSON.stringify(data),headers:{Authorization:`Bearer ${token}`}}),
   post: (path, data) => request(path, { method: "POST", body: JSON.stringify(data) }),
 };

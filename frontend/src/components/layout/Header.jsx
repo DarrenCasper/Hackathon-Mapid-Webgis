@@ -1,4 +1,3 @@
-import { Compass, ArrowUpRight } from "lucide-react";
 
 export function Header() {
   return (
@@ -15,8 +14,10 @@ export function Header() {
         </svg>
         <span>TransitFit <em>AI</em><small>LANGKAH KECIL. TEMUAN BARU.</small></span>
       </a>
-      <div className="header-section"><Compass size={17}/><span>Jelajahi sekitar stasiun</span></div>
-      <a className="header-link" href="#explore">Mulai eksplorasi <ArrowUpRight size={16}/></a>
+      <nav className="page-nav" aria-label="Navigasi utama">
+        {[["beranda","Beranda"],["map","Map"],["tempat","Tempat"],["insight","Insight"]].map(([id,label]) => <a key={id} href={`#/${id}`} aria-current={(window.location.hash.startsWith(`#/${id}`) || (id === "map" && !window.location.hash.startsWith("#/"))) ? "page" : undefined}>{label}</a>)}
+      </nav>
+      <a className="header-link" href="#/lapor">Laporkan jalur ↗</a>
     </header>
   );
 }

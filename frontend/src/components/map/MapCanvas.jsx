@@ -63,7 +63,7 @@ export function MapCanvas({ children }) {
   }, []);
 
   return (
-    <div className="relative h-full w-full bg-slate-100">
+    <div className="absolute inset-0 bg-slate-100">
       <div ref={containerRef} className="h-full w-full" />
       {(!MAPID_KEY || mapError) && (
         <div role="status" className="map-unavailable">

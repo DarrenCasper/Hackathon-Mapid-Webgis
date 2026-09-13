@@ -17,9 +17,10 @@ const app = express();
 app.use(cors({ origin: process.env.ALLOWED_ORIGIN || "*" }));
 
 app.use(morgan("dev")); // request logging to stdout
-app.use(express.json()); // parse JSON request bodies (needed for POST /api/reports, /api/admin/*)
+app.use(express.json({limit:"3mb"})); // includes an optional report photo (maximum 2 MB binary)
 
 app.use("/api", require("./routes/gis"));
+app.use("/api", require("./routes/walking"));
 app.use("/api/reports", require("./routes/reports"));
 app.use("/api/admin", require("./routes/admin"));
 app.use("/api", require("./routes/chat"));
@@ -37,6 +38,7 @@ app.use((req, res) => {
 // shouldn't expose.
 app.use((err, req, res, next) => {
   console.error(err);
+  if (err.type === "entity.too.large") return res.status(413).json({error:"Foto terlalu besar. Maksimal 2 MB."});
   res.status(500).json({ error: "Internal server error" });
 });
 

@@ -1,77 +1,41 @@
-// Public route — no auth. Commuters submit reports anonymously, per the
-// project's explicit scope boundary (no end-user accounts at all).
 const express = require("express");
+const { rateLimit } = require("express-rate-limit");
 const prisma = require("../lib/db");
 const asyncHandler = require("../middleware/asyncHandler");
-
+const { validateReport } = require("../lib/reportValidation");
+const { edgeDistance } = require("../lib/walkingGraph");
 const router = express.Router();
 
-// Kept as an explicit list rather than importing Prisma's generated enum
-// object, so the 400 error message can name the valid values directly
-// without reaching into Prisma internals for it.
-const REPORT_TYPES = [
-  "trotoar_rusak",
-  "akses_tertutup",
-  "banjir",
-  "penyeberangan_tidak_aman",
-  "tempat_tutup",
-  "umkm_baru",
-  "info_lainnya",
-];
-
-// POST /api/reports
-// Body: { station_id, poi_id? , report_type, description, photo_url? }
-router.post(
-  "/",
-  asyncHandler(async (req, res) => {
-    const { station_id, poi_id, report_type, description, photo_url } = req.body;
-
-    // Basic shape/enum validation happens here, before ever touching the
-    // DB — this is different from "does the referenced station/poi
-    // exist," which is deliberately left to the real foreign key
-    // constraint below rather than a redundant pre-check.
-    if (!station_id || typeof station_id !== "string") {
-      return res.status(400).json({ error: "station_id is required" });
+// Readiness includes the migration, not just the version of the running server.
+router.get("/capabilities", asyncHandler(async (req,res) => {
+  await prisma.$queryRaw`SELECT latitude, longitude, request_id, route_edge_ids FROM "Report" LIMIT 0`;
+  res.json({location:true,photo:true,route_feedback:true,max_photo_bytes:2097152});
+}));
+router.post("/",rateLimit({windowMs:60000,limit:5,standardHeaders:"draft-7",legacyHeaders:false}),asyncHandler(async (req,res) => {
+  const error = validateReport(req.body);
+  if (error) return res.status(400).json({error});
+  const {station_id,poi_id,report_type,description,photo_url,latitude,longitude,request_id} = req.body;
+  const {route_edge_ids,route_graph_version,route_feedback} = req.body;
+  const data = {station_id,poi_id:poi_id ?? null,report_type,description:description.trim(),photo_url:photo_url ?? null,latitude,longitude,request_id,route_edge_ids:route_edge_ids ?? [],route_graph_version:route_graph_version ?? null,route_feedback:route_feedback ?? null};
+  if (route_feedback != null) {
+    if (!["avoid","recommend"].includes(route_feedback) || !Array.isArray(route_edge_ids) || route_edge_ids.length !== 1 || typeof route_edge_ids[0] !== "string") return res.status(400).json({error:"Pilih satu ruas untuk setiap laporan rute."});
+    const graph = await prisma.walkingGraph.findUnique({where:{station_id}});
+    if (!graph || graph.version !== route_graph_version || !graph.data.edges.some(e => e.id === route_edge_ids[0])) return res.status(409).json({error:"Ruas atau versi graf tidak cocok. Hitung ulang rute sebelum melapor."});
+    if (edgeDistance(graph.data,route_edge_ids[0],[longitude,latitude])>75) return res.status(400).json({error:"Pin laporan harus berada dalam 75 m dari ruas yang dipilih."});
+  } else if (route_graph_version != null || (route_edge_ids != null && (!Array.isArray(route_edge_ids) || route_edge_ids.length))) return res.status(400).json({error:"Jenis feedback rute wajib untuk laporan ruas."});
+  try {
+    // Unique request_id makes a retry safe after a lost HTTP response.
+    const existing = await prisma.report.findUnique({where:{request_id}});
+    if (existing) {
+      if (Object.keys(data).some(key => JSON.stringify(existing[key]) !== JSON.stringify(data[key]))) return res.status(409).json({error:"ID laporan sudah digunakan dengan isi berbeda. Mulai laporan baru."});
+      return res.json({id:existing.id,latitude:existing.latitude,longitude:existing.longitude,status:existing.status});
     }
-    if (!description || typeof description !== "string") {
-      return res.status(400).json({ error: "description is required" });
-    }
-    if (!REPORT_TYPES.includes(report_type)) {
-      return res.status(400).json({
-        error: `report_type must be one of: ${REPORT_TYPES.join(", ")}`,
-      });
-    }
-    if (poi_id !== undefined && poi_id !== null && typeof poi_id !== "number") {
-      return res.status(400).json({ error: "poi_id must be a number if provided" });
-    }
-
-    try {
-      const report = await prisma.report.create({
-        data: {
-          station_id,
-          poi_id: poi_id ?? null,
-          report_type,
-          description,
-          photo_url: photo_url ?? null,
-        },
-      });
-      res.status(201).json(report);
-    } catch (err) {
-      // P2003 = foreign key constraint failed — station_id or poi_id
-      // doesn't reference a real row. err.meta.field_name is Postgres's
-      // constraint name (e.g. "Report_station_id_fkey (index)"), not a
-      // clean column name — pull "station_id"/"poi_id" back out of it
-      // rather than leak that raw constraint identifier to the client.
-      if (err.code === "P2003") {
-        const match = err.meta?.field_name?.match(/station_id|poi_id/);
-        const field = match ? match[0] : "station_id/poi_id";
-        return res.status(400).json({
-          error: `Invalid reference: ${field} does not point to an existing record`,
-        });
-      }
-      throw err; // anything else is a genuine unexpected error — let asyncHandler's next(err) reach the centralized handler
-    }
-  })
-);
-
+    const report = await prisma.report.create({data});
+    return res.status(201).json({id:report.id,latitude:report.latitude,longitude:report.longitude,status:report.status});
+  } catch (err) {
+    if (err.code === "P2003") return res.status(400).json({error:"Stasiun atau tempat laporan tidak ditemukan."});
+    if (err.code === "P2002") return res.status(409).json({error:"Laporan sedang diproses. Coba kirim ulang untuk memeriksa hasilnya."});
+    throw err;
+  }
+}));
 module.exports = router;

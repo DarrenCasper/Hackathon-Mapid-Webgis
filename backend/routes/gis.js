@@ -273,4 +273,14 @@ router.get(
   })
 );
 
+router.get("/pois/:id", asyncHandler(async (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isSafeInteger(id) || id <= 0) return res.status(400).json({ error: "Invalid place id" });
+  const rows = await prisma.$queryRaw`SELECT p.id, p.name, p.category, p.price_tier, p.source, p.verified_field,
+    p.menu_utama, p.harga_rata_rata, p.jam_buka, p.jam_tutup, p.kondisi_tempat,
+    ST_AsGeoJSON(p.location) AS location_geojson FROM "Poi" p WHERE p.id = ${id}`;
+  if (!rows.length) return res.status(404).json({ error: "Tempat tidak ditemukan" });
+  res.json(serializePoi(rows[0]));
+}));
+
 module.exports = router;

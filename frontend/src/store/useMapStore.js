@@ -13,17 +13,20 @@ export const useMapStore = create((set) => ({
     onlyValidated: false, // filter client-side di verified_field
   },
   selectedPoiId: null,
+  selectedPoiData: null,
   searchQuery: "",
   sortBy: "recommended",
   setSortBy: (sortBy) => set({ sortBy }),
 
   setSelectedStation: (stationId) =>
-    set({ selectedStationId: stationId, selectedPoiId: null }),
+    set({ selectedStationId: stationId, selectedExitId: null, selectedPoiId: null, selectedPoiData: null }),
+  setSelectedExit: (exitId) => set({selectedExitId:exitId}),
   setMinutes: (minutes) => set({ minutes, selectedPoiId: null }),
   setFilters: (partial) =>
     set((state) => ({ filters: { ...state.filters, ...partial } })),
   resetFilters: () =>
     set({ filters: { categories: [], maxPrice: null, onlyValidated: false }, searchQuery: "", selectedPoiId: null }),
-  setSelectedPoi: (poiId) => set({ selectedPoiId: poiId }),
+  setSelectedPoi: (poiId) => set({ selectedPoiId: poiId, selectedPoiData: null }),
+  setSelectedPlace: (poi) => set({ selectedPoiId:poi.id, selectedPoiData:poi }),
   setSearchQuery: (query) => set({ searchQuery: query }),
 }));

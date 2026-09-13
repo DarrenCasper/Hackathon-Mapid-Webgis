@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 const prisma = require("../lib/db");
 const asyncHandler = require("../middleware/asyncHandler");
 const requireAuth = require("../middleware/auth");
+const { registerRouteModeration } = require("../lib/routeModeration");
 const { generateAndSaveInsight } = require("../lib/generateStationInsight");
 
 const router = express.Router();
@@ -48,6 +49,7 @@ router.post(
 
 // Everything below this line requires a valid JWT.
 router.use(requireAuth);
+registerRouteModeration(router);
 
 // GET /api/admin/reports?status=pending
 router.get(
@@ -67,7 +69,7 @@ router.get(
     // because we're not filtering/computing on the geometry itself.
     const reports = await prisma.report.findMany({
       where: status ? { status } : undefined,
-      include: { station: true, poi: true, moderator: true },
+      include: { station: true, poi: true, moderator: {select:{id:true,display_name:true}}, route_decisions: true },
       orderBy: { created_at: "desc" },
     });
 
@@ -86,6 +88,8 @@ router.post(
     }
 
     try {
+      const original = await prisma.report.findUnique({where:{id:req.params.id}});
+      if (original?.route_feedback) return res.status(409).json({error:"Gunakan keputusan ruas dengan bukti pemeriksaan lapangan."});
       const report = await prisma.report.update({
         where: { id: req.params.id },
         data: {
